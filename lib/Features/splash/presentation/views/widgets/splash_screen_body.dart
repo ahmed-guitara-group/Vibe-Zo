@@ -1,7 +1,11 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/auth_welcome_screen.dart';
+import 'package:vibe_zo/core/utils/helper.dart';
 
 import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
@@ -23,7 +27,7 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
   void initState() {
     super.initState();
     initSlidingAnimation();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(hours: 3), () {
       checkFirstSeen(context);
     });
   }
@@ -36,15 +40,32 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 2,
-          child: Roulette(child: ZoomIn(child: Image.asset(AssetsData.logo))),
-        ),
-      ],
+    return InkWell(
+      onTap: () {
+        showBottomSheet(
+          showDragHandle: false,
+          enableDrag: false,
+          constraints: BoxConstraints(maxHeight: context.screenHeight * .97),
+          context: context,
+          builder: (context) {
+            return BlocBuilder<AuthBottomSheetCubit, AuthBottomSheetState>(
+              builder: (context, state) {
+                return AuthWelcomeScreen();
+              },
+            );
+          },
+        );
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            flex: 2,
+            child: ZoomIn(child: Image.asset(AssetsData.vZLogo)),
+          ),
+        ],
+      ),
     );
   }
 

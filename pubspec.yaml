@@ -47,6 +47,7 @@ dependencies:
   fluttertoast: ^8.2.12
   image_picker: ^1.1.2
   shared_preferences: ^2.5.3
+  flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/icons/
     - lang/en.json
     - lang/ar.json
 

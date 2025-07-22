@@ -56,12 +56,6 @@ class VibeZo extends StatelessWidget {
               fontFamily: "Montserrat-Regular.ttf",
               primarySwatch: Colors.teal,
             ),
-
-            // ThemeData.dark().copyWith(
-            //   scaffoldBackgroundColor: kPrimaryColor,
-            //   textTheme:
-            //       GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
-            // ),
           );
         },
       ),

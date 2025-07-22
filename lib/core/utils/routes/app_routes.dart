@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/auth_welcome_screen.dart';
 
 import '../../../Features/Splash/presentation/views/splash_screen.dart';
@@ -21,7 +23,12 @@ class AppRoutes {
       case kHomeScreenRoute:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case kAuthWelcomeScreenRoute:
-        return MaterialPageRoute(builder: (_) => AuthWelcomeScreen());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => AuthBottomSheetCubit(),
+            child: AuthWelcomeScreen(),
+          ),
+        );
 
       case kLoginScreenRoute:
         return MaterialPageRoute(builder: (_) => const LoginScreen());

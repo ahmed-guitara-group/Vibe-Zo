@@ -34,7 +34,7 @@ class CustomListTile extends StatelessWidget {
       ),
       leading: const CircleAvatar(
         radius: 30,
-        backgroundImage: AssetImage(AssetsData.logo),
+        backgroundImage: AssetImage(AssetsData.vZLogo),
       ),
     );
   }

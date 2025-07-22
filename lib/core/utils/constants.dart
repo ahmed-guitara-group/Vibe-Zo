@@ -22,8 +22,14 @@ const String english = 'en';
 const String arabic = 'ar';
 
 //color
-const kPrimaryColor = Color(0xff49D0A0);
-const kGreyTextColor = Color(0XFF777777);
+const kPrimaryColor = Color(0xffDA5280);
+const kGreyTextColor = Color(0xFF6C727E);
+const kLightGreyTextColor = Color(0xffF3F4F6);
+
+const kDividerColor = Color(0xFFE0E0E0);
+const kGreyBtnColor = Color(0xFFF3F4F6);
+const kBlackTextColor = Color(0xFF161616);
+
 const kLightGreyColor = Color(0xffF6F6F6);
 const kLightGreyColor2 = Color(0xffCECECE);
 const kRouteItemColor = Color(0xffEEEEEE);
