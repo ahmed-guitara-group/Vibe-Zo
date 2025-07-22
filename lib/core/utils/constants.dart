@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 // Routes
 const String initialRoute = '/';
 const String kBottomNavRoute = '/bottomNavWidget';
+const String kAuthWelcomeScreenRoute = '/authWelcomeScreen';
+
 const String kLoginScreenRoute = '/loginScreen';
 const String kRegisterScreenRoute = '/registerScreen';
 const String kProfileScreenRoute = '/profileScreen';
@@ -57,11 +59,8 @@ const kStepColor = Color(0x4C318533);
 const kGtSectraFine = 'GT Sectra Fine';
 const kHacenTunisia = 'Hacen Tunisia';
 
-const kFeaturedBox = 'featured_box';
 const kUserDataBox = 'login_box';
 const kUserImageBox = 'image_box';
-
-const kUserIdBox = 'user_id';
 
 class AppConstant {
   static const String data = "data";

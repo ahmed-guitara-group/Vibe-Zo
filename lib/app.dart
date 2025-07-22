@@ -49,7 +49,7 @@ class VibeZo extends StatelessWidget {
                 titleTextStyle: TextStyle(
                   color: Colors.black,
                   fontSize: 15,
-                  fontFamily: 'Montserrat-Regular.ttf',
+                  fontFamily: 'Lexend',
                   fontWeight: FontWeight.bold,
                 ),
               ),

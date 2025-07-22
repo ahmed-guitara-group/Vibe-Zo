@@ -69,7 +69,7 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
       if (userDataBox.isNotEmpty) {
         Navigator.pushReplacementNamed(context, kBottomNavRoute);
       } else {
-        Navigator.pushReplacementNamed(context, kLoginScreenRoute);
+        Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
       }
     } else {
       await pref.setBool('seen', true);
