@@ -5,7 +5,8 @@ import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/auth_welcome_screen.dart';
-import 'package:vibe_zo/core/utils/helper.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/continue_with_phone_screen.dart';
+import 'package:vibe_zo/core/utils/functions/setup_service_locator.dart';
 
 import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
@@ -42,16 +43,31 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showBottomSheet(
-          showDragHandle: false,
-          enableDrag: false,
-          constraints: BoxConstraints(maxHeight: context.screenHeight * .97),
+        showModalBottomSheet(
           context: context,
+          isScrollControlled: true,
+          useSafeArea: true,
+          isDismissible: false,
+          enableDrag: false,
+          backgroundColor: Colors.transparent,
           builder: (context) {
-            return BlocBuilder<AuthBottomSheetCubit, AuthBottomSheetState>(
-              builder: (context, state) {
-                return AuthWelcomeScreen();
-              },
+            return FractionallySizedBox(
+              child: BlocProvider(
+                create: (context) => getIt<AuthBottomSheetCubit>(),
+                child: BlocBuilder<AuthBottomSheetCubit, AuthBottomSheetState>(
+                  builder: (context, state) {
+                    return MediaQuery.removeViewInsets(
+                      removeBottom: true,
+                      context: context,
+                      child:
+                          (state is AuthBottomSheetChanged &&
+                              state.activePageRoute == kPhoneAuthScreenRoute)
+                          ? const ContinueWithPhoneScreen()
+                          : const AuthWelcomeScreen(),
+                    );
+                  },
+                ),
+              ),
             );
           },
         );

@@ -13,4 +13,5 @@ class AssetsData {
   static const google = '${pathIcon}google.png';
   static const facebook = '${pathIcon}Facebook.png';
   static const snapchat = '${pathIcon}snapchat.png';
+  static const continueIcon = '${pathIcon}continue.png';
 }

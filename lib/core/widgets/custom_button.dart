@@ -65,9 +65,6 @@ class CustomButton extends StatelessWidget {
                   Image.asset(icon!, color: iconColor),
                   Gaps.hGap4,
                   Flexible(
-                    // width: context.locale.isEnLocale
-                    //     ? context.screenWidth * .2
-                    //     : context.screenWidth * .28,
                     child: Text(
                       buttonText,
                       style: TextStyle(

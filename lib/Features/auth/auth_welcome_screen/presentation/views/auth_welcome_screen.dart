@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vibe_zo/core/utils/assets.dart';
 import 'package:vibe_zo/core/utils/gaps.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
@@ -7,18 +8,14 @@ import 'package:vibe_zo/core/widgets/custom_button.dart';
 
 import '../../../../../core/utils/constants.dart';
 import '../../data/models/auth_type_model.dart';
+import '../manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
+import '../widgets/custom_or_row.dart';
 
 class AuthWelcomeScreen extends StatelessWidget {
   const AuthWelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<AuthTypeModel> authTypes = [
-      AuthTypeModel(title: 'Apple', iconPath: AssetsData.apple),
-      AuthTypeModel(title: 'Google', iconPath: AssetsData.google),
-      AuthTypeModel(title: 'Snapchat', iconPath: AssetsData.snapchat),
-      AuthTypeModel(title: 'Facebook', iconPath: AssetsData.facebook),
-    ];
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: MediaQuery.of(context).size * .07,
@@ -27,7 +24,7 @@ class AuthWelcomeScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,49 +39,22 @@ class AuthWelcomeScreen extends StatelessWidget {
                 ),
               ),
               Image.asset(AssetsData.vZLogo),
-
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12.0),
                 child: CustomButton(
                   screenWidth: context.screenWidth,
-                  buttonTapHandler: () {},
+                  buttonTapHandler: () {
+                    BlocProvider.of<AuthBottomSheetCubit>(
+                      context,
+                    ).changeBottomSheetState(pageRoute: kPhoneAuthScreenRoute);
+                  },
                   buttonText: "Continue with Phone",
                   btnTxtFontSize: 14,
                   withIcon: true,
                   icon: AssetsData.phone,
                 ),
               ),
-              Row(
-                children: [
-                  const Expanded(
-                    child: Divider(
-                      color: kDividerColor,
-                      thickness: 1.5,
-                      endIndent: 10,
-                    ),
-                  ),
-                  Text(
-                    'Or',
-                    style: TextStyle(
-                      color: const Color(
-                        0xFF6C727E,
-                      ) /* Text-text-secondary-paragraph */,
-                      fontSize: 32,
-                      fontFamily: 'Lexend',
-                      fontWeight: FontWeight.w500,
-                      height: 1.25,
-                      letterSpacing: -0.64,
-                    ),
-                  ),
-                  const Expanded(
-                    child: Divider(
-                      color: kDividerColor,
-                      thickness: 1.5,
-                      indent: 10,
-                    ),
-                  ),
-                ],
-              ),
+              CustomOrRowWidget(),
               Gaps.vGap8,
               Expanded(
                 child: ListView.builder(

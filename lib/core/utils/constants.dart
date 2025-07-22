@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 const String initialRoute = '/';
 const String kBottomNavRoute = '/bottomNavWidget';
 const String kAuthWelcomeScreenRoute = '/authWelcomeScreen';
+//Bottom Sheet Routes
+const String kPhoneAuthScreenRoute = '/phoneAuthScreen';
 
 const String kLoginScreenRoute = '/loginScreen';
 const String kRegisterScreenRoute = '/registerScreen';
