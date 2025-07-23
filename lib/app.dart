@@ -53,8 +53,7 @@ class VibeZo extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              fontFamily: "Montserrat-Regular.ttf",
-              primarySwatch: Colors.teal,
+              fontFamily: "Lexend",
             ),
           );
         },

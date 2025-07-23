@@ -10,6 +10,7 @@ import '../../../../../core/utils/gaps.dart';
 import '../../../../../core/widgets/custom_auth_app_bar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../manager/animation/animation_cubit.dart';
+import '../widgets/custom_radio_btn.dart';
 
 class VerifyPhoneNumberScreen extends StatelessWidget {
   const VerifyPhoneNumberScreen({super.key});
@@ -113,13 +114,14 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
                   }) => null,
               onChanged: (phone) {},
             ),
-
+            SizedBox(height: 12),
+            VerificationMethodSelector(),
             SizedBox(height: context.screenHeight * 0.1),
 
             BlocBuilder<AnimationCubit, AnimationState>(
               builder: (context, state) {
                 return SizedBox(
-                  height: context.screenHeight * 0.6,
+                  height: context.screenHeight * 0.5,
                   child: Stack(
                     children: [
                       AnimatedAlign(
