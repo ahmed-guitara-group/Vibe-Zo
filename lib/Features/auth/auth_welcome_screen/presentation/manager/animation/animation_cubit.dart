@@ -10,4 +10,16 @@ class AnimationCubit extends Cubit<AnimationState> {
     emit(AnimationInitial());
     emit(ButtonMovedDown());
   }
+
+  void hideVerificationMethod() async {
+    emit(AnimationInitial());
+
+    emit(VerificationMethodSelected());
+  }
+
+  void hideVerOtpField() async {
+    emit(AnimationInitial());
+
+    emit(ShowVerificationMethod());
+  }
 }

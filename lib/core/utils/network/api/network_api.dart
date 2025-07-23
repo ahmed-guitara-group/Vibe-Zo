@@ -1,10 +1,7 @@
 class Api {
   //base Url
-  static const String mainAppUrl = "https://ib.jamalmoallart.com/";
+  static const String mainAppUrl = "hhttp://10.5.50.6:3333/";
   //end points
   static const String baseUrl = "${mainAppUrl}api/";
-  static const String doServerLoginApiCall = "${baseUrl}v2/login";
-  static const String doServerRegisterApiCall = "${baseUrl}v2/register";
-
-  static const String doServerProductsApiCall = "${baseUrl}v1/all/products";
+  static const String doServerRegisterApiCall = "${baseUrl}auth/register";
 }

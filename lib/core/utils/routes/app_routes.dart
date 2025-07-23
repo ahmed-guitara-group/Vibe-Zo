@@ -3,7 +3,6 @@ import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/aut
 
 import '../../../Features/Splash/presentation/views/splash_screen.dart';
 import '../../../Features/auth/login/presentation/screens/login_screen.dart';
-import '../../../Features/auth/register/presentation/screens/register_screen.dart';
 import '../../../Features/home/presentation/screens/home_screen.dart';
 import '../../../Features/home/presentation/widgets/bottom_nav_widget.dart';
 import '../../../Features/language/presentation/screens/language_screen.dart';
@@ -28,8 +27,6 @@ class AppRoutes {
       case kBottomNavRoute:
         return MaterialPageRoute(builder: (_) => const BottomNavWidget());
 
-      case kRegisterScreenRoute:
-        return MaterialPageRoute(builder: (_) => RegisterScreen());
       case kProfileScreenRoute:
       default:
         return null;

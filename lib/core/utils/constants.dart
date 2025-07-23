@@ -8,6 +8,8 @@ const String kAuthWelcomeScreenRoute = '/authWelcomeScreen';
 //Bottom Sheet Routes
 const String kPhoneAuthScreenRoute = '/phoneAuthScreen';
 const String kVerifyPhoneNumberScreenRoute = '/verifyPhoneNumberScreen';
+const String kVerificationCodeScreenRoute = '/verificationCodeScreen';
+const String kCreatePasswordScreenRoute = '/createPasswordScreen';
 
 const String kLoginScreenRoute = '/loginScreen';
 const String kRegisterScreenRoute = '/registerScreen';

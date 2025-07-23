@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 
@@ -9,34 +10,50 @@ import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/gaps.dart';
 import '../../../../../core/widgets/custom_auth_app_bar.dart';
 import '../../../../../core/widgets/custom_button.dart';
-import '../manager/animation/animation_cubit.dart';
+import '../../../../../core/widgets/custom_text_field.dart';
 import '../widgets/custom_radio_btn.dart';
 
-class VerifyPhoneNumberScreen extends StatelessWidget {
+class VerifyPhoneNumberScreen extends StatefulWidget {
   const VerifyPhoneNumberScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<VerifyPhoneNumberScreen> createState() =>
+      _VerifyPhoneNumberScreenState();
+}
+
+class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
+  bool _isButtonAtBottom = false;
+
+  @override
+  void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AnimationCubit>().moveButtonDown();
+      setState(() {
+        _isButtonAtBottom = true;
+      });
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: ListView(
-          physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomAuthAppBar(
               hasArrowBackButton: true,
               title: "Verify Your Phone Number",
               onBackButtonPressed: () {
-                BlocProvider.of<AuthBottomSheetCubit>(
-                  context,
-                ).changeBottomSheetState(pageRoute: kPhoneAuthScreenRoute);
+                context.read<AuthBottomSheetCubit>().changeBottomSheetState(
+                  pageRoute: kPhoneAuthScreenRoute,
+                );
               },
             ),
             Gaps.vGap30,
             RichText(
+              textAlign: TextAlign.start,
               text: TextSpan(
                 children: [
                   WidgetSpan(
@@ -56,7 +73,6 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
                   ),
                   const TextSpan(
                     text: ' Phone Number',
-
                     style: TextStyle(
                       color: kBlackTextColor,
                       fontSize: 12,
@@ -68,11 +84,9 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
                 ],
               ),
             ),
-
             Gaps.vGap8,
-
             IntlPhoneField(
-              flagsButtonPadding: EdgeInsetsGeometry.only(left: 8, right: 8),
+              flagsButtonPadding: const EdgeInsets.only(left: 8, right: 8),
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 14,
@@ -99,7 +113,6 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
               cursorColor: kPrimaryColor,
               initialCountryCode: 'EG',
               showDropdownIcon: true,
-
               dropdownIconPosition: IconPosition.trailing,
               dropdownIcon: const Icon(
                 Icons.keyboard_arrow_down_rounded,
@@ -114,41 +127,78 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
                   }) => null,
               onChanged: (phone) {},
             ),
-            SizedBox(height: 12),
-            VerificationMethodSelector(),
-            SizedBox(height: context.screenHeight * 0.1),
-
+            const SizedBox(height: 12),
             BlocBuilder<AnimationCubit, AnimationState>(
               builder: (context, state) {
-                return SizedBox(
-                  height: context.screenHeight * 0.5,
-                  child: Stack(
-                    children: [
-                      AnimatedAlign(
-                        duration: const Duration(minutes: 600),
-                        curve: Curves.easeInOut,
-                        alignment: state is ButtonMovedDown
-                            ? Alignment.bottomCenter
-                            : Alignment.topCenter,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CustomButton(
-                              screenWidth: context.screenWidth,
-                              buttonTapHandler: () {},
-                              buttonText: "Continue",
-                              btnTxtFontSize: 14,
-                              withIcon: true,
-                              icon: AssetsData.continueIcon,
-                            ),
-                            const SizedBox(height: 24),
-                          ],
-                        ),
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 500),
+                  switchInCurve: Curves.easeInOut,
+                  switchOutCurve: Curves.easeInOut,
+                  transitionBuilder: (child, animation) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: SizeTransition(
+                        sizeFactor: animation,
+                        axisAlignment: 0.0,
+                        child: child,
                       ),
-                    ],
-                  ),
+                    );
+                  },
+                  child: state is VerificationMethodSelected
+                      ? CustomTextField(
+                          key: const ValueKey('textField'),
+                          maxLength: 6,
+                          rowString: "Verification Code",
+                          textInputType: TextInputType.number,
+                          obscureText: false,
+                          hintInTextField: "XXX XXX",
+                        )
+                      : const VerificationMethodSelector(
+                          key: ValueKey('radioSelector'),
+                        ),
                 );
               },
+            ),
+
+            const Spacer(),
+            SizedBox(
+              height: context.screenHeight * 0.3,
+              child: Stack(
+                children: [
+                  AnimatedAlign(
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeInOut,
+                    alignment: _isButtonAtBottom
+                        ? Alignment.bottomCenter
+                        : Alignment.topCenter,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomButton(
+                          screenWidth: context.screenWidth,
+                          buttonTapHandler: () {
+                            context.read<AnimationCubit>().state
+                                    is VerificationMethodSelected
+                                ? context
+                                      .read<AuthBottomSheetCubit>()
+                                      .changeBottomSheetState(
+                                        pageRoute: kCreatePasswordScreenRoute,
+                                      )
+                                : BlocProvider.of<AnimationCubit>(
+                                    context,
+                                  ).hideVerificationMethod();
+                          },
+                          buttonText: "Continue",
+                          btnTxtFontSize: 14,
+                          withIcon: true,
+                          icon: AssetsData.continueIcon,
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

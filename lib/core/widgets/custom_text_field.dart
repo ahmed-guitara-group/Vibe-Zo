@@ -5,7 +5,7 @@ import 'package:vibe_zo/core/utils/helper.dart';
 import '../utils/constants.dart';
 import '../utils/gaps.dart';
 
-class CustomLoginTextField extends StatefulWidget {
+class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
   final String? rowIconPath;
   final String? rowString;
@@ -20,8 +20,10 @@ class CustomLoginTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final bool isRequired;
   final void Function(String?)? onChange;
-  const CustomLoginTextField({
+  final int? maxLength;
+  const CustomTextField({
     super.key,
+    this.maxLength,
     this.onChange,
     this.initialValue,
     this.width,
@@ -39,10 +41,10 @@ class CustomLoginTextField extends StatefulWidget {
   });
 
   @override
-  State<CustomLoginTextField> createState() => _CustomLoginTextFieldState();
+  State<CustomTextField> createState() => _CustomTextFieldState();
 }
 
-class _CustomLoginTextFieldState extends State<CustomLoginTextField> {
+class _CustomTextFieldState extends State<CustomTextField> {
   bool obscure = true;
 
   @override
@@ -61,11 +63,36 @@ class _CustomLoginTextFieldState extends State<CustomLoginTextField> {
                 : const SizedBox(),
             Gaps.hGap8,
             widget.rowString != null
-                ? Text(
-                    widget.rowString!,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: widget.fontSize,
+                ? RichText(
+                    text: TextSpan(
+                      children: [
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.top,
+                          child: Transform.translate(
+                            offset: const Offset(0, -5),
+                            child: Text(
+                              '* ',
+                              style: TextStyle(
+                                color: kRedTextColor,
+                                fontSize: 12,
+                                fontFamily: 'Lexend',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        TextSpan(
+                          text: widget.rowString!,
+                          style: TextStyle(
+                            color: kBlackTextColor,
+                            fontSize: 12,
+                            fontFamily: 'Lexend',
+                            fontWeight: FontWeight.w400,
+                            height: 1.17,
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 : const SizedBox(),
@@ -85,6 +112,16 @@ class _CustomLoginTextFieldState extends State<CustomLoginTextField> {
               : 0,
         ),
         TextFormField(
+          maxLength: widget.maxLength,
+          buildCounter:
+              (
+                context, {
+                required currentLength,
+                required isFocused,
+                required maxLength,
+              }) {
+                return null;
+              },
           //  initialValue: widget.initialValue,
           onChanged: widget.onChange,
           textAlignVertical: TextAlignVertical.top,
@@ -93,6 +130,7 @@ class _CustomLoginTextFieldState extends State<CustomLoginTextField> {
           obscureText: widget.obscureText ? obscure : false,
           keyboardType: widget.textInputType,
           maxLines: widget.multiLine ?? 1,
+          cursorColor: kPrimaryColor,
           decoration: InputDecoration(
             fillColor: Colors.white,
             hintStyle: const TextStyle(
@@ -120,22 +158,19 @@ class _CustomLoginTextFieldState extends State<CustomLoginTextField> {
             // focusedErrorBorder: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(
               vertical: 5,
-              horizontal: 10,
+              horizontal: 18,
             ), // space of text
             border: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color(0xFFCCC6C6),
-                width: 1.0,
-              ),
+              borderSide: const BorderSide(color: kGreyTextColor, width: 1.0),
               borderRadius: BorderRadius.circular(8),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Color(0xFFCCC6C6), width: 1),
+              borderSide: const BorderSide(color: kPrimaryColor, width: 1),
               borderRadius: BorderRadius.circular(8),
             ),
 
             enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Color(0xFFCCC6C6), width: 1),
+              borderSide: const BorderSide(color: kGreyTextColor, width: 1),
               borderRadius: BorderRadius.circular(8),
             ),
             errorBorder: OutlineInputBorder(

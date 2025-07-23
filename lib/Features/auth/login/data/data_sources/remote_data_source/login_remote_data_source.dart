@@ -25,7 +25,7 @@ class LoginRemoteDataSourceImpl extends LoginRemoteDataSource {
       Method.post,
       params: body,
       options: Options(contentType: Headers.formUrlEncodedContentType),
-      url: Api.doServerLoginApiCall,
+      url: Api.doServerRegisterApiCall,
       onSuccess: (data) {
         if (data.state == true) {
           loginResponse = right(data);

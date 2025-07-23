@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
-import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
 import 'package:vibe_zo/core/utils/gaps.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/widgets/custom_auth_app_bar.dart';
@@ -10,18 +9,33 @@ import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../data/models/auth_type_model.dart';
+import '../manager/animation/animation_cubit.dart';
 import '../manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import '../widgets/custom_or_row.dart';
 
-class ContinueWithPhoneScreen extends StatelessWidget {
+class ContinueWithPhoneScreen extends StatefulWidget {
   const ContinueWithPhoneScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AnimationCubit>().moveButtonDown();
-    });
+  State<ContinueWithPhoneScreen> createState() =>
+      _ContinueWithPhoneScreenState();
+}
 
+class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
+  bool _isButtonAtBottom = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _isButtonAtBottom = true;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -32,9 +46,9 @@ class ContinueWithPhoneScreen extends StatelessWidget {
               hasArrowBackButton: true,
               title: "Continue With Phone",
               onBackButtonPressed: () {
-                BlocProvider.of<AuthBottomSheetCubit>(
-                  context,
-                ).changeBottomSheetState(pageRoute: kAuthWelcomeScreenRoute);
+                context.read<AuthBottomSheetCubit>().changeBottomSheetState(
+                  pageRoute: kAuthWelcomeScreenRoute,
+                );
               },
             ),
             Gaps.vGap30,
@@ -58,7 +72,6 @@ class ContinueWithPhoneScreen extends StatelessWidget {
                   ),
                   const TextSpan(
                     text: ' Phone Number',
-
                     style: TextStyle(
                       color: kBlackTextColor,
                       fontSize: 12,
@@ -70,11 +83,9 @@ class ContinueWithPhoneScreen extends StatelessWidget {
                 ],
               ),
             ),
-
             Gaps.vGap8,
-
             IntlPhoneField(
-              flagsButtonPadding: EdgeInsetsGeometry.only(left: 8, right: 8),
+              flagsButtonPadding: const EdgeInsets.only(left: 8, right: 8),
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 14,
@@ -101,7 +112,6 @@ class ContinueWithPhoneScreen extends StatelessWidget {
               cursorColor: kPrimaryColor,
               initialCountryCode: 'EG',
               showDropdownIcon: true,
-
               dropdownIconPosition: IconPosition.trailing,
               dropdownIcon: const Icon(
                 Icons.keyboard_arrow_down_rounded,
@@ -116,57 +126,52 @@ class ContinueWithPhoneScreen extends StatelessWidget {
                   }) => null,
               onChanged: (phone) {},
             ),
-
             SizedBox(height: context.screenHeight * 0.1),
-
-            BlocBuilder<AnimationCubit, AnimationState>(
-              builder: (context, state) {
-                return SizedBox(
-                  height: context.screenHeight * 0.4,
-                  child: Stack(
-                    children: [
-                      AnimatedAlign(
-                        duration: const Duration(milliseconds: 600),
-                        curve: Curves.easeInOut,
-                        alignment: state is ButtonMovedDown
-                            ? Alignment.bottomCenter
-                            : Alignment.topCenter,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CustomButton(
-                              screenWidth: context.screenWidth,
-                              buttonTapHandler: () {
-                                BlocProvider.of<AuthBottomSheetCubit>(
-                                  context,
-                                ).changeBottomSheetState(
-                                  pageRoute: kVerifyPhoneNumberScreenRoute,
-                                );
-                              },
-                              buttonText: "Continue",
-                              btnTxtFontSize: 14,
-                              withIcon: true,
-                              icon: AssetsData.continueIcon,
-                            ),
-                            const SizedBox(height: 20),
-                            const CustomOrRowWidget(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+            SizedBox(
+              height: context.screenHeight * 0.4,
+              child: AnimatedAlign(
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.easeInOut,
+                alignment: _isButtonAtBottom
+                    ? Alignment.bottomCenter
+                    : Alignment.topCenter,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomButton(
+                      screenWidth: context.screenWidth,
+                      buttonTapHandler: () {
+                        BlocProvider.of<AnimationCubit>(
+                          context,
+                        ).hideVerOtpField();
+                        setState(() {
+                          _isButtonAtBottom = true;
+                        });
+                        context
+                            .read<AuthBottomSheetCubit>()
+                            .changeBottomSheetState(
+                              pageRoute: kVerifyPhoneNumberScreenRoute,
+                            );
+                      },
+                      buttonText: "Continue",
+                      btnTxtFontSize: 14,
+                      withIcon: true,
+                      icon: AssetsData.continueIcon,
+                    ),
+                    const SizedBox(height: 20),
+                    const CustomOrRowWidget(),
+                  ],
+                ),
+              ),
             ),
-
             const SizedBox(height: 16),
-            Text(
+            const Text(
               'Continue with Social Media',
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Color(0xFF161616),
                 fontSize: 16,
-                fontFamily: 'Lexend',
+
                 fontWeight: FontWeight.w500,
                 height: 1.50,
                 letterSpacing: 0.50,
