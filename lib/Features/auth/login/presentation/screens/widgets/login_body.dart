@@ -70,7 +70,7 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
             children: [
               CustomAuthAppBar(
                 hasArrowBackButton: true,
-                title: "Login to your account",
+                title: context.locale.translate("login_to_your_account")!,
                 onBackButtonPressed: () {
                   BlocProvider.of<AuthBottomSheetCubit>(
                     context,
@@ -86,23 +86,21 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
                       child: Transform.translate(
                         offset: const Offset(0, -5),
                         child: Text(
-                          '*',
+                          '* ',
                           style: TextStyle(
                             color: kRedTextColor,
                             fontSize: 12,
-                            fontFamily: 'Lexend',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
                     ),
-                    const TextSpan(
-                      text: ' Phone Number',
+                    TextSpan(
+                      text: context.locale.translate("phone_number")!,
 
                       style: TextStyle(
                         color: kBlackTextColor,
                         fontSize: 12,
-                        fontFamily: 'Lexend',
                         fontWeight: FontWeight.w400,
                         height: 1.17,
                       ),
@@ -158,7 +156,7 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
               Gaps.vGap12,
               CustomTextField(
                 // maxLength: 6,
-                rowString: "Your Password",
+                rowString: context.locale.translate("your_password")!,
                 textInputType: TextInputType.number,
                 obscureText: true,
                 hintInTextField: "********",
@@ -167,7 +165,7 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
               CustomButton(
                 screenWidth: context.screenWidth,
                 buttonTapHandler: () {},
-                buttonText: "Continue",
+                buttonText: context.locale.translate("continue")!,
                 btnTxtFontSize: 14,
                 withIcon: true,
                 icon: AssetsData.continueIcon,
@@ -176,7 +174,7 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
                 child: Padding(
                   padding: EdgeInsetsGeometry.symmetric(vertical: 21),
                   child: Text(
-                    'Forget your password?',
+                    context.locale.translate("forgot_password")!,
                     style: TextStyle(
                       color: kBlackTextColor,
                       fontSize: 14,
@@ -190,12 +188,11 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
 
               const SizedBox(height: 16),
               Text(
-                'Continue with Social Media',
+                context.locale.translate("continue_with_social_media")!,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Color(0xFF161616),
                   fontSize: 16,
-                  fontFamily: 'Lexend',
                   fontWeight: FontWeight.w500,
                   height: 1.50,
                   letterSpacing: 0.50,

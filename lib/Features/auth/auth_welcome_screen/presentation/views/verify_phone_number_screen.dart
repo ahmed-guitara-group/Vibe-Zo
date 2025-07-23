@@ -44,7 +44,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
           children: [
             CustomAuthAppBar(
               hasArrowBackButton: true,
-              title: "Verify Your Phone Number",
+              title: context.locale.translate("verify_your_phone_number")!,
               onBackButtonPressed: () {
                 context.read<AuthBottomSheetCubit>().changeBottomSheetState(
                   pageRoute: kPhoneAuthScreenRoute,
@@ -61,18 +61,17 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                     child: Transform.translate(
                       offset: const Offset(0, -5),
                       child: Text(
-                        '*',
+                        '* ',
                         style: TextStyle(
                           color: kRedTextColor,
                           fontSize: 12,
-                          fontFamily: 'Lexend',
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
                   ),
-                  const TextSpan(
-                    text: ' Phone Number',
+                  TextSpan(
+                    text: context.locale.translate("phone_number")!,
                     style: TextStyle(
                       color: kBlackTextColor,
                       fontSize: 12,
@@ -148,7 +147,9 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                       ? CustomTextField(
                           key: const ValueKey('textField'),
                           maxLength: 6,
-                          rowString: "Verification Code",
+                          rowString: context.locale.translate(
+                            "verification_code",
+                          )!,
                           textInputType: TextInputType.number,
                           obscureText: false,
                           hintInTextField: "XXX XXX",
@@ -188,7 +189,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                                     context,
                                   ).hideVerificationMethod();
                           },
-                          buttonText: "Continue",
+                          buttonText: context.locale.translate("continue")!,
                           btnTxtFontSize: 14,
                           withIcon: true,
                           icon: AssetsData.continueIcon,

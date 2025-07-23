@@ -24,7 +24,7 @@ class CreatePasswordScreen extends StatelessWidget {
           children: [
             CustomAuthAppBar(
               hasArrowBackButton: true,
-              title: "Create your password",
+              title: context.locale.translate("create_your_password")!,
               onBackButtonPressed: () {
                 BlocProvider.of<AnimationCubit>(context).hideVerOtpField();
                 BlocProvider.of<AuthBottomSheetCubit>(
@@ -37,7 +37,7 @@ class CreatePasswordScreen extends StatelessWidget {
             Gaps.vGap30,
 
             CustomTextField(
-              rowString: "Your Password",
+              rowString: context.locale.translate("your_password")!,
               textInputType: TextInputType.number,
               obscureText: true,
               hintInTextField: "********",
@@ -48,7 +48,7 @@ class CreatePasswordScreen extends StatelessWidget {
                 Icon(Icons.info_outline_rounded),
                 Gaps.hGap8,
                 Text(
-                  'Password must be 8 characters at least',
+                  context.locale.translate("password_requirements")!,
                   style: TextStyle(
                     color: const Color(0xFF384250),
                     fontSize: 12,
@@ -66,7 +66,7 @@ class CreatePasswordScreen extends StatelessWidget {
                   context,
                 ).changeBottomSheetState(pageRoute: kLoginScreenRoute);
               },
-              buttonText: "Continue",
+              buttonText: context.locale.translate("continue")!,
               btnTxtFontSize: 14,
               withIcon: true,
               icon: AssetsData.continueIcon,

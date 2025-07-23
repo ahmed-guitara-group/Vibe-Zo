@@ -25,12 +25,11 @@ class AuthWelcomeScreen extends StatelessWidget {
           children: [
             CustomAuthAppBar(),
             Text(
-              'Welcome to',
+              context.locale.translate("welcome_to")!,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                 fontWeight: FontWeight.w600,
                 letterSpacing: -0.64,
-                fontFamily: 'Lexend',
               ),
             ),
             Image.asset(AssetsData.vZLogo),
@@ -43,7 +42,7 @@ class AuthWelcomeScreen extends StatelessWidget {
                     context,
                   ).changeBottomSheetState(pageRoute: kPhoneAuthScreenRoute);
                 },
-                buttonText: "Continue with Phone",
+                buttonText: context.locale.translate("continue_with_Phone")!,
                 btnTxtFontSize: 14,
                 withIcon: true,
                 icon: AssetsData.phone,
@@ -61,7 +60,8 @@ class AuthWelcomeScreen extends StatelessWidget {
                     child: CustomButton(
                       screenWidth: context.screenWidth,
                       buttonTapHandler: () {},
-                      buttonText: "Continue with ${authTypes[index].title}",
+                      buttonText:
+                          "${context.locale.translate("continue_with")} ${authTypes[index].title}",
                       buttonBackGroundColor: kGreyBtnColor,
                       textColor: kBlackTextColor,
                       btnTxtFontSize: 14,

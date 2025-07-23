@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
+import 'package:vibe_zo/core/utils/helper.dart';
 
 enum VerifyMethod { sms, whatsapp }
 
@@ -21,7 +22,7 @@ class _VerificationMethodSelectorState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'How do you want to be verified?',
+          context.locale.translate("how_do_you_want_to_verify")!,
           style: TextStyle(color: kBlackTextColor, fontSize: 14, height: 1.29),
         ),
         const SizedBox(height: 10),
@@ -44,8 +45,8 @@ class _VerificationMethodSelectorState
                       },
                     ),
                   ),
-                  const Text(
-                    "By SMS",
+                  Text(
+                    context.locale.translate("by_sms")!,
                     style: TextStyle(
                       color: kBlackTextColor,
 
@@ -74,8 +75,8 @@ class _VerificationMethodSelectorState
                       },
                     ),
                   ),
-                  const Text(
-                    "By Whatsapp",
+                  Text(
+                    context.locale.translate("by_whatsapp")!,
                     style: TextStyle(
                       color: kBlackTextColor,
 
