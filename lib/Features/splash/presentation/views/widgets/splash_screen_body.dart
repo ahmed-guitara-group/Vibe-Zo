@@ -6,10 +6,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/auth_welcome_screen.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/continue_with_phone_screen.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/verify_phone_number_screen.dart';
 import 'package:vibe_zo/core/utils/functions/setup_service_locator.dart';
 
 import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
+import '../../../../auth/auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
 import '../../../../auth/login/domain/entities/login_entity.dart';
 
 class SplashScreenBody extends StatefulWidget {
@@ -47,13 +49,21 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
           context: context,
           isScrollControlled: true,
           useSafeArea: true,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadiusGeometry.circular(20),
+          ),
           isDismissible: false,
           enableDrag: false,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white,
           builder: (context) {
             return FractionallySizedBox(
-              child: BlocProvider(
-                create: (context) => getIt<AuthBottomSheetCubit>(),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => getIt<AuthBottomSheetCubit>(),
+                  ),
+                  BlocProvider(create: (context) => getIt<AnimationCubit>()),
+                ],
                 child: BlocBuilder<AuthBottomSheetCubit, AuthBottomSheetState>(
                   builder: (context, state) {
                     return MediaQuery.removeViewInsets(
@@ -63,7 +73,11 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
                           (state is AuthBottomSheetChanged &&
                               state.activePageRoute == kPhoneAuthScreenRoute)
                           ? const ContinueWithPhoneScreen()
-                          : const AuthWelcomeScreen(),
+                          : (state is AuthBottomSheetChanged &&
+                                state.activePageRoute ==
+                                    kVerifyPhoneNumberScreenRoute)
+                          ? VerifyPhoneNumberScreen()
+                          : AuthWelcomeScreen(),
                     );
                   },
                 ),

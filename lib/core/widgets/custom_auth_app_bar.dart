@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
-
-import '../../Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 
 class CustomAuthAppBar extends StatelessWidget {
   const CustomAuthAppBar({
     super.key,
     this.title,
     this.hasArrowBackButton = false,
+    this.onBackButtonPressed,
   });
   final bool hasArrowBackButton;
   final String? title;
+  final Function? onBackButtonPressed;
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      actionsPadding: EdgeInsets.symmetric(horizontal: 16.0),
+      actionsPadding: EdgeInsets.symmetric(horizontal: 0.0),
+
+      leadingWidth: 10,
       backgroundColor: Colors.white,
       automaticallyImplyLeading: false,
       centerTitle: true,
@@ -23,7 +24,7 @@ class CustomAuthAppBar extends StatelessWidget {
         title ?? "",
         textAlign: TextAlign.center,
         style: TextStyle(
-          color: const Color(0xFF161616) /* Form-text-form-title */,
+          color: const Color(0xFF161616),
           fontSize: 14,
           fontFamily: 'Lexend',
           fontWeight: FontWeight.w500,
@@ -32,11 +33,16 @@ class CustomAuthAppBar extends StatelessWidget {
       ),
       leading: hasArrowBackButton
           ? IconButton(
-              icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black),
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                Icons.arrow_back_ios_new_rounded,
+                color: Colors.black,
+                size: 16,
+              ),
               onPressed: () {
-                BlocProvider.of<AuthBottomSheetCubit>(
-                  context,
-                ).changeBottomSheetState(pageRoute: kAuthWelcomeScreenRoute);
+                if (onBackButtonPressed != null) {
+                  onBackButtonPressed!();
+                }
               },
             )
           : null,

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
 
 import '../../../Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import '../../../Features/auth/login/data/data_sources/remote_data_source/login_remote_data_source.dart';
@@ -49,6 +50,8 @@ Future<void> init() async {
 
   // AuthBottomSheetCubit
   getIt.registerFactory<AuthBottomSheetCubit>(() => AuthBottomSheetCubit());
+  getIt.registerFactory<AnimationCubit>(() => AnimationCubit());
+
   //LoginCubit
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt.call()));
   getIt.registerLazySingleton<LoginUseCase>(() => LoginUseCase(getIt.call()));

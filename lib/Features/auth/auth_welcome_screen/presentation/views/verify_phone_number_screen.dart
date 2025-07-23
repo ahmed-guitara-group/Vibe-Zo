@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
-import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
-import 'package:vibe_zo/core/utils/gaps.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
-import 'package:vibe_zo/core/widgets/custom_auth_app_bar.dart';
 
 import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
+import '../../../../../core/utils/gaps.dart';
+import '../../../../../core/widgets/custom_auth_app_bar.dart';
 import '../../../../../core/widgets/custom_button.dart';
-import '../../data/models/auth_type_model.dart';
-import '../manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
-import '../widgets/custom_or_row.dart';
+import '../manager/animation/animation_cubit.dart';
 
-class ContinueWithPhoneScreen extends StatelessWidget {
-  const ContinueWithPhoneScreen({super.key});
+class VerifyPhoneNumberScreen extends StatelessWidget {
+  const VerifyPhoneNumberScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AnimationCubit>().moveButtonDown();
     });
-
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -30,11 +27,11 @@ class ContinueWithPhoneScreen extends StatelessWidget {
           children: [
             CustomAuthAppBar(
               hasArrowBackButton: true,
-              title: "Continue With Phone",
+              title: "Verify Your Phone Number",
               onBackButtonPressed: () {
                 BlocProvider.of<AuthBottomSheetCubit>(
                   context,
-                ).changeBottomSheetState(pageRoute: kAuthWelcomeScreenRoute);
+                ).changeBottomSheetState(pageRoute: kPhoneAuthScreenRoute);
               },
             ),
             Gaps.vGap30,
@@ -122,11 +119,11 @@ class ContinueWithPhoneScreen extends StatelessWidget {
             BlocBuilder<AnimationCubit, AnimationState>(
               builder: (context, state) {
                 return SizedBox(
-                  height: context.screenHeight * 0.4,
+                  height: context.screenHeight * 0.6,
                   child: Stack(
                     children: [
                       AnimatedAlign(
-                        duration: const Duration(milliseconds: 600),
+                        duration: const Duration(minutes: 600),
                         curve: Curves.easeInOut,
                         alignment: state is ButtonMovedDown
                             ? Alignment.bottomCenter
@@ -136,20 +133,13 @@ class ContinueWithPhoneScreen extends StatelessWidget {
                           children: [
                             CustomButton(
                               screenWidth: context.screenWidth,
-                              buttonTapHandler: () {
-                                BlocProvider.of<AuthBottomSheetCubit>(
-                                  context,
-                                ).changeBottomSheetState(
-                                  pageRoute: kVerifyPhoneNumberScreenRoute,
-                                );
-                              },
+                              buttonTapHandler: () {},
                               buttonText: "Continue",
                               btnTxtFontSize: 14,
                               withIcon: true,
                               icon: AssetsData.continueIcon,
                             ),
-                            const SizedBox(height: 20),
-                            const CustomOrRowWidget(),
+                            const SizedBox(height: 24),
                           ],
                         ),
                       ),
@@ -157,42 +147,6 @@ class ContinueWithPhoneScreen extends StatelessWidget {
                   ),
                 );
               },
-            ),
-
-            const SizedBox(height: 16),
-            Text(
-              'Continue with Social Media',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Color(0xFF161616),
-                fontSize: 16,
-                fontFamily: 'Lexend',
-                fontWeight: FontWeight.w500,
-                height: 1.50,
-                letterSpacing: 0.50,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: authTypes.map((authType) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: kLightGreyTextColor,
-                    child: IconButton(
-                      icon: Image.asset(
-                        authType.iconPath,
-                        width: 24,
-                        height: 24,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ),
-                );
-              }).toList(),
             ),
           ],
         ),

@@ -16,72 +16,66 @@ class AuthWelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: MediaQuery.of(context).size * .07,
-        child: CustomAuthAppBar(),
-      ),
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Welcome to',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: -0.64,
-                  fontFamily: 'Lexend',
-                ),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CustomAuthAppBar(),
+            Text(
+              'Welcome to',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.64,
+                fontFamily: 'Lexend',
               ),
-              Image.asset(AssetsData.vZLogo),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: CustomButton(
-                  screenWidth: context.screenWidth,
-                  buttonTapHandler: () {
-                    BlocProvider.of<AuthBottomSheetCubit>(
-                      context,
-                    ).changeBottomSheetState(pageRoute: kPhoneAuthScreenRoute);
-                  },
-                  buttonText: "Continue with Phone",
-                  btnTxtFontSize: 14,
-                  withIcon: true,
-                  icon: AssetsData.phone,
-                ),
+            ),
+            Image.asset(AssetsData.vZLogo),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: CustomButton(
+                screenWidth: context.screenWidth,
+                buttonTapHandler: () {
+                  BlocProvider.of<AuthBottomSheetCubit>(
+                    context,
+                  ).changeBottomSheetState(pageRoute: kPhoneAuthScreenRoute);
+                },
+                buttonText: "Continue with Phone",
+                btnTxtFontSize: 14,
+                withIcon: true,
+                icon: AssetsData.phone,
               ),
-              CustomOrRowWidget(),
-              Gaps.vGap8,
-              Expanded(
-                child: ListView.builder(
-                  itemCount: authTypes.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: CustomButton(
-                        screenWidth: context.screenWidth,
-                        buttonTapHandler: () {},
-                        buttonText: "Continue with ${authTypes[index].title}",
-                        buttonBackGroundColor: kGreyBtnColor,
-                        textColor: kBlackTextColor,
-                        btnTxtFontSize: 14,
-                        borderColor: kGreyBtnColor,
-                        withIcon: true,
-                        icon: authTypes[index].iconPath,
-                        //   withIcon: true,
-                        // icon: AssetsData.google,
-                      ),
-                    );
-                  },
-                ),
+            ),
+            CustomOrRowWidget(),
+            Gaps.vGap8,
+            Expanded(
+              child: ListView.builder(
+                itemCount: authTypes.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: CustomButton(
+                      screenWidth: context.screenWidth,
+                      buttonTapHandler: () {},
+                      buttonText: "Continue with ${authTypes[index].title}",
+                      buttonBackGroundColor: kGreyBtnColor,
+                      textColor: kBlackTextColor,
+                      btnTxtFontSize: 14,
+                      borderColor: kGreyBtnColor,
+                      withIcon: true,
+                      icon: authTypes[index].iconPath,
+                      //   withIcon: true,
+                      // icon: AssetsData.google,
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

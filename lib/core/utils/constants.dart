@@ -7,6 +7,7 @@ const String kBottomNavRoute = '/bottomNavWidget';
 const String kAuthWelcomeScreenRoute = '/authWelcomeScreen';
 //Bottom Sheet Routes
 const String kPhoneAuthScreenRoute = '/phoneAuthScreen';
+const String kVerifyPhoneNumberScreenRoute = '/verifyPhoneNumberScreen';
 
 const String kLoginScreenRoute = '/loginScreen';
 const String kRegisterScreenRoute = '/registerScreen';
@@ -31,6 +32,7 @@ const kLightGreyTextColor = Color(0xffF3F4F6);
 const kDividerColor = Color(0xFFE0E0E0);
 const kGreyBtnColor = Color(0xFFF3F4F6);
 const kBlackTextColor = Color(0xFF161616);
+const kRedTextColor = Color(0xffB42318);
 
 const kLightGreyColor = Color(0xffF6F6F6);
 const kLightGreyColor2 = Color(0xffCECECE);
