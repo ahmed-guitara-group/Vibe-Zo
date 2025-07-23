@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/register_phone/register_phone_cubit.dart';
 import 'package:vibe_zo/core/utils/gaps.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/widgets/custom_auth_app_bar.dart';
@@ -9,7 +10,6 @@ import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../data/models/auth_type_model.dart';
-import '../manager/animation/animation_cubit.dart';
 import '../manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import '../widgets/custom_or_row.dart';
 
@@ -23,6 +23,7 @@ class ContinueWithPhoneScreen extends StatefulWidget {
 
 class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
   bool _isButtonAtBottom = false;
+  String _phoneNumber = '';
 
   @override
   void initState() {
@@ -124,7 +125,11 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                     required isFocused,
                     required maxLength,
                   }) => null,
-              onChanged: (phone) {},
+              onChanged: (phone) {
+                setState(() {
+                  _phoneNumber = phone.completeNumber;
+                });
+              },
             ),
             SizedBox(height: context.screenHeight * 0.1),
             SizedBox(
@@ -140,18 +145,12 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                   children: [
                     CustomButton(
                       screenWidth: context.screenWidth,
-                      buttonTapHandler: () {
-                        BlocProvider.of<AnimationCubit>(
+                      buttonTapHandler: () async {
+                        if (_phoneNumber.isEmpty) {
+                        } else {}
+                        await BlocProvider.of<RegisterPhoneCubit>(
                           context,
-                        ).hideVerOtpField();
-                        setState(() {
-                          _isButtonAtBottom = true;
-                        });
-                        context
-                            .read<AuthBottomSheetCubit>()
-                            .changeBottomSheetState(
-                              pageRoute: kVerifyPhoneNumberScreenRoute,
-                            );
+                        ).registerPhone("verified");
                       },
                       buttonText: "Continue",
                       btnTxtFontSize: 14,

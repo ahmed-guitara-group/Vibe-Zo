@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/register_phone/register_phone_cubit.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/auth_welcome_screen.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/continue_with_phone_screen.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/verify_phone_number_screen.dart';
@@ -65,6 +66,9 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
                     create: (context) => getIt<AuthBottomSheetCubit>(),
                   ),
                   BlocProvider(create: (context) => getIt<AnimationCubit>()),
+                  BlocProvider(
+                    create: (context) => getIt<RegisterPhoneCubit>(),
+                  ),
                 ],
                 child: BlocBuilder<AuthBottomSheetCubit, AuthBottomSheetState>(
                   builder: (context, state) {
@@ -76,12 +80,7 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
                       } else if (state.activePageRoute ==
                           kVerifyPhoneNumberScreenRoute) {
                         child = VerifyPhoneNumberScreen();
-                      }
-                      // else if (state.activePageRoute ==
-                      //     kVerificationCodeScreenRoute) {
-                      //   child = const VerificationCodeScreen();
-                      // }
-                      else if (state.activePageRoute ==
+                      } else if (state.activePageRoute ==
                           kCreatePasswordScreenRoute) {
                         child = const CreatePasswordScreen();
                       } else if (state.activePageRoute == kLoginScreenRoute) {

@@ -18,6 +18,7 @@ class LoginModel extends LoginEntity {
   });
 
   factory LoginModel.fromJson(Map<String, dynamic> json) {
+    print("object");
     return LoginModel(
       state: json['state'] as bool?,
       message: json['message'] as String?,

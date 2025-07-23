@@ -15,9 +15,9 @@ import 'net_response.dart';
 //Set default Header Not configured User-Agent Eye open API 403
 Map<String, dynamic> headers = {
   "Accept": "application/json",
-  HttpHeaders.authorizationHeader: ' '
+  HttpHeaders.authorizationHeader: ' ',
   // "User-Agent": "insomnia/6.4.1",
-//  "Content-Type":"application/x-www-form-urlencoded",
+  //  "Content-Type":"application/x-www-form-urlencoded",
 };
 
 class DioUtils {
@@ -48,7 +48,7 @@ class DioUtils {
     _dio = Dio(_options);
 
     //Add cookie blocker management
-//    _dio.interceptors.add(CookieManager(CookieJar()));
+    //    _dio.interceptors.add(CookieManager(CookieJar()));
 
     //Unified request header interceptor
     _dio!.interceptors.add(AuthInterceptor());
@@ -70,51 +70,60 @@ class DioUtils {
     return _dio!;
   }
 
-  Future requestDataFuture<T>(Method method, String url, String newBaseUrl,
-      {Function(T t)? onSuccess,
-      Function(List<T> list)? onSuccessList,
-      Function(int code, String msg)? onError,
-      dynamic params,
-      FormData? dataForm,
-      bool? isFormData,
-      Map<String, dynamic>? queryParameters,
-      CancelToken? cancelToken,
-      Options? options,
-      bool isList = false}) async {
+  Future requestDataFuture<T>(
+    Method method,
+    String url,
+    String newBaseUrl, {
+    Function(T t)? onSuccess,
+    Function(List<T> list)? onSuccessList,
+    Function(int code, String msg)? onError,
+    dynamic params,
+    FormData? dataForm,
+    bool? isFormData,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
+    Options? options,
+    bool isList = false,
+  }) async {
     if (newBaseUrl.isNotEmpty) {
       _options!.baseUrl = newBaseUrl;
     } else {
       _options!.baseUrl = Api.baseUrl;
     }
     String requestMethod = _getMethod(method);
-    return await _request<T>(requestMethod, url,
-            data: params,
-            isFormData: isFormData,
-            dataForm: dataForm,
-            queryParameters: queryParameters,
-            options: options,
-            cancelToken: cancelToken)
-        .then((BaseResponse<T> result) {
-      if (result.code == ErrorStatus.rEQUESTDATAOK) {
-        if (isList) {
-          if (onSuccessList != null) {
-            onSuccessList(result.listData!);
+    return await _request<T>(
+      requestMethod,
+      url,
+      data: params,
+      isFormData: isFormData,
+      dataForm: dataForm,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+    ).then(
+      (BaseResponse<T> result) {
+        if (result.code == ErrorStatus.rEQUESTDATAOK) {
+          if (isList) {
+            if (onSuccessList != null) {
+              onSuccessList(result.listData!);
+            }
+          } else {
+            if (onSuccess != null) {
+              onSuccess(result.data as T);
+            }
           }
         } else {
-          if (onSuccess != null) {
-            onSuccess(result.data as T);
-          }
+          //Logo.e(result.toString());
+          _onError(result.code!, result.message!, onError!);
         }
-      } else {
-        //Logo.e(result.toString());
-        _onError(result.code!, result.message!, onError!);
-      }
-    }, onError: (e) {
-      //Logo.e(e.toString());
-      _cancelLog(e, url);
-      NetError error = ExceptionHandle.handleException(e);
-      _onError(error.code, error.msg, onError!);
-    });
+      },
+      onError: (e) {
+        //Logo.e(e.toString());
+        _cancelLog(e, url);
+        NetError error = ExceptionHandle.handleException(e);
+        _onError(error.code, error.msg, onError!);
+      },
+    );
   }
 
   BaseResponse parseError() {
@@ -122,97 +131,117 @@ class DioUtils {
   }
 
   //Request the operation of a single object
-  Future<BaseResponse<T?>> request<T>(String method, String url,
-      {dynamic params,
-      Map<String, dynamic>? dataForm,
-      bool? isFormData,
-      Map<String, dynamic>? queryParameters,
-      CancelToken? cancelToken,
-      Options? options}) async {
-    var response = await _request<T>(method, url,
-        data: isFormData == true ? dataForm : params,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken);
+  Future<BaseResponse<T?>> request<T>(
+    String method,
+    String url, {
+    dynamic params,
+    Map<String, dynamic>? dataForm,
+    bool? isFormData,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
+    Options? options,
+  }) async {
+    var response = await _request<T>(
+      method,
+      url,
+      data: isFormData == true ? dataForm : params,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+    );
     return response;
   }
 
-  requestData<T>(Method method, String url,
-      {Function(T t)? onSuccess,
-      Function(List<T> t)? onSuccessList,
-      Function(int code, String msg)? onError,
-      dynamic params,
-      FormData? dataForm,
-      bool? isFormData = false,
-      Map<String, dynamic>? queryParameters,
-      CancelToken? cancelToken,
-      Options? options,
-      bool isList = false}) {
+  requestData<T>(
+    Method method,
+    String url, {
+    Function(T t)? onSuccess,
+    Function(List<T> t)? onSuccessList,
+    Function(int code, String msg)? onError,
+    dynamic params,
+    FormData? dataForm,
+    bool? isFormData = false,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
+    Options? options,
+    bool isList = false,
+  }) {
     String requestMethod = _getMethod(method);
-    Stream.fromFuture(_request<T>(requestMethod, url,
-            data: isFormData == true ? dataForm : params,
-            queryParameters: queryParameters,
-            options: options,
-            cancelToken: cancelToken))
-        .asBroadcastStream()
-        .listen((result) {
-      //Successful data returned
-      if (result.code == ErrorStatus.rEQUESTDATAOK) {
-        if (isList) {
-          if (onSuccessList != null) {
-            onSuccessList(result.listData!);
+    Stream.fromFuture(
+      _request<T>(
+        requestMethod,
+        url,
+        data: isFormData == true ? dataForm : params,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+      ),
+    ).asBroadcastStream().listen(
+      (result) {
+        //Successful data returned
+        if (result.code == ErrorStatus.rEQUESTDATAOK) {
+          if (isList) {
+            if (onSuccessList != null) {
+              onSuccessList(result.listData!);
+            }
+          } else {
+            if (onSuccess != null) {
+              onSuccess(result.data as T);
+            }
           }
         } else {
-          if (onSuccess != null) {
-            onSuccess(result.data as T);
+          _onError(result.code!, result.message!, onError!);
+          if (result.code! == 401) {
+            // Utils.showToast(
+            //   message: S.current.logoutSuccess,
+            // );
+            ////    AppSharedPreferences().clearPref();
+            // GoRoute(
+            //   path: RouterPathsConstant.moveToLogin,
+            //   pageBuilder: (context, state) {
+            //     Navigator.of(context).pushAndRemoveUntil(
+            //         MaterialPageRoute(builder: (context) => const LoginScreen()),
+            //         (Route<dynamic> route) => false);
+            //     return MaterialPage(
+            //       key: state.pageKey,
+            //       child: BlocProvider(
+            //         create: (context) => getIt<LoginCubit>(),
+            //         child: const LoginScreen(),
+            //       ),
+            //     );
+            //   },
+            // );
+            // context.go(RouterPathsConstant.moveToOpening);
           }
         }
-      } else {
-        _onError(result.code!, result.message!, onError!);
-        if (result.code! == 401) {
-          // Utils.showToast(
-          //   message: S.current.logoutSuccess,
-          // );
-          ////    AppSharedPreferences().clearPref();
-          // GoRoute(
-          //   path: RouterPathsConstant.moveToLogin,
-          //   pageBuilder: (context, state) {
-          //     Navigator.of(context).pushAndRemoveUntil(
-          //         MaterialPageRoute(builder: (context) => const LoginScreen()),
-          //         (Route<dynamic> route) => false);
-          //     return MaterialPage(
-          //       key: state.pageKey,
-          //       child: BlocProvider(
-          //         create: (context) => getIt<LoginCubit>(),
-          //         child: const LoginScreen(),
-          //       ),
-          //     );
-          //   },
-          // );
-          // context.go(RouterPathsConstant.moveToOpening);
-        }
-      }
-    }, onError: (e) {
-      _cancelLog(e, url);
-      NetError error = ExceptionHandle.handleException(e);
+      },
+      onError: (e) {
+        _cancelLog(e, url);
+        NetError error = ExceptionHandle.handleException(e);
 
-      _onError(error.code, error.msg, onError!);
-    });
+        _onError(error.code, error.msg, onError!);
+      },
+    );
   }
 
   ///The returned data is processed uniformly and parsed into corresponding Bean
-  Future<BaseResponse<T>> _request<T>(String method, String url,
-      {Map<String, dynamic>? data,
-      FormData? dataForm,
-      bool? isFormData = false,
-      Map<String, dynamic>? queryParameters,
-      CancelToken? cancelToken,
-      Options? options}) async {
-    var response = await _dio!.request(url,
-        data: isFormData == true ? dataForm : data,
-        queryParameters: queryParameters,
-        options: _setOptions(method, options!),
-        cancelToken: cancelToken);
+  Future<BaseResponse<T>> _request<T>(
+    String method,
+    String url, {
+    Map<String, dynamic>? data,
+    FormData? dataForm,
+    bool? isFormData = false,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
+    Options? options,
+  }) async {
+    var response = await _dio!.request(
+      url,
+      data: isFormData == true ? dataForm : data,
+      queryParameters: queryParameters,
+      options: _setOptions(method, options!),
+      cancelToken: cancelToken,
+    );
     late Map<String, dynamic> map;
     try {
       map = await compute(parseData, response.data.toString());
@@ -286,9 +315,4 @@ Map<String, dynamic> parseData(String data) {
   return json.decode(data);
 }
 
-enum Method {
-  get,
-  post,
-  put,
-  delete,
-}
+enum Method { get, post, put, delete }

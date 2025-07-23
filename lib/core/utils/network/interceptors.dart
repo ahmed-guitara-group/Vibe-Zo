@@ -41,14 +41,17 @@ class LoggingInterceptor extends Interceptor {
     } else {
       ///If queryParameters is not empty, splice into a complete URl
       Log.i(
-          "RequestUrl:${options.baseUrl}${options.path}?${Transformer.urlEncodeMap(options.queryParameters)}");
+        "RequestUrl:${options.baseUrl}${options.path}?${Transformer.urlEncodeMap(options.queryParameters)}",
+      );
     }
 
     Log.w("RequestMethod:${options.method}");
     Log.w("RequestHeaders:${options.headers}");
     Log.w("RequestContentType:${options.contentType}");
-    Log.w("RequestDataOptions:"
-        "${options.data is FormData ? '${(options.data as FormData).fields}\n${(options.data as FormData).files}' : options.data.toString()}");
+    Log.w(
+      "RequestDataOptions:"
+      "${options.data is FormData ? '${(options.data as FormData).fields}\n${(options.data as FormData).files}' : options.data.toString()}",
+    );
     return super.onRequest(options, handler);
   }
 

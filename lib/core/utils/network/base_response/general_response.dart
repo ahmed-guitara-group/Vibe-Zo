@@ -1,9 +1,5 @@
 class GeneralResponse {
-  GeneralResponse({
-    dynamic code,
-    dynamic data,
-    dynamic message,
-  }) {
+  GeneralResponse({dynamic code, dynamic data, dynamic message}) {
     _code = code;
     _data = data;
     _message = message;
