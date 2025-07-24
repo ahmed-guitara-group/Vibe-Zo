@@ -47,6 +47,12 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
   }
 
   @override
+  dispose() {
+    _codeController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(

@@ -79,6 +79,7 @@ class SendCodeRemoteDataSourceImpl extends SendCodeRemoteDataSource {
     return sendCodeResponse;
   }
 }
+
 // Verify Code Remote Data Source
 
 typedef VerifyCodeResponse = Either<String, SendCodeModel>;
@@ -115,5 +116,46 @@ class VerifyCodeRemoteDataSourceImpl extends VerifyCodeRemoteDataSource {
       },
     );
     return verifyCodeResponse;
+  }
+}
+// Create Password Remote Data Source
+
+typedef CreatePasswordResponse = Either<String, SendCodeModel>;
+
+abstract class CreatePasswordRemoteDataSource {
+  Future<CreatePasswordResponse> createPassword(String token, String password);
+}
+
+class CreatePasswordRemoteDataSourceImpl
+    extends CreatePasswordRemoteDataSource {
+  @override
+  Future<CreatePasswordResponse> createPassword(
+    String token,
+    String password,
+  ) async {
+    VerifyCodeResponse createPasswordResponse = left("");
+
+    var body = {"password": password};
+
+    await getIt<NetworkRequest>().requestFutureData<SendCodeModel>(
+      Method.post,
+      params: body,
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+        headers: {'Authorization': 'Bearer $token'},
+      ),
+      url: Api.doServerCreatePasswordApiCall,
+      onSuccess: (data) {
+        if (data.status == true) {
+          createPasswordResponse = right(data);
+        } else {
+          createPasswordResponse = left(data.message!);
+        }
+      },
+      onError: (code, msg) {
+        createPasswordResponse = left(code.toString());
+      },
+    );
+    return createPasswordResponse;
   }
 }

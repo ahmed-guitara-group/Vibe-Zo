@@ -6,10 +6,12 @@ import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/a
 import '../../../Features/auth/auth_welcome_screen/data/data_source/register_phone_remote_data_source.dart';
 import '../../../Features/auth/auth_welcome_screen/data/repo_impl/register_phone_repo_impl.dart';
 import '../../../Features/auth/auth_welcome_screen/domain/repos/register_phone_repo.dart';
+import '../../../Features/auth/auth_welcome_screen/domain/use_cases/create_password_use_case.dart';
 import '../../../Features/auth/auth_welcome_screen/domain/use_cases/register_phone_use_case.dart';
 import '../../../Features/auth/auth_welcome_screen/domain/use_cases/send_code_use_case.dart';
 import '../../../Features/auth/auth_welcome_screen/domain/use_cases/verify_code_use_case.dart';
 import '../../../Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
+import '../../../Features/auth/auth_welcome_screen/presentation/manager/create_password/create_password_cubit.dart';
 import '../../../Features/auth/auth_welcome_screen/presentation/manager/register_phone/register_phone_cubit.dart';
 import '../../../Features/auth/auth_welcome_screen/presentation/manager/send_code/send_code_cubit.dart';
 import '../../../Features/auth/auth_welcome_screen/presentation/manager/verify_code/verify_code_cubit.dart';
@@ -102,6 +104,19 @@ Future<void> init() async {
   );
   getIt.registerLazySingleton<VerifyCodeRemoteDataSource>(
     () => VerifyCodeRemoteDataSourceImpl(),
+  );
+  //Create Password
+  getIt.registerFactory<CreatePasswordCubit>(
+    () => CreatePasswordCubit(getIt.call()),
+  );
+  getIt.registerLazySingleton<CreatePasswordUseCase>(
+    () => CreatePasswordUseCase(getIt.call()),
+  );
+  getIt.registerLazySingleton<CreatePasswordRepo>(
+    () => CreatePasswordRepoImpl(getIt.call()),
+  );
+  getIt.registerLazySingleton<CreatePasswordRemoteDataSource>(
+    () => CreatePasswordRemoteDataSourceImpl(),
   );
 
   //Network

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/create_password/create_password_cubit.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/register_phone/register_phone_cubit.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/verify_code/verify_code_cubit.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/auth_welcome_screen.dart';
@@ -73,6 +74,9 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
                   ),
                   BlocProvider(create: (context) => getIt<SendCodeCubit>()),
                   BlocProvider(create: (context) => getIt<VerifyCodeCubit>()),
+                  BlocProvider(
+                    create: (context) => getIt<CreatePasswordCubit>(),
+                  ),
                 ],
                 child: BlocBuilder<AuthBottomSheetCubit, AuthBottomSheetState>(
                   builder: (context, state) {

@@ -7,4 +7,6 @@ class Api {
   static const String doServerSendCodeApiCall =
       "${baseUrl}auth/sendVerificationCode";
   static const String doServerVerifyCodeApiCall = "${baseUrl}auth/verifyCode";
+  static const String doServerCreatePasswordApiCall =
+      "${baseUrl}auth/createNewPassword";
 }

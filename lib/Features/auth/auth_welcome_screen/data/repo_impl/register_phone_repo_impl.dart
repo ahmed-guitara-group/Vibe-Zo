@@ -24,6 +24,7 @@ class SendCodeRepoImpl extends SendCodeRepo {
     return response;
   }
 }
+
 // Verify code
 
 class VerifyCodeRepoImpl extends VerifyCodeRepo {
@@ -34,6 +35,26 @@ class VerifyCodeRepoImpl extends VerifyCodeRepo {
   @override
   Future<VerifyCodeResponse> verifyCode(String code, String token) async {
     var response = await verifyCodeRemoteDataSource.verifyCode(code, token);
+    return response;
+  }
+}
+
+// create password
+
+class CreatePasswordRepoImpl extends CreatePasswordRepo {
+  final CreatePasswordRemoteDataSource createPasswordRemoteDataSource;
+
+  CreatePasswordRepoImpl(this.createPasswordRemoteDataSource);
+
+  @override
+  Future<CreatePasswordResponse> createPassword(
+    String password,
+    String token,
+  ) async {
+    var response = await createPasswordRemoteDataSource.createPassword(
+      password,
+      token,
+    );
     return response;
   }
 }

@@ -16,4 +16,8 @@ class SendCodeCubit extends Cubit<SendCodeState> {
 
     emit(result.fold(SendCodeFailed.new, SendCodeSuccessful.new));
   }
+
+  backToInitial() {
+    emit(SendCodeInitial());
+  }
 }

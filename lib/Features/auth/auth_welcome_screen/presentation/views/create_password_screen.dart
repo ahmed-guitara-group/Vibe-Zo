@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/create_password/create_password_cubit.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/widgets/custom_text_field.dart';
 
 import '../../../../../core/utils/assets.dart';
+import '../../../../../core/utils/commons.dart';
 import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/gaps.dart';
 import '../../../../../core/widgets/custom_auth_app_bar.dart';
@@ -11,68 +14,128 @@ import '../../../../../core/widgets/custom_button.dart';
 import '../manager/animation/animation_cubit.dart';
 import '../manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 
-class CreatePasswordScreen extends StatelessWidget {
+class CreatePasswordScreen extends StatefulWidget {
   const CreatePasswordScreen({super.key});
 
   @override
+  State<CreatePasswordScreen> createState() => _CreatePasswordScreenState();
+}
+
+class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Password is required";
+    } else if (value.length < 8) {
+      return "Must be at least 8 characters";
+    } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
+      return "Must contain at least one uppercase letter";
+    } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+      return "Must contain at least one number";
+    }
+    return null;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var userTokenValue = Hive.box(kUserTokenBox).get(kUserTokenBox);
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomAuthAppBar(
-              hasArrowBackButton: true,
-              title: context.locale.translate("create_your_password")!,
-              onBackButtonPressed: () {
-                BlocProvider.of<AnimationCubit>(context).hideVerOtpField();
-                BlocProvider.of<AuthBottomSheetCubit>(
-                  context,
-                ).changeBottomSheetState(
-                  pageRoute: kVerifyPhoneNumberScreenRoute,
-                );
-              },
-            ),
-            Gaps.vGap30,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomAuthAppBar(
+                hasArrowBackButton: true,
+                title: context.locale.translate("create_your_password")!,
+                onBackButtonPressed: () {
+                  BlocProvider.of<AnimationCubit>(context).hideVerOtpField();
+                  BlocProvider.of<AuthBottomSheetCubit>(
+                    context,
+                  ).changeBottomSheetState(
+                    pageRoute: kVerifyPhoneNumberScreenRoute,
+                  );
+                },
+              ),
+              Gaps.vGap30,
 
-            CustomTextField(
-              rowString: context.locale.translate("your_password")!,
-              textInputType: TextInputType.number,
-              obscureText: true,
-              hintInTextField: "********",
-            ),
-            Gaps.vGap16,
-            Row(
-              children: [
-                Icon(Icons.info_outline_rounded),
-                Gaps.hGap8,
-                Text(
-                  context.locale.translate("password_requirements")!,
-                  style: TextStyle(
-                    color: const Color(0xFF384250),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    height: 1.17,
+              // Text field
+              CustomTextField(
+                rowString: context.locale.translate("your_password")!,
+                textInputType: TextInputType.visiblePassword,
+                obscureText: true,
+                controller: _passwordController,
+                validator: _validatePassword,
+              ),
+              Gaps.vGap16,
+
+              // Password requirements
+              Row(
+                children: [
+                  const Icon(Icons.info_outline_rounded),
+                  Gaps.hGap8,
+                  Text(
+                    context.locale.translate("password_requirements")!,
+                    style: const TextStyle(
+                      color: Color(0xFF384250),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      height: 1.17,
+                    ),
                   ),
+                ],
+              ),
+              const Spacer(),
+
+              // Bloc Listener for success or error
+              BlocListener<CreatePasswordCubit, CreatePasswordState>(
+                listener: (context, state) {
+                  if (state is CreatePasswordSuccessful) {
+                    BlocProvider.of<AuthBottomSheetCubit>(
+                      context,
+                    ).changeBottomSheetState(pageRoute: kLoginScreenRoute);
+                  } else if (state is CreatePasswordFailed) {
+                    Commons.showToast(
+                      context,
+                      message: state.errorCode ?? "Error",
+                      color: Colors.red,
+                    );
+                  }
+                },
+                child: CustomButton(
+                  screenWidth: context.screenWidth,
+                  buttonTapHandler: () {
+                    FocusScope.of(context).unfocus();
+                    final isValid = _formKey.currentState?.validate() ?? false;
+                    if (isValid) {
+                      BlocProvider.of<CreatePasswordCubit>(
+                        context,
+                      ).createPassword(
+                        userTokenValue,
+                        _passwordController.text,
+                      );
+                    }
+                  },
+                  buttonText: context.locale.translate("continue")!,
+                  btnTxtFontSize: 14,
+                  withIcon: true,
+                  icon: AssetsData.continueIcon,
                 ),
-              ],
-            ),
-            Spacer(),
-            CustomButton(
-              screenWidth: context.screenWidth,
-              buttonTapHandler: () {
-                BlocProvider.of<AuthBottomSheetCubit>(
-                  context,
-                ).changeBottomSheetState(pageRoute: kLoginScreenRoute);
-              },
-              buttonText: context.locale.translate("continue")!,
-              btnTxtFontSize: 14,
-              withIcon: true,
-              icon: AssetsData.continueIcon,
-            ),
-            SizedBox(height: 24),
-          ],
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );

@@ -41,6 +41,12 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
   }
 
   @override
+  dispose() {
+    super.dispose();
+    //dispose controller
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
@@ -178,11 +184,7 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                   );
                 }
                 if (state is RegisterPhoneSuccessful) {
-                  // if success
-                  // 1- go to verify phone number screen code A11
-                  // 2- Go to create password screen code A13
-                  // 3- Go to login screen code A14
-                  // 4- Go to home screen code A16
+                  print(state.response.code);
 
                   await tokenBox.put(
                     kUserTokenBox,
@@ -205,11 +207,13 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                     context.read<AuthBottomSheetCubit>().changeBottomSheetState(
                       pageRoute: kLoginScreenRoute,
                     );
-                  } else {
+                  }
+                  if (state.response.code == "A11") {
                     context.read<AuthBottomSheetCubit>().changeBottomSheetState(
                       pageRoute: kVerifyPhoneNumberScreenRoute,
                     );
                   }
+                  print(state.response.code);
                 }
               },
               child: SizedBox(

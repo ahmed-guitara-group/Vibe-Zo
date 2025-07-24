@@ -9,5 +9,9 @@ abstract class SendCodeRepo {
 }
 
 abstract class VerifyCodeRepo {
-  Future<SendCodeResponse> verifyCode(String code, String type);
+  Future<SendCodeResponse> verifyCode(String code, String token);
+}
+
+abstract class CreatePasswordRepo {
+  Future<SendCodeResponse> createPassword(String password, String token);
 }
