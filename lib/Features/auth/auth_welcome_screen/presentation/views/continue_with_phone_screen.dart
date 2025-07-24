@@ -135,6 +135,7 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                 onChanged: (phone) {
                   setState(() {
                     _phoneNumber = phone.completeNumber;
+                    userPhoneBox.put(kUserPhoneBox, phone.completeNumber);
                   });
                 },
                 onSubmitted: (newValue) async {
@@ -194,9 +195,21 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                   setState(() {
                     _isButtonAtBottom = true;
                   });
-                  context.read<AuthBottomSheetCubit>().changeBottomSheetState(
-                    pageRoute: kVerifyPhoneNumberScreenRoute,
-                  );
+
+                  if (state.response.code == "A13") {
+                    context.read<AuthBottomSheetCubit>().changeBottomSheetState(
+                      pageRoute: kCreatePasswordScreenRoute,
+                    );
+                  }
+                  if (state.response.code == "A14") {
+                    context.read<AuthBottomSheetCubit>().changeBottomSheetState(
+                      pageRoute: kLoginScreenRoute,
+                    );
+                  } else {
+                    context.read<AuthBottomSheetCubit>().changeBottomSheetState(
+                      pageRoute: kVerifyPhoneNumberScreenRoute,
+                    );
+                  }
                 }
               },
               child: SizedBox(

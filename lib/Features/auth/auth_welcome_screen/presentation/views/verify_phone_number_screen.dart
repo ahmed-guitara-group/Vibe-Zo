@@ -4,8 +4,10 @@ import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 import 'package:hive/hive.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
-import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/verify_code/send_code_cubit.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/send_code/send_code_cubit.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/verify_code/verify_code_cubit.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
+import 'package:vibe_zo/core/widgets/custom_loading_widget.dart';
 
 import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
@@ -24,11 +26,16 @@ class VerifyPhoneNumberScreen extends StatefulWidget {
 }
 
 class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _codeController = TextEditingController();
+
   bool _isButtonAtBottom = false;
   var userTokenValue = Hive.box(kUserTokenBox).get(kUserTokenBox) ?? '';
   var selectedMethodValue =
       Hive.box(kSelectedMethodBox).get(kSelectedMethodBox) ?? '';
   var userPhoneValue = Hive.box(kUserPhoneBox).get(kUserPhoneBox) ?? '';
+  String? enteredCode;
+
   @override
   void initState() {
     super.initState();
@@ -130,74 +137,141 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                     required currentLength,
                     required isFocused,
                     required maxLength,
-                  }) => null,
+                  }) {
+                    return null;
+                  },
               onChanged: (phone) {},
             ),
             const SizedBox(height: 12),
-            BlocBuilder<AnimationCubit, AnimationState>(
-              builder: (context, state) {
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 500),
-                  switchInCurve: Curves.easeInOut,
-                  switchOutCurve: Curves.easeInOut,
-                  transitionBuilder: (child, animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SizeTransition(
-                        sizeFactor: animation,
-                        axisAlignment: 0.0,
-                        child: child,
-                      ),
-                    );
-                  },
-                  child: state is VerificationMethodSelected
-                      ? CustomTextField(
-                          key: const ValueKey('textField'),
-                          maxLength: 6,
-                          rowString: context.locale.translate(
-                            "verification_code",
-                          )!,
-                          textInputType: TextInputType.number,
-                          obscureText: false,
-                          hintInTextField: "XXX XXX",
-                        )
-                      : const VerificationMethodSelector(
-                          key: ValueKey('radioSelector'),
+            Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: BlocBuilder<AnimationCubit, AnimationState>(
+                builder: (context, state) {
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    switchInCurve: Curves.easeInOut,
+                    switchOutCurve: Curves.easeInOut,
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SizeTransition(
+                          sizeFactor: animation,
+                          axisAlignment: 0.0,
+                          child: child,
                         ),
-                );
-              },
-            ),
-
-            const Spacer(),
-            BlocListener<SendCodeCubit, SendCodeState>(
-              listener: (context, state) {
-                if (state is SendCodeSuccessful) {
-                  context.read<AnimationCubit>().state
-                          is VerificationMethodSelected
-                      ? context
-                            .read<AuthBottomSheetCubit>()
-                            .changeBottomSheetState(
-                              pageRoute: kCreatePasswordScreenRoute,
-                            )
-                      : BlocProvider.of<AnimationCubit>(
-                          context,
-                        ).hideVerificationMethod();
-                } else if (state is SendCodeFailed) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("Error"),
-                      content: Text(state.errorCode),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text("Ok"),
-                        ),
-                      ],
-                    ),
+                      );
+                    },
+                    child: state is VerificationMethodSelected
+                        ? CustomTextField(
+                            key: const ValueKey('textField'),
+                            maxLength: 6,
+                            controller: _codeController,
+                            rowString: context.locale.translate(
+                              "verification_code",
+                            )!,
+                            textInputType: TextInputType.number,
+                            obscureText: false,
+                            hintInTextField: "XXX XXX",
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return " ";
+                              } else if (value.trim().length != 6) {
+                                return " ";
+                              }
+                              return null;
+                            },
+                            onChange: (p0) {
+                              setState(() {
+                                if (p0!.length == 6) {
+                                  enteredCode = p0.trim();
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                } else {
+                                  enteredCode = null;
+                                }
+                              });
+                            },
+                          )
+                        : const VerificationMethodSelector(
+                            key: ValueKey('radioSelector'),
+                          ),
                   );
-                }
-              },
+                },
+              ),
+            ),
+            const SizedBox(height: 6),
+            const Spacer(),
+            MultiBlocListener(
+              listeners: [
+                BlocListener<SendCodeCubit, SendCodeState>(
+                  listener: (context, state) {
+                    if (state is SendCodeSuccessful) {
+                      context.read<AnimationCubit>().state
+                              is VerificationMethodSelected
+                          ? context
+                                .read<AuthBottomSheetCubit>()
+                                .changeBottomSheetState(
+                                  pageRoute: kCreatePasswordScreenRoute,
+                                )
+                          : BlocProvider.of<AnimationCubit>(
+                              context,
+                            ).hideVerificationMethod();
+                    } else if (state is SendCodeFailed) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text("Error"),
+                          content: Text(state.errorCode),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text("Ok"),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
+                BlocListener<VerifyCodeCubit, VerifyCodeState>(
+                  listener: (context, state) {
+                    if (state is VerifyCodeSuccessful) {
+                      Navigator.pop(context);
+                      context
+                          .read<AuthBottomSheetCubit>()
+                          .changeBottomSheetState(
+                            pageRoute: kCreatePasswordScreenRoute,
+                          );
+                    } else if (state is VerifyCodeLoading) {
+                      showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (context) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [CustomLoadiNgWidget()],
+                          );
+                        },
+                      );
+                    } else if (state is VerifyCodeFailed) {
+                      Navigator.pop(context);
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text("Wrong Code"),
+                          content: Text(state.errorCode),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text("Ok"),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
               child: SizedBox(
                 height: context.screenHeight * 0.3,
                 child: Stack(
@@ -220,23 +294,41 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                                   : CustomButton(
                                       screenWidth: context.screenWidth,
                                       buttonTapHandler: () {
-                                        if (userTokenValue != "" &&
-                                            selectedMethodValue != "") {
-                                          context
-                                              .read<SendCodeCubit>()
-                                              .sendCode(
-                                                userTokenValue,
-                                                selectedMethodValue,
-                                              );
+                                        if (state is SendCodeSuccessful) {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            if (enteredCode != null) {
+                                              if (state.response.code ==
+                                                  "A12") {
+                                                BlocProvider.of<
+                                                      VerifyCodeCubit
+                                                    >(context)
+                                                    .verifyCode(
+                                                      userTokenValue,
+                                                      enteredCode!,
+                                                    );
+                                              }
+                                            }
+                                          }
                                         } else {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => const Dialog(
-                                              child: Text(
-                                                'Please select a verification method first',
+                                          if (userTokenValue != "" &&
+                                              selectedMethodValue != "") {
+                                            context
+                                                .read<SendCodeCubit>()
+                                                .sendCode(
+                                                  userTokenValue,
+                                                  selectedMethodValue,
+                                                );
+                                          } else {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => const Dialog(
+                                                child: Text(
+                                                  'Please select a verification method first',
+                                                ),
                                               ),
-                                            ),
-                                          );
+                                            );
+                                          }
                                         }
                                       },
                                       buttonText: context.locale.translate(

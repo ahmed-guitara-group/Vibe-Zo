@@ -5,5 +5,9 @@ abstract class RegisterPhoneRepo {
 }
 
 abstract class SendCodeRepo {
-  Future<SendCodeResponse> sendCode(String code, String type);
+  Future<SendCodeResponse> sendCode(String token, String type);
+}
+
+abstract class VerifyCodeRepo {
+  Future<SendCodeResponse> verifyCode(String code, String type);
 }

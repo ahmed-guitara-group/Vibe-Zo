@@ -8,9 +8,11 @@ import '../../../Features/auth/auth_welcome_screen/data/repo_impl/register_phone
 import '../../../Features/auth/auth_welcome_screen/domain/repos/register_phone_repo.dart';
 import '../../../Features/auth/auth_welcome_screen/domain/use_cases/register_phone_use_case.dart';
 import '../../../Features/auth/auth_welcome_screen/domain/use_cases/send_code_use_case.dart';
+import '../../../Features/auth/auth_welcome_screen/domain/use_cases/verify_code_use_case.dart';
 import '../../../Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import '../../../Features/auth/auth_welcome_screen/presentation/manager/register_phone/register_phone_cubit.dart';
-import '../../../Features/auth/auth_welcome_screen/presentation/manager/verify_code/send_code_cubit.dart';
+import '../../../Features/auth/auth_welcome_screen/presentation/manager/send_code/send_code_cubit.dart';
+import '../../../Features/auth/auth_welcome_screen/presentation/manager/verify_code/verify_code_cubit.dart';
 import '../../../Features/auth/login/data/data_sources/remote_data_source/login_remote_data_source.dart';
 import '../../../Features/auth/login/data/repositories/login_repo_impl.dart';
 import '../../../Features/auth/login/domain/repositories/login_repo.dart';
@@ -90,6 +92,18 @@ Future<void> init() async {
   getIt.registerLazySingleton<SendCodeRemoteDataSource>(
     () => SendCodeRemoteDataSourceImpl(),
   );
+  //Verify Code
+  getIt.registerFactory<VerifyCodeCubit>(() => VerifyCodeCubit(getIt.call()));
+  getIt.registerLazySingleton<VerifyCodeUseCase>(
+    () => VerifyCodeUseCase(getIt.call()),
+  );
+  getIt.registerLazySingleton<VerifyCodeRepo>(
+    () => VerifyCodeRepoImpl(getIt.call()),
+  );
+  getIt.registerLazySingleton<VerifyCodeRemoteDataSource>(
+    () => VerifyCodeRemoteDataSourceImpl(),
+  );
+
   //Network
   getIt.registerLazySingleton<NetworkRequest>(() => NetworkRequestImp());
 

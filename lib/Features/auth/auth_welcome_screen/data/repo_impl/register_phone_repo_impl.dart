@@ -24,3 +24,16 @@ class SendCodeRepoImpl extends SendCodeRepo {
     return response;
   }
 }
+// Verify code
+
+class VerifyCodeRepoImpl extends VerifyCodeRepo {
+  final VerifyCodeRemoteDataSource verifyCodeRemoteDataSource;
+
+  VerifyCodeRepoImpl(this.verifyCodeRemoteDataSource);
+
+  @override
+  Future<VerifyCodeResponse> verifyCode(String code, String token) async {
+    var response = await verifyCodeRemoteDataSource.verifyCode(code, token);
+    return response;
+  }
+}

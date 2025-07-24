@@ -79,3 +79,41 @@ class SendCodeRemoteDataSourceImpl extends SendCodeRemoteDataSource {
     return sendCodeResponse;
   }
 }
+// Verify Code Remote Data Source
+
+typedef VerifyCodeResponse = Either<String, SendCodeModel>;
+
+abstract class VerifyCodeRemoteDataSource {
+  Future<VerifyCodeResponse> verifyCode(String token, String code);
+}
+
+class VerifyCodeRemoteDataSourceImpl extends VerifyCodeRemoteDataSource {
+  @override
+  Future<VerifyCodeResponse> verifyCode(String token, String code) async {
+    VerifyCodeResponse verifyCodeResponse = left("");
+
+    var body = {"code": code.trim()};
+
+    await getIt<NetworkRequest>().requestFutureData<SendCodeModel>(
+      Method.post,
+      params: body,
+
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+        headers: {'Authorization': 'Bearer $token'},
+      ),
+      url: Api.doServerVerifyCodeApiCall,
+      onSuccess: (data) {
+        if (data.status == true) {
+          verifyCodeResponse = right(data);
+        } else {
+          verifyCodeResponse = left(data.message!);
+        }
+      },
+      onError: (code, msg) {
+        verifyCodeResponse = left(code.toString());
+      },
+    );
+    return verifyCodeResponse;
+  }
+}
