@@ -15,8 +15,12 @@ void main() async {
   await di.init();
   await Hive.initFlutter();
   Hive.registerAdapter(LoginEntityAdapter());
+
+  //Auth Boxes
   await Hive.openBox<LoginEntity>(kUserDataBox);
-  await Hive.openBox(kUserImageBox);
+  await Hive.openBox(kUserTokenBox);
+  await Hive.openBox(kUserPhoneBox);
+  await Hive.openBox(kSelectedMethodBox);
 
   runApp(const VibeZo());
 }

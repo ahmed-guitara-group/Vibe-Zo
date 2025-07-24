@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
@@ -14,8 +12,8 @@ class CustomHomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var box = Hive.box<LoginEntity>(kUserDataBox);
-    var imageBox = Hive.box(kUserImageBox);
-    final String? imagePath = imageBox.get('image');
+    // var imageBox = Hive.box(kUserImageBox);
+    // final String? imagePath = imageBox.get('image');
     return AppBar(
       // RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       shape: RoundedRectangleBorder(
@@ -53,15 +51,15 @@ class CustomHomeAppBar extends StatelessWidget {
           ),
         ],
       ),
-      leading: imagePath != null
-          ? CircleAvatar(backgroundImage: FileImage(File(imagePath)))
-          : Padding(
-              padding: EdgeInsets.all(context.screenWidth * .01),
-              child: CircleAvatar(
-                backgroundColor: kBottomNavIconsColor,
-                child: Icon(Icons.person, color: Colors.white),
-              ),
-            ),
+      // leading: imagePath != null
+      //     ? CircleAvatar(backgroundImage: FileImage(File(imagePath)))
+      //     : Padding(
+      //         padding: EdgeInsets.all(context.screenWidth * .01),
+      //         child: CircleAvatar(
+      //           backgroundColor: kBottomNavIconsColor,
+      //           child: Icon(Icons.person, color: Colors.white),
+      //         ),
+      //       ),
       actions: [
         InkWell(
           onTap: () {

@@ -72,7 +72,9 @@ const kGtSectraFine = 'GT Sectra Fine';
 const kHacenTunisia = 'Hacen Tunisia';
 
 const kUserDataBox = 'login_box';
-const kUserImageBox = 'image_box';
+const kUserTokenBox = 'token_box';
+const kUserPhoneBox = 'phone_box';
+const kSelectedMethodBox = 'selected_method';
 
 class AppConstant {
   static const String data = "data";

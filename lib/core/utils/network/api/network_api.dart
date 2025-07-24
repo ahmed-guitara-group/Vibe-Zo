@@ -4,4 +4,6 @@ class Api {
   //end points
   static const String baseUrl = "${mainAppUrl}api/";
   static const String doServerRegisterApiCall = "${baseUrl}auth/register";
+  static const String doServerSendCodeApiCall =
+      "${baseUrl}auth/sendVerificationCode";
 }

@@ -7,8 +7,10 @@ import '../../../Features/auth/auth_welcome_screen/data/data_source/register_pho
 import '../../../Features/auth/auth_welcome_screen/data/repo_impl/register_phone_repo_impl.dart';
 import '../../../Features/auth/auth_welcome_screen/domain/repos/register_phone_repo.dart';
 import '../../../Features/auth/auth_welcome_screen/domain/use_cases/register_phone_use_case.dart';
+import '../../../Features/auth/auth_welcome_screen/domain/use_cases/send_code_use_case.dart';
 import '../../../Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import '../../../Features/auth/auth_welcome_screen/presentation/manager/register_phone/register_phone_cubit.dart';
+import '../../../Features/auth/auth_welcome_screen/presentation/manager/verify_code/send_code_cubit.dart';
 import '../../../Features/auth/login/data/data_sources/remote_data_source/login_remote_data_source.dart';
 import '../../../Features/auth/login/data/repositories/login_repo_impl.dart';
 import '../../../Features/auth/login/domain/repositories/login_repo.dart';
@@ -77,7 +79,17 @@ Future<void> init() async {
   getIt.registerLazySingleton<RegisterPhoneRemoteDataSource>(
     () => RegisterPhoneRemoteDataSourceImpl(),
   );
-
+  // Send Code
+  getIt.registerFactory<SendCodeCubit>(() => SendCodeCubit(getIt.call()));
+  getIt.registerLazySingleton<SendCodeUseCase>(
+    () => SendCodeUseCase(getIt.call()),
+  );
+  getIt.registerLazySingleton<SendCodeRepo>(
+    () => SendCodeRepoImpl(getIt.call()),
+  );
+  getIt.registerLazySingleton<SendCodeRemoteDataSource>(
+    () => SendCodeRemoteDataSourceImpl(),
+  );
   //Network
   getIt.registerLazySingleton<NetworkRequest>(() => NetworkRequestImp());
 

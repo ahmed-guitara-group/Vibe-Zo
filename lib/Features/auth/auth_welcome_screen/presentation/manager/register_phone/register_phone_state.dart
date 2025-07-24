@@ -18,6 +18,6 @@ class RegisterPhoneSuccessful extends RegisterPhoneState {
 }
 
 class RegisterPhoneFailed extends RegisterPhoneState {
-  final String message;
-  const RegisterPhoneFailed(this.message);
+  final String errorCode;
+  const RegisterPhoneFailed(this.errorCode);
 }

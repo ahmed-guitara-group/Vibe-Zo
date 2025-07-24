@@ -12,3 +12,15 @@ class RegisterPhoneRepoImpl extends RegisterPhoneRepo {
     return userData;
   }
 }
+
+class SendCodeRepoImpl extends SendCodeRepo {
+  final SendCodeRemoteDataSource sendCodeRemoteDataSource;
+
+  SendCodeRepoImpl(this.sendCodeRemoteDataSource);
+
+  @override
+  Future<SendCodeResponse> sendCode(String type, String token) async {
+    var response = await sendCodeRemoteDataSource.sendCode(type, token);
+    return response;
+  }
+}

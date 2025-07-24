@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
+import 'package:hive/hive.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/verify_code/send_code_cubit.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 
 import '../../../../../core/utils/assets.dart';
@@ -23,7 +25,10 @@ class VerifyPhoneNumberScreen extends StatefulWidget {
 
 class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
   bool _isButtonAtBottom = false;
-
+  var userTokenValue = Hive.box(kUserTokenBox).get(kUserTokenBox) ?? '';
+  var selectedMethodValue =
+      Hive.box(kSelectedMethodBox).get(kSelectedMethodBox) ?? '';
+  var userPhoneValue = Hive.box(kUserPhoneBox).get(kUserPhoneBox) ?? '';
   @override
   void initState() {
     super.initState();
@@ -85,6 +90,8 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
             ),
             Gaps.vGap8,
             IntlPhoneField(
+              enabled: false,
+              initialValue: userPhoneValue,
               flagsButtonPadding: const EdgeInsets.only(left: 8, right: 8),
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(
@@ -162,43 +169,91 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
             ),
 
             const Spacer(),
-            SizedBox(
-              height: context.screenHeight * 0.3,
-              child: Stack(
-                children: [
-                  AnimatedAlign(
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.easeInOut,
-                    alignment: _isButtonAtBottom
-                        ? Alignment.bottomCenter
-                        : Alignment.topCenter,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CustomButton(
-                          screenWidth: context.screenWidth,
-                          buttonTapHandler: () {
-                            context.read<AnimationCubit>().state
-                                    is VerificationMethodSelected
-                                ? context
-                                      .read<AuthBottomSheetCubit>()
-                                      .changeBottomSheetState(
-                                        pageRoute: kCreatePasswordScreenRoute,
-                                      )
-                                : BlocProvider.of<AnimationCubit>(
-                                    context,
-                                  ).hideVerificationMethod();
-                          },
-                          buttonText: context.locale.translate("continue")!,
-                          btnTxtFontSize: 14,
-                          withIcon: true,
-                          icon: AssetsData.continueIcon,
+            BlocListener<SendCodeCubit, SendCodeState>(
+              listener: (context, state) {
+                if (state is SendCodeSuccessful) {
+                  context.read<AnimationCubit>().state
+                          is VerificationMethodSelected
+                      ? context
+                            .read<AuthBottomSheetCubit>()
+                            .changeBottomSheetState(
+                              pageRoute: kCreatePasswordScreenRoute,
+                            )
+                      : BlocProvider.of<AnimationCubit>(
+                          context,
+                        ).hideVerificationMethod();
+                } else if (state is SendCodeFailed) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text("Error"),
+                      content: Text(state.errorCode),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text("Ok"),
                         ),
-                        const SizedBox(height: 24),
                       ],
                     ),
-                  ),
-                ],
+                  );
+                }
+              },
+              child: SizedBox(
+                height: context.screenHeight * 0.3,
+                child: Stack(
+                  children: [
+                    AnimatedAlign(
+                      duration: const Duration(milliseconds: 600),
+                      curve: Curves.easeInOut,
+                      alignment: _isButtonAtBottom
+                          ? Alignment.bottomCenter
+                          : Alignment.topCenter,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          BlocBuilder<SendCodeCubit, SendCodeState>(
+                            builder: (context, state) {
+                              return state is SendCodeLoading
+                                  ? CircularProgressIndicator(
+                                      color: kPrimaryColor,
+                                    )
+                                  : CustomButton(
+                                      screenWidth: context.screenWidth,
+                                      buttonTapHandler: () {
+                                        if (userTokenValue != "" &&
+                                            selectedMethodValue != "") {
+                                          context
+                                              .read<SendCodeCubit>()
+                                              .sendCode(
+                                                userTokenValue,
+                                                selectedMethodValue,
+                                              );
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => const Dialog(
+                                              child: Text(
+                                                'Please select a verification method first',
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      buttonText: context.locale.translate(
+                                        "continue",
+                                      )!,
+                                      btnTxtFontSize: 14,
+                                      withIcon: true,
+                                      icon: AssetsData.continueIcon,
+                                    );
+                            },
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

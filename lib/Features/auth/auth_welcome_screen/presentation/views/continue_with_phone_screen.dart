@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
+import 'package:hive/hive.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/register_phone/register_phone_cubit.dart';
 import 'package:vibe_zo/core/utils/gaps.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
@@ -25,7 +26,9 @@ class ContinueWithPhoneScreen extends StatefulWidget {
 class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isButtonAtBottom = false;
-  String _phoneNumber = '';
+  var tokenBox = Hive.box(kUserTokenBox);
+  var userPhoneBox = Hive.box(kUserPhoneBox);
+  String _phoneNumber = Hive.box(kUserPhoneBox).get(kUserPhoneBox) ?? '';
 
   @override
   void initState() {
@@ -89,6 +92,7 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
             Form(
               key: _formKey,
               child: IntlPhoneField(
+                initialValue: userPhoneBox.get(kUserPhoneBox),
                 flagsButtonPadding: const EdgeInsets.only(left: 8, right: 8),
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(
@@ -133,6 +137,13 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                     _phoneNumber = phone.completeNumber;
                   });
                 },
+                onSubmitted: (newValue) async {
+                  if (_formKey.currentState!.validate()) {
+                    await BlocProvider.of<RegisterPhoneCubit>(
+                      context,
+                    ).registerPhone(_phoneNumber);
+                  }
+                },
                 validator: (phoneNumber) {
                   if (phoneNumber == null ||
                       phoneNumber.number.trim().isEmpty) {
@@ -140,7 +151,7 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                       "enter_valid_phone_number",
                     )!;
                   }
-                  if (phoneNumber.number.length < 9) {
+                  if (phoneNumber.number.length < 10) {
                     return context.locale.translate("phone_number_short")!;
                   }
                   return null;
@@ -150,8 +161,35 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
 
             SizedBox(height: context.screenHeight * 0.1),
             BlocListener<RegisterPhoneCubit, RegisterPhoneState>(
-              listener: (context, state) {
+              listener: (context, state) async {
+                if (state is RegisterPhoneFailed) {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      return AlertDialog(
+                        content: Text(
+                          state.errorCode == "400"
+                              ? "Banned"
+                              : "An error occurred ${state.errorCode}",
+                        ),
+                      );
+                    },
+                  );
+                }
                 if (state is RegisterPhoneSuccessful) {
+                  // if success
+                  // 1- go to verify phone number screen code A11
+                  // 2- Go to create password screen code A13
+                  // 3- Go to login screen code A14
+                  // 4- Go to home screen code A16
+
+                  await tokenBox.put(
+                    kUserTokenBox,
+                    state.response.data!.token!.token,
+                  );
+
+                  await userPhoneBox.put(kUserPhoneBox, _phoneNumber);
+
                   BlocProvider.of<AnimationCubit>(context).hideVerOtpField();
                   setState(() {
                     _isButtonAtBottom = true;
@@ -175,7 +213,9 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                       BlocBuilder<RegisterPhoneCubit, RegisterPhoneState>(
                         builder: (context, state) {
                           return state is RegisterPhoneLoading
-                              ? const CircularProgressIndicator()
+                              ? const CircularProgressIndicator(
+                                  color: kPrimaryColor,
+                                )
                               : CustomButton(
                                   screenWidth: context.screenWidth,
                                   buttonTapHandler: () async {

@@ -13,6 +13,7 @@ import 'package:vibe_zo/core/utils/functions/setup_service_locator.dart';
 import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
 import '../../../../auth/auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
+import '../../../../auth/auth_welcome_screen/presentation/manager/verify_code/send_code_cubit.dart';
 import '../../../../auth/auth_welcome_screen/presentation/views/create_password_screen.dart';
 import '../../../../auth/login/domain/entities/login_entity.dart';
 import '../../../../auth/login/presentation/screens/login_screen.dart';
@@ -69,6 +70,7 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
                   BlocProvider(
                     create: (context) => getIt<RegisterPhoneCubit>(),
                   ),
+                  BlocProvider(create: (context) => getIt<SendCodeCubit>()),
                 ],
                 child: BlocBuilder<AuthBottomSheetCubit, AuthBottomSheetState>(
                   builder: (context, state) {

@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:vibe_zo/Features/auth/auth_welcome_screen/data/models/send_code_model/send_code_model.dart';
 
 import '../../../../../../core/utils/functions/setup_service_locator.dart';
 import '../../../../../../core/utils/network/api/network_api.dart';
@@ -33,10 +34,48 @@ class RegisterPhoneRemoteDataSourceImpl extends RegisterPhoneRemoteDataSource {
         }
       },
       onError: (code, msg) {
-        print("HAMADA $code, $msg");
-        registerPhoneResponse = left('Error $code, Invalid input');
+        registerPhoneResponse = left(code.toString());
       },
     );
     return registerPhoneResponse;
+  }
+}
+
+//SEND OTP CODE REMOTE DATA SOURCE
+
+typedef SendCodeResponse = Either<String, SendCodeModel>;
+
+abstract class SendCodeRemoteDataSource {
+  Future<SendCodeResponse> sendCode(String token, String type);
+}
+
+class SendCodeRemoteDataSourceImpl extends SendCodeRemoteDataSource {
+  @override
+  Future<SendCodeResponse> sendCode(String token, String type) async {
+    SendCodeResponse sendCodeResponse = left("");
+
+    var body = {"type": type.trim()};
+
+    await getIt<NetworkRequest>().requestFutureData<SendCodeModel>(
+      Method.post,
+      params: body,
+
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+        headers: {'Authorization': 'Bearer $token'},
+      ),
+      url: Api.doServerSendCodeApiCall,
+      onSuccess: (data) {
+        if (data.status == true) {
+          sendCodeResponse = right(data);
+        } else {
+          sendCodeResponse = left(data.message!);
+        }
+      },
+      onError: (code, msg) {
+        sendCodeResponse = left(code.toString());
+      },
+    );
+    return sendCodeResponse;
   }
 }

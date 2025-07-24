@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 
@@ -15,6 +16,7 @@ class VerificationMethodSelector extends StatefulWidget {
 class _VerificationMethodSelectorState
     extends State<VerificationMethodSelector> {
   VerifyMethod? _selectedMethod;
+  var selectedMethod = Hive.box(kSelectedMethodBox);
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +38,16 @@ class _VerificationMethodSelectorState
                     scale: 1.2,
                     child: Radio<VerifyMethod>(
                       value: VerifyMethod.sms,
-                      groupValue: _selectedMethod,
+                      groupValue:
+                          selectedMethod.get(kSelectedMethodBox) ==
+                              VerifyMethod.sms.name
+                          ? VerifyMethod.sms
+                          : null,
                       activeColor: kPrimaryColor,
                       onChanged: (value) {
                         setState(() {
                           _selectedMethod = value;
+                          selectedMethod.put(kSelectedMethodBox, value!.name);
                         });
                       },
                     ),
@@ -66,11 +73,15 @@ class _VerificationMethodSelectorState
                     child: Radio<VerifyMethod>(
                       value: VerifyMethod.whatsapp,
                       activeColor: kPrimaryColor,
-
-                      groupValue: _selectedMethod,
+                      groupValue:
+                          selectedMethod.get(kSelectedMethodBox) ==
+                              VerifyMethod.whatsapp.name
+                          ? VerifyMethod.whatsapp
+                          : null,
                       onChanged: (value) {
                         setState(() {
                           _selectedMethod = value;
+                          selectedMethod.put(kSelectedMethodBox, value!.name);
                         });
                       },
                     ),
