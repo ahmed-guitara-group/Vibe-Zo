@@ -13,9 +13,7 @@ import '../../../../../../core/utils/functions/validation_mixin.dart';
 import '../../../../../../core/utils/gaps.dart';
 import '../../../../../../core/widgets/custom_button.dart';
 import '../../../../../../core/widgets/custom_text_field.dart';
-import '../../../../auth_welcome_screen/data/models/auth_type_model.dart';
 import '../../../../auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
-import '../../../../auth_welcome_screen/presentation/widgets/custom_or_row.dart';
 import '../../../domain/entities/login_entity.dart';
 import '../../manager/login_cubit.dart';
 
@@ -164,7 +162,11 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
               SizedBox(height: context.screenHeight * .2),
               CustomButton(
                 screenWidth: context.screenWidth,
-                buttonTapHandler: () {},
+                buttonTapHandler: () {
+                  BlocProvider.of<AuthBottomSheetCubit>(
+                    context,
+                  ).changeBottomSheetState(pageRoute: kSetupProfileScreenRoute);
+                },
                 buttonText: context.locale.translate("continue")!,
                 btnTxtFontSize: 14,
                 withIcon: true,
@@ -184,42 +186,42 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
                   ),
                 ),
               ),
-              CustomOrRowWidget(),
+              // CustomOrRowWidget(),
 
-              const SizedBox(height: 16),
-              Text(
-                context.locale.translate("continue_with_social_media")!,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xFF161616),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  height: 1.50,
-                  letterSpacing: 0.50,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: authTypes.map((authType) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundColor: kLightGreyTextColor,
-                      child: IconButton(
-                        icon: Image.asset(
-                          authType.iconPath,
-                          width: 24,
-                          height: 24,
-                        ),
-                        onPressed: () {},
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
+              // const SizedBox(height: 16),
+              // Text(
+              //   context.locale.translate("continue_with_social_media")!,
+              //   textAlign: TextAlign.center,
+              //   style: const TextStyle(
+              //     color: Color(0xFF161616),
+              //     fontSize: 16,
+              //     fontWeight: FontWeight.w500,
+              //     height: 1.50,
+              //     letterSpacing: 0.50,
+              //   ),
+              // ),
+              // const SizedBox(height: 20),
+              // Row(
+              //   crossAxisAlignment: CrossAxisAlignment.center,
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: authTypes.map((authType) {
+              //     return Padding(
+              //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              //       child: CircleAvatar(
+              //         radius: 20,
+              //         backgroundColor: kLightGreyTextColor,
+              //         child: IconButton(
+              //           icon: Image.asset(
+              //             authType.iconPath,
+              //             width: 24,
+              //             height: 24,
+              //           ),
+              //           onPressed: () {},
+              //         ),
+              //       ),
+              //     );
+              //   }).toList(),
+              // ),
             ],
           ),
         ),

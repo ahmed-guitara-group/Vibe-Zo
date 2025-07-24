@@ -13,6 +13,8 @@ const String kCreatePasswordScreenRoute = '/createPasswordScreen';
 
 const String kLoginScreenRoute = '/loginScreen';
 const String kRegisterScreenRoute = '/registerScreen';
+const String kSetupProfileScreenRoute = '/setupProfileScreen';
+
 const String kProfileScreenRoute = '/profileScreen';
 
 const String kLanguageScreenRoute = '/languageScreen';

@@ -108,7 +108,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                   } else if (state is CreatePasswordFailed) {
                     Commons.showToast(
                       context,
-                      message: state.errorCode ?? "Error",
+                      message: state.errorCode,
                       color: Colors.red,
                     );
                   }

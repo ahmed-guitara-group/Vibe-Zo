@@ -148,6 +148,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                   },
               onChanged: (phone) {},
             ),
+
             const SizedBox(height: 12),
             Form(
               key: _formKey,

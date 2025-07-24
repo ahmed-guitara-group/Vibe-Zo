@@ -20,5 +20,6 @@
   "your_password": "Your Password",
   "password_requirements": "Password must be 8 characters at least",
   "login_to_your_account": "Login to your account",
-  "forgot_password": "Forget your password?"
+  "forgot_password": "Forget your password?",
+  "lets_setup_profile": "Let's setup your profile"
 }
