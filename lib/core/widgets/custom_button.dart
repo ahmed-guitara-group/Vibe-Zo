@@ -62,7 +62,9 @@ class CustomButton extends StatelessWidget {
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(icon!, color: iconColor),
+                  icon != null
+                      ? Image.asset(icon!, color: iconColor)
+                      : SizedBox(),
                   Gaps.hGap4,
                   Flexible(
                     child: Text(

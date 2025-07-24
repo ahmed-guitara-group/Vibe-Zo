@@ -11,6 +11,7 @@ import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/gaps.dart';
 import '../../../../../core/widgets/custom_auth_app_bar.dart';
 import '../../../../../core/widgets/custom_button.dart';
+import '../../../../../core/widgets/custom_loading_widget.dart';
 import '../manager/animation/animation_cubit.dart';
 import '../manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 
@@ -102,6 +103,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
               BlocListener<CreatePasswordCubit, CreatePasswordState>(
                 listener: (context, state) {
                   if (state is CreatePasswordSuccessful) {
+                    Navigator.pop(context);
                     BlocProvider.of<AuthBottomSheetCubit>(
                       context,
                     ).changeBottomSheetState(pageRoute: kLoginScreenRoute);
@@ -110,6 +112,18 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                       context,
                       message: state.errorCode,
                       color: Colors.red,
+                    );
+                  }
+                  if (state is CreatePasswordLoading) {
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [CustomLoadiNgWidget()],
+                        );
+                      },
                     );
                   }
                 },

@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:vibe_zo/Features/auth/setup_profile/presentation/views/widgets/upload_image_widget.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/widgets/custom_auth_app_bar.dart';
+import 'package:vibe_zo/core/widgets/custom_button.dart';
 import 'package:vibe_zo/core/widgets/custom_text_field.dart';
 
 import '../../../../../../core/utils/constants.dart';
@@ -48,7 +49,7 @@ class SetupProfileScreen extends StatelessWidget {
               const Icon(Icons.info_outline_rounded),
               Gaps.hGap8,
               Text(
-                context.locale.translate("password_requirements")!,
+                context.locale.translate("id_requirements")!,
                 style: const TextStyle(
                   color: Color(0xFF384250),
                   fontSize: 12,
@@ -104,6 +105,27 @@ class SetupProfileScreen extends StatelessWidget {
                   return null;
                 },
             onChanged: (phone) {},
+          ),
+          SizedBox(height: 24),
+
+          CustomTextField(
+            textInputType: TextInputType.name,
+            obscureText: false,
+            isRequired: false,
+            onChange: (p0) {},
+            // initialValue: "",
+            hintInTextField: "DD/MM/YYYY",
+            rowString: "Your Birthdate",
+          ),
+          SizedBox(height: context.screenHeight * .04),
+
+          CustomButton(
+            screenWidth: context.screenWidth,
+            buttonTapHandler: () {},
+            buttonText: context.locale.translate("continue")!,
+            btnTxtFontSize: 14,
+            withIcon: true,
+            //  icon: AssetsData.continueIcon,
           ),
         ],
       ),

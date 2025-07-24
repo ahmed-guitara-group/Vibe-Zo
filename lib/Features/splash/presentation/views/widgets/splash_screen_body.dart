@@ -10,7 +10,6 @@ import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/v
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/auth_welcome_screen.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/continue_with_phone_screen.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/verify_phone_number_screen.dart';
-import 'package:vibe_zo/Features/auth/setup_profile/presentation/views/screens/setup_profile_screen.dart';
 import 'package:vibe_zo/core/utils/functions/setup_service_locator.dart';
 
 import '../../../../../core/utils/assets.dart';
@@ -94,10 +93,12 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
                         child = const CreatePasswordScreen();
                       } else if (state.activePageRoute == kLoginScreenRoute) {
                         child = const LoginScreen();
-                      } else if (state.activePageRoute ==
-                          kSetupProfileScreenRoute) {
-                        child = SetupProfileScreen();
-                      } else {
+                      }
+                      //  else if (state.activePageRoute ==
+                      //     kSetupProfileScreenRoute) {
+                      //   child = SetupProfileScreen();
+                      // }
+                      else {
                         child = AuthWelcomeScreen();
                       }
                     } else {
