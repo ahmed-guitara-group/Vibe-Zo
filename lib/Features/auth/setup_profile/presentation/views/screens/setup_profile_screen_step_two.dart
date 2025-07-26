@@ -148,7 +148,6 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
 
             const SizedBox(height: 24),
 
-            /// Country of Origin
             Text(context.locale.translate("where_are_you_from")!),
             const SizedBox(height: 8),
             BlocBuilder<GetCountriesCubit, GetCountriesState>(
