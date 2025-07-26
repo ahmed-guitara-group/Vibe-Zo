@@ -31,8 +31,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
 
   bool _isButtonAtBottom = false;
   var userTokenValue = Hive.box(kUserTokenBox).get(kUserTokenBox) ?? '';
-  var selectedMethodValue =
-      Hive.box(kSelectedMethodBox).get(kSelectedMethodBox) ?? '';
+
   var userPhoneValue = Hive.box(kUserPhoneBox).get(kUserPhoneBox) ?? '';
   String? enteredCode;
 
@@ -301,6 +300,11 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                                   : CustomButton(
                                       screenWidth: context.screenWidth,
                                       buttonTapHandler: () {
+                                        var selectedMethodValue =
+                                            Hive.box(
+                                              kSelectedMethodBox,
+                                            ).get(kSelectedMethodBox) ??
+                                            '';
                                         if (state is SendCodeSuccessful) {
                                           if (_formKey.currentState!
                                               .validate()) {

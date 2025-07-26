@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/create_password/create_password_cubit.dart';
+import 'package:vibe_zo/core/utils/functions/validation_mixin.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/widgets/custom_text_field.dart';
 
@@ -22,7 +23,8 @@ class CreatePasswordScreen extends StatefulWidget {
   State<CreatePasswordScreen> createState() => _CreatePasswordScreenState();
 }
 
-class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
+class _CreatePasswordScreenState extends State<CreatePasswordScreen>
+    with ValidationMixin {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -30,19 +32,6 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
   void dispose() {
     _passwordController.dispose();
     super.dispose();
-  }
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return "Password is required";
-    } else if (value.length < 8) {
-      return "Must be at least 8 characters";
-    } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
-      return "Must contain at least one uppercase letter";
-    } else if (!RegExp(r'[0-9]').hasMatch(value)) {
-      return "Must contain at least one number";
-    }
-    return null;
   }
 
   @override
@@ -77,7 +66,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                 textInputType: TextInputType.visiblePassword,
                 obscureText: true,
                 controller: _passwordController,
-                validator: _validatePassword,
+                validator: (password) => validateNewPassword(password),
               ),
               Gaps.vGap16,
 
@@ -106,7 +95,9 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                     Navigator.pop(context);
                     BlocProvider.of<AuthBottomSheetCubit>(
                       context,
-                    ).changeBottomSheetState(pageRoute: kLoginScreenRoute);
+                    ).changeBottomSheetState(
+                      pageRoute: kSetupProfileScreenRoute,
+                    );
                   } else if (state is CreatePasswordFailed) {
                     Commons.showToast(
                       context,
@@ -133,12 +124,13 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                     FocusScope.of(context).unfocus();
                     final isValid = _formKey.currentState?.validate() ?? false;
                     if (isValid) {
-                      BlocProvider.of<CreatePasswordCubit>(
-                        context,
-                      ).createPassword(
-                        userTokenValue,
-                        _passwordController.text,
-                      );
+                      print(isValid);
+                      // BlocProvider.of<CreatePasswordCubit>(
+                      //   context,
+                      // ).createPassword(
+                      //   userTokenValue,
+                      //   _passwordController.text,
+                      // );
                     }
                   },
                   buttonText: context.locale.translate("continue")!,
