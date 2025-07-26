@@ -13,7 +13,6 @@ import '../../../../../core/utils/constants.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../data/models/auth_type_model.dart';
 import '../manager/animation/animation_cubit.dart';
-import '../manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import '../widgets/custom_or_row.dart';
 
 class ContinueWithPhoneScreen extends StatefulWidget {
@@ -43,255 +42,250 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: ListView(
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            CustomAuthAppBar(
-              hasArrowBackButton: true,
-              title: context.locale.translate("continue_with_Phone")!,
-              onBackButtonPressed: () {
-                context.read<AuthBottomSheetCubit>().changeBottomSheetState(
-                  pageRoute: kAuthWelcomeScreenRoute,
-                );
-              },
-            ),
-            Gaps.vGap30,
-            RichText(
-              text: TextSpan(
-                children: [
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.top,
-                    child: Transform.translate(
-                      offset: const Offset(0, -5),
-                      child: Text(
-                        '* ',
-                        style: TextStyle(
-                          color: kRedTextColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: ListView(
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              CustomAuthAppBar(
+                hasArrowBackButton: true,
+                title: context.locale.translate("continue_with_Phone")!,
+                onBackButtonPressed: () {
+                  Navigator.pushNamed(context, kAuthWelcomeScreenRoute);
+                },
+              ),
+              Gaps.vGap30,
+              RichText(
+                text: TextSpan(
+                  children: [
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.top,
+                      child: Transform.translate(
+                        offset: const Offset(0, -5),
+                        child: Text(
+                          '* ',
+                          style: TextStyle(
+                            color: kRedTextColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  TextSpan(
-                    text: context.locale.translate("phone_number")!,
-                    style: TextStyle(
-                      color: kBlackTextColor,
-                      fontSize: 12,
+                    TextSpan(
+                      text: context.locale.translate("phone_number")!,
+                      style: TextStyle(
+                        color: kBlackTextColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        height: 1.17,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Gaps.vGap8,
+
+              Form(
+                key: _formKey,
+                child: IntlPhoneField(
+                  initialValue: userPhoneBox.get(kUserPhoneBox),
+                  flagsButtonPadding: const EdgeInsets.only(left: 8, right: 8),
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14,
+                      horizontal: 12,
+                    ),
+                    hintText: '123 456 7890',
+                    hintStyle: const TextStyle(
+                      fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      height: 1.17,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                      borderSide: const BorderSide(color: kGreyTextColor),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                      borderSide: const BorderSide(color: kGreyTextColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                      borderSide: const BorderSide(color: kPrimaryColor),
                     ),
                   ),
-                ],
-              ),
-            ),
-            Gaps.vGap8,
-
-            Form(
-              key: _formKey,
-              child: IntlPhoneField(
-                initialValue: userPhoneBox.get(kUserPhoneBox),
-                flagsButtonPadding: const EdgeInsets.only(left: 8, right: 8),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 14,
-                    horizontal: 12,
+                  cursorColor: kPrimaryColor,
+                  initialCountryCode: 'EG',
+                  showDropdownIcon: true,
+                  dropdownIconPosition: IconPosition.trailing,
+                  dropdownIcon: const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: kBlackTextColor,
                   ),
-                  hintText: '123 456 7890',
-                  hintStyle: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                    borderSide: const BorderSide(color: kGreyTextColor),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                    borderSide: const BorderSide(color: kGreyTextColor),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                    borderSide: const BorderSide(color: kPrimaryColor),
-                  ),
+                  buildCounter:
+                      (
+                        _, {
+                        required currentLength,
+                        required isFocused,
+                        required maxLength,
+                      }) => null,
+                  onChanged: (phone) {
+                    setState(() {
+                      _phoneNumber = phone.completeNumber;
+                      userPhoneBox.put(kUserPhoneBox, phone.completeNumber);
+                    });
+                  },
+                  onSubmitted: (newValue) async {
+                    if (_formKey.currentState!.validate()) {
+                      await BlocProvider.of<RegisterPhoneCubit>(
+                        context,
+                      ).registerPhone(_phoneNumber);
+                    }
+                  },
+                  validator: (phoneNumber) {
+                    if (phoneNumber == null ||
+                        phoneNumber.number.trim().isEmpty) {
+                      return context.locale.translate(
+                        "enter_valid_phone_number",
+                      )!;
+                    }
+                    if (phoneNumber.number.length < 10) {
+                      return context.locale.translate("phone_number_short")!;
+                    }
+                    return null;
+                  },
                 ),
-                cursorColor: kPrimaryColor,
-                initialCountryCode: 'EG',
-                showDropdownIcon: true,
-                dropdownIconPosition: IconPosition.trailing,
-                dropdownIcon: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: kBlackTextColor,
-                ),
-                buildCounter:
-                    (
-                      _, {
-                      required currentLength,
-                      required isFocused,
-                      required maxLength,
-                    }) => null,
-                onChanged: (phone) {
-                  setState(() {
-                    _phoneNumber = phone.completeNumber;
-                    userPhoneBox.put(kUserPhoneBox, phone.completeNumber);
-                  });
-                },
-                onSubmitted: (newValue) async {
-                  if (_formKey.currentState!.validate()) {
-                    await BlocProvider.of<RegisterPhoneCubit>(
-                      context,
-                    ).registerPhone(_phoneNumber);
-                  }
-                },
-                validator: (phoneNumber) {
-                  if (phoneNumber == null ||
-                      phoneNumber.number.trim().isEmpty) {
-                    return context.locale.translate(
-                      "enter_valid_phone_number",
-                    )!;
-                  }
-                  if (phoneNumber.number.length < 10) {
-                    return context.locale.translate("phone_number_short")!;
-                  }
-                  return null;
-                },
               ),
-            ),
 
-            SizedBox(height: context.screenHeight * 0.1),
-            BlocListener<RegisterPhoneCubit, RegisterPhoneState>(
-              listener: (context, state) async {
-                if (state is RegisterPhoneFailed) {
-                  // Hide loading dialog
-                  Navigator.pop(context);
-                  showDialog(
-                    context: context,
-                    builder: (ctx) {
-                      return AlertDialog(
-                        content: Text(
-                          state.errorCode == "400"
-                              ? "Banned"
-                              : "An error occurred ${state.errorCode}",
-                        ),
+              SizedBox(height: context.screenHeight * 0.1),
+              BlocListener<RegisterPhoneCubit, RegisterPhoneState>(
+                listener: (context, state) async {
+                  if (state is RegisterPhoneFailed) {
+                    // Hide loading dialog
+                    Navigator.pop(context);
+                    showDialog(
+                      context: context,
+                      builder: (ctx) {
+                        return AlertDialog(
+                          content: Text(
+                            state.errorCode == "400"
+                                ? "Banned"
+                                : "An error occurred ${state.errorCode}",
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  if (state is RegisterPhoneSuccessful) {
+                    await tokenBox.put(
+                      kUserTokenBox,
+                      state.response.data!.token!.token,
+                    );
+
+                    await userPhoneBox.put(kUserPhoneBox, _phoneNumber);
+                    // Hide loading dialog
+                    Navigator.pop(context);
+                    BlocProvider.of<AnimationCubit>(context).hideVerOtpField();
+                    setState(() {
+                      _isButtonAtBottom = true;
+                    });
+
+                    if (state.response.code == "A13") {
+                      Navigator.pushNamed(context, kCreatePasswordScreenRoute);
+                    }
+                    if (state.response.code == "A14") {
+                      Navigator.pushNamed(context, kLoginScreenRoute);
+                    }
+                    if (state.response.code == "A11") {
+                      Navigator.pushNamed(
+                        context,
+                        kVerifyPhoneNumberScreenRoute,
                       );
-                    },
-                  );
-                }
-                if (state is RegisterPhoneSuccessful) {
-                  await tokenBox.put(
-                    kUserTokenBox,
-                    state.response.data!.token!.token,
-                  );
-
-                  await userPhoneBox.put(kUserPhoneBox, _phoneNumber);
-                  // Hide loading dialog
-                  Navigator.pop(context);
-                  BlocProvider.of<AnimationCubit>(context).hideVerOtpField();
-                  setState(() {
-                    _isButtonAtBottom = true;
-                  });
-
-                  if (state.response.code == "A13") {
-                    context.read<AuthBottomSheetCubit>().changeBottomSheetState(
-                      pageRoute: kCreatePasswordScreenRoute,
+                    }
+                    if (state.response.code == "A15") {
+                      Navigator.pushNamed(context, kSetupProfileScreenRoute);
+                    }
+                  }
+                  if (state is RegisterPhoneLoading) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => CustomLoadiNgWidget(),
+                      barrierDismissible: false,
                     );
                   }
-                  if (state.response.code == "A14") {
-                    context.read<AuthBottomSheetCubit>().changeBottomSheetState(
-                      pageRoute: kLoginScreenRoute,
-                    );
-                  }
-                  if (state.response.code == "A11") {
-                    context.read<AuthBottomSheetCubit>().changeBottomSheetState(
-                      pageRoute: kVerifyPhoneNumberScreenRoute,
-                    );
-                  }
-                  if (state.response.code == "A15") {
-                    context.read<AuthBottomSheetCubit>().changeBottomSheetState(
-                      pageRoute: kSetupProfileScreenRoute,
-                    );
-                  }
-                }
-                if (state is RegisterPhoneLoading) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => CustomLoadiNgWidget(),
-                    barrierDismissible: false,
-                  );
-                }
-              },
-              child: SizedBox(
-                height: context.screenHeight * 0.4,
-                child: AnimatedAlign(
-                  duration: const Duration(milliseconds: 600),
-                  curve: Curves.easeInOut,
-                  alignment: _isButtonAtBottom
-                      ? Alignment.bottomCenter
-                      : Alignment.topCenter,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CustomButton(
-                        screenWidth: context.screenWidth,
-                        buttonTapHandler: () async {
-                          //hide keyboard
-                          FocusScope.of(context).unfocus();
-                          if (_formKey.currentState!.validate()) {
-                            await BlocProvider.of<RegisterPhoneCubit>(
-                              context,
-                            ).registerPhone(_phoneNumber);
-                          }
-                        },
-                        buttonText: context.locale.translate("continue")!,
-                        btnTxtFontSize: 14,
-                        withIcon: true,
-                        icon: AssetsData.continueIcon,
-                      ),
-                      const SizedBox(height: 20),
-                      const CustomOrRowWidget(),
-                    ],
+                },
+                child: SizedBox(
+                  height: context.screenHeight * 0.4,
+                  child: AnimatedAlign(
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeInOut,
+                    alignment: _isButtonAtBottom
+                        ? Alignment.bottomCenter
+                        : Alignment.topCenter,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomButton(
+                          screenWidth: context.screenWidth,
+                          buttonTapHandler: () async {
+                            FocusScope.of(context).unfocus();
+                            if (_formKey.currentState!.validate()) {
+                              await BlocProvider.of<RegisterPhoneCubit>(
+                                context,
+                              ).registerPhone(_phoneNumber);
+                            }
+                          },
+                          buttonText: context.locale.translate("continue")!,
+                          btnTxtFontSize: 14,
+                          withIcon: true,
+                          icon: AssetsData.continueIcon,
+                        ),
+                        const SizedBox(height: 20),
+                        const CustomOrRowWidget(),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              context.locale.translate("continue_with_social_media")!,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color(0xFF161616),
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                height: 1.50,
-                letterSpacing: 0.50,
+              const SizedBox(height: 16),
+              Text(
+                context.locale.translate("continue_with_social_media")!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFF161616),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  height: 1.50,
+                  letterSpacing: 0.50,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: authTypes.map((authType) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: kLightGreyTextColor,
-                    child: IconButton(
-                      icon: Image.asset(
-                        authType.iconPath,
-                        width: 24,
-                        height: 24,
+              const SizedBox(height: 20),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: authTypes.map((authType) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: kLightGreyTextColor,
+                      child: IconButton(
+                        icon: Image.asset(
+                          authType.iconPath,
+                          width: 24,
+                          height: 24,
+                        ),
+                        onPressed: () {},
                       ),
-                      onPressed: () {},
                     ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
         ),
       ),
     );

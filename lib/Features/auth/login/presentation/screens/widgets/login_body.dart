@@ -13,7 +13,6 @@ import '../../../../../../core/utils/functions/validation_mixin.dart';
 import '../../../../../../core/utils/gaps.dart';
 import '../../../../../../core/widgets/custom_button.dart';
 import '../../../../../../core/widgets/custom_text_field.dart';
-import '../../../../auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import '../../manager/login_cubit.dart';
 
 class LoginBody extends StatefulWidget {
@@ -47,9 +46,7 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
                   (route) => false,
                 );
               } else if (state.user.code == 'A15') {
-                BlocProvider.of<AuthBottomSheetCubit>(
-                  context,
-                ).changeBottomSheetState(pageRoute: kSetupProfileScreenRoute);
+                Navigator.pushNamed(context, kSetupProfileScreenRoute);
               } else {}
             }
             if (state is LoginFailed) {
@@ -79,9 +76,7 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
                   hasArrowBackButton: true,
                   title: context.locale.translate("login_to_your_account")!,
                   onBackButtonPressed: () {
-                    BlocProvider.of<AuthBottomSheetCubit>(
-                      context,
-                    ).changeBottomSheetState(pageRoute: kPhoneAuthScreenRoute);
+                    Navigator.pushNamed(context, kPhoneAuthScreenRoute);
                   },
                 ),
                 Gaps.vGap30,

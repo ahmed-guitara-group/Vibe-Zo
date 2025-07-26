@@ -125,7 +125,7 @@ Future<void> init() async {
   getIt.registerLazySingleton<CreatePasswordRemoteDataSource>(
     () => CreatePasswordRemoteDataSourceImpl(),
   );
-  // Setup Profile - Get Countries
+  // Setup Profile - Get Countries - Get Langs
   getIt.registerFactory<SetupProfileCubit>(() => SetupProfileCubit());
   getIt.registerFactory<GetCountriesCubit>(
     () => GetCountriesCubit(getIt.call()),

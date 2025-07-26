@@ -14,7 +14,6 @@ import '../../../../../core/widgets/custom_auth_app_bar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../core/widgets/custom_loading_widget.dart';
 import '../manager/animation/animation_cubit.dart';
-import '../manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 
 class CreatePasswordScreen extends StatefulWidget {
   const CreatePasswordScreen({super.key});
@@ -38,105 +37,101 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen>
   Widget build(BuildContext context) {
     var userTokenValue = Hive.box(kUserTokenBox).get(kUserTokenBox);
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomAuthAppBar(
-                hasArrowBackButton: true,
-                title: context.locale.translate("create_your_password")!,
-                onBackButtonPressed: () {
-                  BlocProvider.of<AnimationCubit>(context).hideVerOtpField();
-                  BlocProvider.of<AuthBottomSheetCubit>(
-                    context,
-                  ).changeBottomSheetState(
-                    pageRoute: kVerifyPhoneNumberScreenRoute,
-                  );
-                },
-              ),
-              Gaps.vGap30,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomAuthAppBar(
+                  hasArrowBackButton: true,
+                  title: context.locale.translate("create_your_password")!,
+                  onBackButtonPressed: () {
+                    BlocProvider.of<AnimationCubit>(context).hideVerOtpField();
+                    Navigator.pushNamed(context, kVerifyPhoneNumberScreenRoute);
+                  },
+                ),
+                Gaps.vGap30,
 
-              // Text field
-              CustomTextField(
-                rowString: context.locale.translate("your_password")!,
-                textInputType: TextInputType.visiblePassword,
-                obscureText: true,
-                controller: _passwordController,
-                validator: (password) => validatePassword(password),
-              ),
-              Gaps.vGap16,
+                // Text field
+                CustomTextField(
+                  rowString: context.locale.translate("your_password")!,
+                  textInputType: TextInputType.visiblePassword,
+                  obscureText: true,
+                  controller: _passwordController,
+                  validator: (password) => validatePassword(password),
+                ),
+                Gaps.vGap16,
 
-              // Password requirements
-              Row(
-                children: [
-                  const Icon(Icons.info_outline_rounded),
-                  Gaps.hGap8,
-                  Text(
-                    context.locale.translate("password_requirements")!,
-                    style: const TextStyle(
-                      color: Color(0xFF384250),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      height: 1.17,
+                // Password requirements
+                Row(
+                  children: [
+                    const Icon(Icons.info_outline_rounded),
+                    Gaps.hGap8,
+                    Text(
+                      context.locale.translate("password_requirements")!,
+                      style: const TextStyle(
+                        color: Color(0xFF384250),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        height: 1.17,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const Spacer(),
+                  ],
+                ),
+                const Spacer(),
 
-              // Bloc Listener for success or error
-              BlocListener<CreatePasswordCubit, CreatePasswordState>(
-                listener: (context, state) {
-                  if (state is CreatePasswordSuccessful) {
-                    Navigator.pop(context);
-                    BlocProvider.of<AuthBottomSheetCubit>(
-                      context,
-                    ).changeBottomSheetState(
-                      pageRoute: kSetupProfileScreenRoute,
-                    );
-                  } else if (state is CreatePasswordFailed) {
-                    Commons.showToast(
-                      context,
-                      message: state.errorCode,
-                      color: Colors.red,
-                    );
-                  }
-                  if (state is CreatePasswordLoading) {
-                    showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (context) {
-                        return CustomLoadiNgWidget();
-                      },
-                    );
-                  }
-                },
-                child: CustomButton(
-                  screenWidth: context.screenWidth,
-                  buttonTapHandler: () {
-                    FocusScope.of(context).unfocus();
-                    final isValid = _formKey.currentState?.validate() ?? false;
-                    if (isValid) {
-                      BlocProvider.of<CreatePasswordCubit>(
+                // Bloc Listener for success or error
+                BlocListener<CreatePasswordCubit, CreatePasswordState>(
+                  listener: (context, state) {
+                    if (state is CreatePasswordSuccessful) {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, kSetupProfileScreenRoute);
+                    } else if (state is CreatePasswordFailed) {
+                      Commons.showToast(
                         context,
-                      ).createPassword(
-                        userTokenValue,
-                        _passwordController.text,
+                        message: state.errorCode,
+                        color: Colors.red,
+                      );
+                    }
+                    if (state is CreatePasswordLoading) {
+                      showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (context) {
+                          return CustomLoadiNgWidget();
+                        },
                       );
                     }
                   },
-                  buttonText: context.locale.translate("continue")!,
-                  btnTxtFontSize: 14,
-                  withIcon: true,
-                  icon: AssetsData.continueIcon,
+                  child: CustomButton(
+                    screenWidth: context.screenWidth,
+                    buttonTapHandler: () {
+                      FocusScope.of(context).unfocus();
+                      final isValid =
+                          _formKey.currentState?.validate() ?? false;
+                      if (isValid) {
+                        BlocProvider.of<CreatePasswordCubit>(
+                          context,
+                        ).createPassword(
+                          userTokenValue,
+                          _passwordController.text,
+                        );
+                      }
+                    },
+                    buttonText: context.locale.translate("continue")!,
+                    btnTxtFontSize: 14,
+                    withIcon: true,
+                    icon: AssetsData.continueIcon,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-            ],
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),

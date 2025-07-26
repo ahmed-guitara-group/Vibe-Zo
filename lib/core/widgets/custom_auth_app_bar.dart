@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vibe_zo/core/utils/constants.dart';
 
 class CustomAuthAppBar extends StatelessWidget {
   const CustomAuthAppBar({
@@ -14,9 +13,9 @@ class CustomAuthAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      actionsPadding: EdgeInsets.symmetric(horizontal: 0.0),
+      actionsPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
 
-      leadingWidth: 10,
+      leadingWidth: 20,
       backgroundColor: Colors.white,
       automaticallyImplyLeading: false,
       centerTitle: true,
@@ -46,18 +45,18 @@ class CustomAuthAppBar extends StatelessWidget {
               },
             )
           : null,
-      actions: [
-        CircleAvatar(
-          radius: 16,
-          backgroundColor: kLightGreyTextColor,
-          child: IconButton(
-            icon: Icon(Icons.close_rounded, color: Colors.black, size: 16),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-      ],
+      // actions: [
+      //   CircleAvatar(
+      //     radius: 16,
+      //     backgroundColor: kLightGreyTextColor,
+      //     child: IconButton(
+      //       icon: Icon(Icons.close_rounded, color: Colors.black, size: 16),
+      //       onPressed: () {
+      //         Navigator.pop(context);
+      //       },
+      //     ),
+      //   ),
+      // ],
     );
   }
 }

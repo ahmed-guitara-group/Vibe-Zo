@@ -10,16 +10,19 @@ class SetupProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SetupProfileCubit, SetupProfileState>(
-      builder: (context, state) {
-        if (state is SetupProfileInitial || state is SetupProfileStepOne) {
-          return const SetupProfileScreenStepOne();
-        } else if (state is SetupProfileStepTwo) {
-          return const SetupProfileScreenStepTwo();
-        } else {
-          return const SetupProfileScreenStepOne();
-        }
-      },
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: BlocBuilder<SetupProfileCubit, SetupProfileState>(
+        builder: (context, state) {
+          if (state is SetupProfileInitial || state is SetupProfileStepOne) {
+            return const SetupProfileScreenStepOne();
+          } else if (state is SetupProfileStepTwo) {
+            return const SetupProfileScreenStepTwo();
+          } else {
+            return const SetupProfileScreenStepOne();
+          }
+        },
+      ),
     );
   }
 }
