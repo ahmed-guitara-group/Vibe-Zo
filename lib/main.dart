@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:vibe_zo/app.dart';
 
-import 'Features/auth/login/domain/entities/login_entity.dart';
 import 'core/utils/constants.dart';
 import 'core/utils/functions/setup_service_locator.dart' as di;
 import 'core/utils/simple_bloc_observer.dart';
@@ -14,7 +13,7 @@ void main() async {
   Bloc.observer = SimpleBlocObserver();
   await di.init();
   await Hive.initFlutter();
-  Hive.registerAdapter(LoginEntityAdapter());
+  // Hive.registerAdapter(LoginEntityAdapter());
 
   //Auth Boxes
   // await Hive.openBox<LoginEntity>(kUserDataBox);

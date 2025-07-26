@@ -66,7 +66,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen>
                 textInputType: TextInputType.visiblePassword,
                 obscureText: true,
                 controller: _passwordController,
-                validator: (password) => validateNewPassword(password),
+                validator: (password) => validatePassword(password),
               ),
               Gaps.vGap16,
 
@@ -110,10 +110,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen>
                       barrierDismissible: false,
                       context: context,
                       builder: (context) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [CustomLoadiNgWidget()],
-                        );
+                        return CustomLoadiNgWidget();
                       },
                     );
                   }

@@ -10,12 +10,13 @@ import 'package:vibe_zo/core/widgets/custom_text_field.dart';
 import '../../../../../../core/utils/constants.dart';
 import '../../../../../../core/utils/gaps.dart';
 
-class SetupProfileScreen extends StatelessWidget {
-  SetupProfileScreen({super.key});
-  var userPhoneValue = Hive.box(kUserPhoneBox).get(kUserPhoneBox) ?? '';
+class SetupProfileScreenStepOne extends StatelessWidget {
+  const SetupProfileScreenStepOne({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var userPhoneValue = Hive.box(kUserPhoneBox).get(kUserPhoneBox) ?? '';
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ListView(

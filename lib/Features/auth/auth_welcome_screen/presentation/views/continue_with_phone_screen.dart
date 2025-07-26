@@ -6,6 +6,7 @@ import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/r
 import 'package:vibe_zo/core/utils/gaps.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/widgets/custom_auth_app_bar.dart';
+import 'package:vibe_zo/core/widgets/custom_loading_widget.dart';
 
 import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
@@ -38,12 +39,6 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
         _isButtonAtBottom = true;
       });
     });
-  }
-
-  @override
-  dispose() {
-    super.dispose();
-    //dispose controller
   }
 
   @override
@@ -170,6 +165,8 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
             BlocListener<RegisterPhoneCubit, RegisterPhoneState>(
               listener: (context, state) async {
                 if (state is RegisterPhoneFailed) {
+                  // Hide loading dialog
+                  Navigator.pop(context);
                   showDialog(
                     context: context,
                     builder: (ctx) {
@@ -184,15 +181,14 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                   );
                 }
                 if (state is RegisterPhoneSuccessful) {
-                  print(state.response.code);
-
                   await tokenBox.put(
                     kUserTokenBox,
                     state.response.data!.token!.token,
                   );
 
                   await userPhoneBox.put(kUserPhoneBox, _phoneNumber);
-
+                  // Hide loading dialog
+                  Navigator.pop(context);
                   BlocProvider.of<AnimationCubit>(context).hideVerOtpField();
                   setState(() {
                     _isButtonAtBottom = true;
@@ -219,6 +215,13 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                     );
                   }
                 }
+                if (state is RegisterPhoneLoading) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => CustomLoadiNgWidget(),
+                    barrierDismissible: false,
+                  );
+                }
               },
               child: SizedBox(
                 height: context.screenHeight * 0.4,
@@ -231,29 +234,21 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      BlocBuilder<RegisterPhoneCubit, RegisterPhoneState>(
-                        builder: (context, state) {
-                          return state is RegisterPhoneLoading
-                              ? const CircularProgressIndicator(
-                                  color: kPrimaryColor,
-                                )
-                              : CustomButton(
-                                  screenWidth: context.screenWidth,
-                                  buttonTapHandler: () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      await BlocProvider.of<RegisterPhoneCubit>(
-                                        context,
-                                      ).registerPhone(_phoneNumber);
-                                    }
-                                  },
-                                  buttonText: context.locale.translate(
-                                    "continue",
-                                  )!,
-                                  btnTxtFontSize: 14,
-                                  withIcon: true,
-                                  icon: AssetsData.continueIcon,
-                                );
+                      CustomButton(
+                        screenWidth: context.screenWidth,
+                        buttonTapHandler: () async {
+                          //hide keyboard
+                          FocusScope.of(context).unfocus();
+                          if (_formKey.currentState!.validate()) {
+                            await BlocProvider.of<RegisterPhoneCubit>(
+                              context,
+                            ).registerPhone(_phoneNumber);
+                          }
                         },
+                        buttonText: context.locale.translate("continue")!,
+                        btnTxtFontSize: 14,
+                        withIcon: true,
+                        icon: AssetsData.continueIcon,
                       ),
                       const SizedBox(height: 20),
                       const CustomOrRowWidget(),

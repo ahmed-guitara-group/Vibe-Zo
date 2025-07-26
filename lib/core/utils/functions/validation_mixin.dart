@@ -32,7 +32,7 @@ mixin ValidationMixin<T extends StatefulWidget> on State<T> {
     return null;
   }
 
-  String? validateNewPassword(String? passWord) {
+  String? validatePassword(String? passWord) {
     newPassWord = passWord;
 
     if (passWord == null || passWord.trim().isEmpty) {

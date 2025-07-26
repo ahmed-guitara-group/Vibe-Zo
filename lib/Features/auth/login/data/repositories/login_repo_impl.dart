@@ -7,21 +7,12 @@ class LoginRepoImpl extends LoginRepo {
   LoginRepoImpl(this.loginRemoteDataSource);
 
   @override
-  Future<LoginResponse> login(String phone, String password) async {
-    var userData = await loginRemoteDataSource.login(phone, password);
-    return userData;
+  Future<LoginResponse> login(
+    String token,
+    String password,
+    String phone,
+  ) async {
+    var response = await loginRemoteDataSource.login(token, password, phone);
+    return response;
   }
-
-  // @override
-  // Future<LoginResponse> login(String phone) async {
-  //   Future<LoginResponse> logini(String phone) async {
-  //     try {
-  //       var userData = await loginRemoteDataSourec.login(phone);
-
-  //       return right(userData);
-  //     } catch (e) {
-  //       return Left(ServerFailure(e.toString()));
-  //     }
-  //   }
-  // }
 }

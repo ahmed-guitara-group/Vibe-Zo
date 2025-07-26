@@ -12,7 +12,7 @@ class LoginLoading extends LoginState {
 }
 
 class LoginSuccessful extends LoginState {
-  final LoginEntity user;
+  final RegisterPhoneModel user;
 
   const LoginSuccessful(this.user);
 }

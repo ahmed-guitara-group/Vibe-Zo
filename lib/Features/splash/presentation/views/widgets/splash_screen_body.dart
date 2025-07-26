@@ -17,7 +17,7 @@ import '../../../../auth/auth_welcome_screen/presentation/manager/animation/anim
 import '../../../../auth/auth_welcome_screen/presentation/manager/send_code/send_code_cubit.dart';
 import '../../../../auth/auth_welcome_screen/presentation/views/create_password_screen.dart';
 import '../../../../auth/login/presentation/screens/login_screen.dart';
-import '../../../../auth/setup_profile/presentation/views/screens/setup_profile_screen.dart';
+import '../../../../auth/setup_profile/presentation/views/screens/setup_profile_screen_step_one.dart';
 
 class SplashScreenBody extends StatefulWidget {
   const SplashScreenBody({super.key});
@@ -94,7 +94,7 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
                         child = const LoginScreen();
                       } else if (state.activePageRoute ==
                           kSetupProfileScreenRoute) {
-                        child = SetupProfileScreen();
+                        child = SetupProfileScreenStepOne();
                       } else {
                         child = AuthWelcomeScreen();
                       }
@@ -154,7 +154,7 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
       // }
     } else {
       await pref.setBool('seen', true);
-      Navigator.pushReplacementNamed(context, kLanguageScreenRoute);
+      Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
     }
   }
 }

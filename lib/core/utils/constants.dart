@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 // Routes
 const String initialRoute = '/';
 const String kBottomNavRoute = '/bottomNavWidget';
+const String kHomeScreenRoute = '/homeScreen';
+
 const String kAuthWelcomeScreenRoute = '/authWelcomeScreen';
 //Bottom Sheet Routes
 const String kPhoneAuthScreenRoute = '/phoneAuthScreen';
@@ -18,7 +20,6 @@ const String kSetupProfileScreenRoute = '/setupProfileScreen';
 const String kProfileScreenRoute = '/profileScreen';
 
 const String kLanguageScreenRoute = '/languageScreen';
-const String kHomeScreenRoute = '/homeScreen';
 const String kProductDetailsScreenRoute = '/productDetailsScreen';
 const String kAllProductsScreenRoute = '/allProductsScreen';
 const String kOrderDetailsScreenRoute = '/orderDetailsScreen';
