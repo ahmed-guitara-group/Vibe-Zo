@@ -10,3 +10,7 @@ final class ButtonMovedDown extends AnimationState {}
 final class VerificationMethodSelected extends AnimationState {}
 
 final class ShowVerificationMethod extends AnimationState {}
+
+final class ShowAllLangs extends AnimationState {}
+
+final class ShowAllCountries extends AnimationState {}

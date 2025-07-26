@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
+import 'package:vibe_zo/Features/auth/setup_profile/presentation/manager/get_langs/get_langs_cubit.dart';
 
 import '../../../Features/auth/auth_welcome_screen/data/data_source/register_phone_remote_data_source.dart';
 import '../../../Features/auth/auth_welcome_screen/data/repo_impl/register_phone_repo_impl.dart';
@@ -20,6 +21,12 @@ import '../../../Features/auth/login/data/repositories/login_repo_impl.dart';
 import '../../../Features/auth/login/domain/repositories/login_repo.dart';
 import '../../../Features/auth/login/domain/use_cases/login_use_case.dart';
 import '../../../Features/auth/login/presentation/manager/login_cubit.dart';
+import '../../../Features/auth/setup_profile/data/data_source/countries_remote_data_source.dart';
+import '../../../Features/auth/setup_profile/data/repos/countries_repo_impl.dart';
+import '../../../Features/auth/setup_profile/domain/repos/countries_repo.dart';
+import '../../../Features/auth/setup_profile/domain/use_cases/get_countries_use_case.dart';
+import '../../../Features/auth/setup_profile/presentation/manager/get_countries/get_countries_cubit.dart';
+import '../../../Features/auth/setup_profile/presentation/manager/setup_profile/setup_profile_cubit.dart';
 import '../../../Features/home/presentation/manager/cubit/bottom_nav_cubit.dart';
 import '../../../Features/splash/data/datasources/language_local_data_source.dart';
 import '../../../Features/splash/data/datasources/language_local_data_source_impl.dart';
@@ -117,6 +124,21 @@ Future<void> init() async {
   );
   getIt.registerLazySingleton<CreatePasswordRemoteDataSource>(
     () => CreatePasswordRemoteDataSourceImpl(),
+  );
+  // Setup Profile - Get Countries
+  getIt.registerFactory<SetupProfileCubit>(() => SetupProfileCubit());
+  getIt.registerFactory<GetCountriesCubit>(
+    () => GetCountriesCubit(getIt.call()),
+  );
+  getIt.registerFactory<GetLangsCubit>(() => GetLangsCubit(getIt.call()));
+  getIt.registerLazySingleton<GetCountriesUseCase>(
+    () => GetCountriesUseCase(getIt.call()),
+  );
+  getIt.registerLazySingleton<GetCountriesRepo>(
+    () => CountriesRepoImpl(getIt.call()),
+  );
+  getIt.registerLazySingleton<GetCountriesRemoteDataSource>(
+    () => GetCountriesRemoteDataSourceImpl(),
   );
 
   //Network

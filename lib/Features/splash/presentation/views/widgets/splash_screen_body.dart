@@ -9,6 +9,8 @@ import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/v
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/auth_welcome_screen.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/continue_with_phone_screen.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/verify_phone_number_screen.dart';
+import 'package:vibe_zo/Features/auth/setup_profile/presentation/manager/get_langs/get_langs_cubit.dart';
+import 'package:vibe_zo/Features/auth/setup_profile/presentation/views/screens/setup_profile_screen_step_one.dart';
 import 'package:vibe_zo/core/utils/functions/setup_service_locator.dart';
 
 import '../../../../../core/utils/assets.dart';
@@ -17,7 +19,10 @@ import '../../../../auth/auth_welcome_screen/presentation/manager/animation/anim
 import '../../../../auth/auth_welcome_screen/presentation/manager/send_code/send_code_cubit.dart';
 import '../../../../auth/auth_welcome_screen/presentation/views/create_password_screen.dart';
 import '../../../../auth/login/presentation/screens/login_screen.dart';
-import '../../../../auth/setup_profile/presentation/views/screens/setup_profile_screen_step_one.dart';
+import '../../../../auth/setup_profile/presentation/manager/get_countries/get_countries_cubit.dart';
+import '../../../../auth/setup_profile/presentation/manager/setup_profile/setup_profile_cubit.dart';
+import '../../../../auth/setup_profile/presentation/views/screens/setup_profile_screen.dart';
+import '../../../../auth/setup_profile/presentation/views/screens/setup_profile_screen_step_two.dart';
 
 class SplashScreenBody extends StatefulWidget {
   const SplashScreenBody({super.key});
@@ -76,6 +81,9 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
                   BlocProvider(
                     create: (context) => getIt<CreatePasswordCubit>(),
                   ),
+                  BlocProvider(create: (context) => getIt<SetupProfileCubit>()),
+                  BlocProvider(create: (context) => getIt<GetCountriesCubit>()),
+                  BlocProvider(create: (context) => getIt<GetLangsCubit>()),
                 ],
                 child: BlocBuilder<AuthBottomSheetCubit, AuthBottomSheetState>(
                   builder: (context, state) {
@@ -94,7 +102,13 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
                         child = const LoginScreen();
                       } else if (state.activePageRoute ==
                           kSetupProfileScreenRoute) {
+                        child = SetupProfileScreen();
+                      } else if (state.activePageRoute ==
+                          kSetupProfileScreenStepOneRoute) {
                         child = SetupProfileScreenStepOne();
+                      } else if (state.activePageRoute ==
+                          kSetupProfileScreenStepTwoRoute) {
+                        child = SetupProfileScreenStepTwo();
                       } else {
                         child = AuthWelcomeScreen();
                       }

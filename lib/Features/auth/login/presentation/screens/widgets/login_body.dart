@@ -172,8 +172,6 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
                 CustomButton(
                   screenWidth: context.screenWidth,
                   buttonTapHandler: () {
-                    //hide keyboard
-                    FocusScope.of(context).unfocus();
                     if (formKey.currentState!.validate()) {
                       BlocProvider.of<LoginCubit>(context).login(
                         password: passWordController.text,

@@ -10,4 +10,6 @@ class Api {
   static const String doServerCreatePasswordApiCall =
       "${baseUrl}auth/createNewPassword";
   static const String doServerLoginApiCall = "${baseUrl}auth/login";
+  static const String doServerGetCountriesApiCall = "${mainAppUrl}getCountries";
+  static const String doServerGetLanguagesApiCall = "${mainAppUrl}getLanguages";
 }

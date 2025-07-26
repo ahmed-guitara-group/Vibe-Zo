@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 import 'package:hive/hive.dart';
 import 'package:vibe_zo/Features/auth/setup_profile/presentation/views/widgets/upload_image_widget.dart';
@@ -9,6 +10,7 @@ import 'package:vibe_zo/core/widgets/custom_text_field.dart';
 
 import '../../../../../../core/utils/constants.dart';
 import '../../../../../../core/utils/gaps.dart';
+import '../../../../auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 
 class SetupProfileScreenStepOne extends StatelessWidget {
   const SetupProfileScreenStepOne({super.key});
@@ -122,7 +124,14 @@ class SetupProfileScreenStepOne extends StatelessWidget {
 
           CustomButton(
             screenWidth: context.screenWidth,
-            buttonTapHandler: () {},
+            buttonTapHandler: () {
+              //mOVE TO THE NEXT PAGE
+              BlocProvider.of<AuthBottomSheetCubit>(
+                context,
+              ).changeBottomSheetState(
+                pageRoute: kSetupProfileScreenStepTwoRoute,
+              );
+            },
             buttonText: context.locale.translate("continue")!,
             btnTxtFontSize: 14,
             withIcon: true,

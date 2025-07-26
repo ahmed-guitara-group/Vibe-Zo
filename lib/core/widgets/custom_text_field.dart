@@ -122,6 +122,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               }) {
                 return null;
               },
+
           //  initialValue: widget.initialValue,
           onChanged: widget.onChange,
           textAlignVertical: TextAlignVertical.top,

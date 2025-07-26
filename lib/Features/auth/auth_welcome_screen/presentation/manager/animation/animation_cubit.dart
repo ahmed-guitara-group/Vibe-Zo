@@ -5,7 +5,8 @@ part 'animation_state.dart';
 
 class AnimationCubit extends Cubit<AnimationState> {
   AnimationCubit() : super(AnimationInitial());
-
+  bool isShowAllLangs = false;
+  bool isShowAllCountries = false;
   void moveButtonDown() async {
     emit(AnimationInitial());
     emit(ButtonMovedDown());
@@ -21,5 +22,17 @@ class AnimationCubit extends Cubit<AnimationState> {
     emit(AnimationInitial());
 
     emit(ShowVerificationMethod());
+  }
+
+  void showAllLanguages() {
+    emit(AnimationInitial());
+    isShowAllLangs = !isShowAllLangs;
+    emit(ShowAllLangs());
+  }
+
+  void showAllCountries() {
+    emit(AnimationInitial());
+    isShowAllCountries = !isShowAllCountries;
+    emit(ShowAllCountries());
   }
 }
