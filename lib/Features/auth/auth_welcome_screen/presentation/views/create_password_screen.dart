@@ -124,13 +124,12 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen>
                     FocusScope.of(context).unfocus();
                     final isValid = _formKey.currentState?.validate() ?? false;
                     if (isValid) {
-                      print(isValid);
-                      // BlocProvider.of<CreatePasswordCubit>(
-                      //   context,
-                      // ).createPassword(
-                      //   userTokenValue,
-                      //   _passwordController.text,
-                      // );
+                      BlocProvider.of<CreatePasswordCubit>(
+                        context,
+                      ).createPassword(
+                        userTokenValue,
+                        _passwordController.text,
+                      );
                     }
                   },
                   buttonText: context.locale.translate("continue")!,

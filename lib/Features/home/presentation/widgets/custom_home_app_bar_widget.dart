@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 
 import '../../../../core/utils/constants.dart';
-import '../../../auth/login/domain/entities/login_entity.dart';
 
 class CustomHomeAppBar extends StatelessWidget {
   const CustomHomeAppBar({super.key, required this.tapHandler});
@@ -11,7 +9,7 @@ class CustomHomeAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var box = Hive.box<LoginEntity>(kUserDataBox);
+    // var box = Hive.box<LoginEntity>(kUserDataBox);
     // var imageBox = Hive.box(kUserImageBox);
     // final String? imagePath = imageBox.get('image');
     return AppBar(
@@ -42,7 +40,7 @@ class CustomHomeAppBar extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           Text(
-            box.getAt(0)!.firstName,
+            "box.getAt(0)!.firstName",
             style: TextStyle(
               fontSize: context.screenWidth * .045,
               fontWeight: FontWeight.w700,

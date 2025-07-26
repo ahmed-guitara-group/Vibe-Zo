@@ -213,7 +213,11 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                       pageRoute: kVerifyPhoneNumberScreenRoute,
                     );
                   }
-                  print(state.response.code);
+                  if (state.response.code == "A15") {
+                    context.read<AuthBottomSheetCubit>().changeBottomSheetState(
+                      pageRoute: kSetupProfileScreenRoute,
+                    );
+                  }
                 }
               },
               child: SizedBox(

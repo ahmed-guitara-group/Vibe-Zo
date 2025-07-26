@@ -1,7 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/create_password/create_password_cubit.dart';
@@ -17,8 +16,8 @@ import '../../../../../core/utils/constants.dart';
 import '../../../../auth/auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
 import '../../../../auth/auth_welcome_screen/presentation/manager/send_code/send_code_cubit.dart';
 import '../../../../auth/auth_welcome_screen/presentation/views/create_password_screen.dart';
-import '../../../../auth/login/domain/entities/login_entity.dart';
 import '../../../../auth/login/presentation/screens/login_screen.dart';
+import '../../../../auth/setup_profile/presentation/views/screens/setup_profile_screen.dart';
 
 class SplashScreenBody extends StatefulWidget {
   const SplashScreenBody({super.key});
@@ -31,7 +30,7 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
     with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation<Offset> slidingAnimation;
-  var userDataBox = Hive.box<LoginEntity>(kUserDataBox);
+  // var userDataBox = Hive.box<LoginEntity>(kUserDataBox);
   @override
   void initState() {
     super.initState();
@@ -93,12 +92,10 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
                         child = const CreatePasswordScreen();
                       } else if (state.activePageRoute == kLoginScreenRoute) {
                         child = const LoginScreen();
-                      }
-                      //  else if (state.activePageRoute ==
-                      //     kSetupProfileScreenRoute) {
-                      //   child = SetupProfileScreen();
-                      // }
-                      else {
+                      } else if (state.activePageRoute ==
+                          kSetupProfileScreenRoute) {
+                        child = SetupProfileScreen();
+                      } else {
                         child = AuthWelcomeScreen();
                       }
                     } else {
@@ -148,11 +145,13 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
     SharedPreferences pref = await SharedPreferences.getInstance();
     bool seen = (pref.getBool('seen') ?? false);
     if (seen) {
-      if (userDataBox.isNotEmpty) {
-        Navigator.pushReplacementNamed(context, kBottomNavRoute);
-      } else {
-        Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
-      }
+      Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
+
+      // if (userDataBox.isNotEmpty) {
+      //   Navigator.pushReplacementNamed(context, kBottomNavRoute);
+      // } else {
+      //   Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
+      // }
     } else {
       await pref.setBool('seen', true);
       Navigator.pushReplacementNamed(context, kLanguageScreenRoute);

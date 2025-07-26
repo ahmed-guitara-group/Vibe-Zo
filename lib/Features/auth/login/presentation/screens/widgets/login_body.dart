@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
-import 'package:hive/hive.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/widgets/custom_auth_app_bar.dart'
     show CustomAuthAppBar;
@@ -14,7 +13,6 @@ import '../../../../../../core/utils/gaps.dart';
 import '../../../../../../core/widgets/custom_button.dart';
 import '../../../../../../core/widgets/custom_text_field.dart';
 import '../../../../auth_welcome_screen/presentation/manager/auth_bottom_sheet/auth_bottom_sheet_cubit.dart';
-import '../../../domain/entities/login_entity.dart';
 import '../../manager/login_cubit.dart';
 
 class LoginBody extends StatefulWidget {
@@ -30,7 +28,7 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    var userDataBox = Hive.box<LoginEntity>(kUserDataBox);
+    // var userDataBox = Hive.box<LoginEntity>(kUserDataBox);
 
     return MultiBlocListener(
       listeners: [
@@ -43,8 +41,8 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
                 color: Colors.green,
               );
               //Save user data in hive
-              await userDataBox.clear();
-              await userDataBox.add(state.user);
+              // await userDataBox.clear();
+              // await userDataBox.add(state.user);
               Navigator.pushReplacementNamed(context, kBottomNavRoute);
               // var user = userDataBox.getAt(0);
               // print(user!.createdAt);
