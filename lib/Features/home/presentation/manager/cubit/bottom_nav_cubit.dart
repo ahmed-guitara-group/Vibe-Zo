@@ -15,7 +15,7 @@ class BottomNavCubit extends Cubit<BottomNavState> {
   late String? messageId;
   List<Widget> bottomNavScreens = [
     //THREE BOTTOM NAV ITEMS
-    HomeScreen(),
+    HomeScreen(), HomeScreen(), HomeScreen(), HomeScreen(),
   ];
 
   Widget get selectedBottomNavScreen => bottomNavScreens[bottomNavIndex];

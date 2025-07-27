@@ -156,7 +156,23 @@ class _SetupProfileScreenStepOneState extends State<SetupProfileScreenStepOne>
                   initialDate: DateTime(2000),
                   firstDate: DateTime(1900),
                   lastDate: DateTime.now(),
+                  builder: (context, child) {
+                    return Theme(
+                      data: Theme.of(context).copyWith(
+                        colorScheme: const ColorScheme.light(
+                          primary: kPrimaryColor,
+                          onPrimary: Colors.white,
+                          onSurface: Colors.black,
+                        ),
+                        dialogTheme: DialogThemeData(
+                          backgroundColor: Colors.white,
+                        ),
+                      ),
+                      child: child!,
+                    );
+                  },
                 );
+
                 if (pickedDate != null) {
                   final formattedDate =
                       "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}";

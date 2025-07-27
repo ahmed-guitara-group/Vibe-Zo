@@ -4,7 +4,6 @@ import 'package:vibe_zo/core/utils/helper.dart';
 
 import '../../../../core/utils/constants.dart';
 import '../manager/cubit/bottom_nav_cubit.dart';
-import 'custom_home_app_bar_widget.dart';
 
 class BottomNavWidget extends StatelessWidget {
   const BottomNavWidget({super.key});
@@ -14,10 +13,11 @@ class BottomNavWidget extends StatelessWidget {
     return BlocBuilder<BottomNavCubit, BottomNavState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(60),
-            child: CustomHomeAppBar(tapHandler: () {}),
-          ),
+          // appBar: PreferredSize(
+          //   preferredSize: const Size.fromHeight(60),
+          //   child: CustomHomeAppBar(tapHandler: () {}),
+          // ),
+          appBar: AppBar(),
           bottomNavigationBar: BottomNavigationBar(
             showSelectedLabels: true,
             showUnselectedLabels: false,
@@ -38,10 +38,7 @@ class BottomNavWidget extends StatelessWidget {
                 icon: Icon(Icons.home),
                 label: context.locale.translate("more")!,
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_cart),
-                label: context.locale.translate("more")!,
-              ),
+              BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chat"),
               BottomNavigationBarItem(
                 icon: Icon(Icons.list),
                 label: context.locale.translate("more")!,
