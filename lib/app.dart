@@ -54,6 +54,16 @@ class VibeZo extends StatelessWidget {
               ),
               fontFamily: "Lexend",
             ),
+            // builder: (context, child) {
+            //   return AnnotatedRegion<SystemUiOverlayStyle>(
+            //     value: SystemUiOverlayStyle(
+            //       statusBarColor: Colors.transparent,
+            //       statusBarIconBrightness: Brightness.dark, // ✅ أيقونات سوداء
+            //       statusBarBrightness: Brightness.light, // ✅ لـ iOS
+            //     ),
+            //     child: child!,
+            //   );
+            // },
           );
         },
       ),

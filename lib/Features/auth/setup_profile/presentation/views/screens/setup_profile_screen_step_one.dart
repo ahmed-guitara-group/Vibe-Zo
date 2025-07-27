@@ -51,11 +51,12 @@ class _SetupProfileScreenStepOneState extends State<SetupProfileScreenStepOne>
     _pickedImage = image;
   }
 
-  void _onSubmit() {
+  void _onSubmit() async {
     if (_formKey.currentState!.validate() &&
         _gender != null &&
         _pickedImage != null) {
       _formKey.currentState!.save();
+
       BlocProvider.of<SetupProfileUiCubit>(context).saveProfileData(
         name: _name!,
         idNumber: _idNumber!,
@@ -63,13 +64,14 @@ class _SetupProfileScreenStepOneState extends State<SetupProfileScreenStepOne>
         birthDate: _birthDate!,
         image: _pickedImage,
       );
+
       BlocProvider.of<SetupProfileUiCubit>(context).changeStep(2);
     } else {
+      String errorMessage =
+          "Please upload your profile image, select your gender, and pick your birth date";
+
       if (_pickedImage == null || _gender == null) {
-        Commons.showToast(
-          context,
-          message: "Please upload your profile image and select your gender",
-        );
+        Commons.showToast(context, message: errorMessage);
       }
     }
   }
@@ -176,6 +178,7 @@ class _SetupProfileScreenStepOneState extends State<SetupProfileScreenStepOne>
                 if (pickedDate != null) {
                   final formattedDate =
                       "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}";
+
                   setState(() {
                     _birthDate = formattedDate;
                     _birthDateController.text = formattedDate;

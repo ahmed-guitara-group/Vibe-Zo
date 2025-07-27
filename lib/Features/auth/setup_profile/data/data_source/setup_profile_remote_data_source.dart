@@ -51,25 +51,25 @@ class SetupProfileRemoteDataSourceImpl extends SetupProfileRemoteDataSource {
     };
 
     try {
-      // final formData = FormData.fromMap({
-      //   'username': userName,
-      //   'name': name,
-      //   'birthDate': birthDate,
-      //   'gender': gender,
-      //   'speakLanguage': spokenLanguages.join(','),
-      //   'country': countries.join(','),
-      //   'photo': await MultipartFile.fromFile(
-      //     photo.path,
-      //     filename: photo.path.split('/').last,
-      //   ),
-      // });
+      final formData = FormData.fromMap({
+        'username': userName,
+        'name': name,
+        'birthDate': birthDate,
+        'gender': gender,
+        'speakLanguage': spokenLanguages.join(','),
+        'country': countries.join(','),
+        'photo': await MultipartFile.fromFile(
+          photo.path,
+          filename: photo.path.split('/').last,
+        ),
+      });
 
       await getIt<NetworkRequest>().requestFutureData<SendCodeModel>(
         Method.post,
         url: Api.doServerAddDataApiCall,
         params: body,
         isFormData: true,
-        //  formData: formData,
+        formData: formData,
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {'Authorization': 'Bearer $token'},

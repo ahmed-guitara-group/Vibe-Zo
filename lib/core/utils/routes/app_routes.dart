@@ -31,7 +31,7 @@ class AppRoutes {
 
     switch (routeSettings.name) {
       case initialRoute:
-        return MaterialPageRoute(builder: (_) => const AuthWelcomeScreen());
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case kLanguageScreenRoute:
         return MaterialPageRoute(builder: (_) => const LanguageScreen());
       case kHomeScreenRoute:
@@ -102,7 +102,17 @@ class AppRoutes {
             child: const CreatePasswordScreen(),
           ),
         );
-
+      case kVerificationCodeScreenRoute:
+        return MaterialPageRoute(
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => getIt<SendCodeCubit>()),
+              BlocProvider(create: (context) => getIt<VerifyCodeCubit>()),
+              BlocProvider(create: (context) => getIt<AnimationCubit>()),
+            ],
+            child: const VerifyPhoneNumberScreen(),
+          ),
+        );
       default:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
     }

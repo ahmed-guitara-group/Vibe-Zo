@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 import 'package:hive/hive.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
+import 'package:vibe_zo/core/widgets/custom_alert_dialog.dart';
 import 'package:vibe_zo/core/widgets/custom_auth_app_bar.dart'
     show CustomAuthAppBar;
 import 'package:vibe_zo/core/widgets/custom_loading_widget.dart';
@@ -40,6 +41,10 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
               // if code H10 Go to home screen
               // if code A15 Go to Setup profile screen
               if (state.user.code == 'H10') {
+                await Hive.box(kUserTokenBox).clear();
+                await Hive.box(
+                  kUserTokenBox,
+                ).put(kUserTokenBox, state.user.data!.token!.token);
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   kBottomNavRoute,
@@ -53,6 +58,12 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
               // Hide loading dialog
               Navigator.pop(context);
               // Show Error dialog
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return CustomAlertDialog(title: state.message);
+                },
+              );
             }
             if (state is LoginLoading) {
               showDialog(
@@ -180,16 +191,21 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
                   withIcon: true,
                   icon: AssetsData.continueIcon,
                 ),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 21),
-                    child: Text(
-                      context.locale.translate("forgot_password")!,
-                      style: TextStyle(
-                        color: kBlackTextColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        height: 1.29,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, kVerificationCodeScreenRoute);
+                  },
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 21),
+                      child: Text(
+                        context.locale.translate("forgot_password")!,
+                        style: TextStyle(
+                          color: kBlackTextColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          height: 1.29,
+                        ),
                       ),
                     ),
                   ),

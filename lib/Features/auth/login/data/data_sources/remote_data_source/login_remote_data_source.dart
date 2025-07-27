@@ -40,7 +40,7 @@ class LoginRemoteDataSourceImpl extends LoginRemoteDataSource {
         }
       },
       onError: (code, msg) {
-        loginResponse = left('Error $code, Invalid input');
+        loginResponse = left('Error $msg, Invalid input');
       },
     );
     return loginResponse;

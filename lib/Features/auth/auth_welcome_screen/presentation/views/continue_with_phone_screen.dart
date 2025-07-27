@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/register_phone/register_phone_cubit.dart';
 import 'package:vibe_zo/core/utils/gaps.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
+import 'package:vibe_zo/core/widgets/custom_alert_dialog.dart';
 import 'package:vibe_zo/core/widgets/custom_auth_app_bar.dart';
 import 'package:vibe_zo/core/widgets/custom_loading_widget.dart';
 
@@ -169,12 +170,8 @@ class _ContinueWithPhoneScreenState extends State<ContinueWithPhoneScreen> {
                     showDialog(
                       context: context,
                       builder: (ctx) {
-                        return AlertDialog(
-                          content: Text(
-                            state.errorCode == "400"
-                                ? "Banned"
-                                : "An error occurred ${state.errorCode}",
-                          ),
+                        return CustomAlertDialog(
+                          title: "An error occurred ${state.errorCode}",
                         );
                       },
                     );

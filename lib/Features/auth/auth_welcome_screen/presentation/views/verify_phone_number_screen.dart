@@ -11,6 +11,7 @@ import 'package:vibe_zo/core/widgets/custom_loading_widget.dart';
 import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/gaps.dart';
+import '../../../../../core/widgets/custom_alert_dialog.dart';
 import '../../../../../core/widgets/custom_auth_app_bar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../core/widgets/custom_text_field.dart';
@@ -227,15 +228,8 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                       } else if (state is SendCodeFailed) {
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text("Error"),
-                            content: Text(state.errorCode),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text("Ok"),
-                              ),
-                            ],
+                          builder: (context) => CustomAlertDialog(
+                            title: "An error occurred ${state.errorCode}",
                           ),
                         );
                       }
@@ -264,16 +258,8 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
                         Navigator.pop(context);
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text("Wrong Code"),
-                            content: Text(state.errorCode),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text("Ok"),
-                              ),
-                            ],
-                          ),
+                          builder: (context) =>
+                              CustomAlertDialog(title: "Wrong code"),
                         );
                       }
                     },

@@ -90,7 +90,16 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen>
                   listener: (context, state) {
                     if (state is CreatePasswordSuccessful) {
                       Navigator.pop(context);
-                      Navigator.pushNamed(context, kSetupProfileScreenRoute);
+                      state.response.code == 'H10'
+                          ? Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              kBottomNavRoute,
+                              (route) => false,
+                            )
+                          : Navigator.pushNamed(
+                              context,
+                              kSetupProfileScreenRoute,
+                            );
                     } else if (state is CreatePasswordFailed) {
                       Commons.showToast(
                         context,

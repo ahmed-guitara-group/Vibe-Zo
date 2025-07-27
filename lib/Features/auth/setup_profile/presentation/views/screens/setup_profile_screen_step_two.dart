@@ -100,6 +100,7 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
               );
             }
             if (state is SetupProfileFailed) {
+              Navigator.pop(context);
               showDialog(
                 context: context,
                 builder: (context) {
@@ -266,7 +267,7 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
                         ).name!,
                         birthDate: BlocProvider.of<SetupProfileUiCubit>(
                           context,
-                        ).birthDate!,
+                        ).birthDate!.split('/').reversed.join('-'),
                         gender: BlocProvider.of<SetupProfileUiCubit>(
                           context,
                         ).gender!,

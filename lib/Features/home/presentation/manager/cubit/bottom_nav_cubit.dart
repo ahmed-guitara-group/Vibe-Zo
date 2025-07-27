@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vibe_zo/Features/chat/presentation/views/chat_screen.dart';
 
 import '../../screens/home_screen.dart';
 
@@ -15,7 +16,7 @@ class BottomNavCubit extends Cubit<BottomNavState> {
   late String? messageId;
   List<Widget> bottomNavScreens = [
     //THREE BOTTOM NAV ITEMS
-    HomeScreen(), HomeScreen(), HomeScreen(), HomeScreen(),
+    HomeScreen(), ChatScreen(), HomeScreen(), HomeScreen(),
   ];
 
   Widget get selectedBottomNavScreen => bottomNavScreens[bottomNavIndex];

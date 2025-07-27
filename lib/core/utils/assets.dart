@@ -9,6 +9,8 @@ class AssetsData {
   static const englishLangImage = '${pathImage}english_lang_image.png';
   static const errorImage = '${pathImage}error.png';
   static const loading = '${pathImage}loading.gif';
+  static const vZLogoWhite = '${pathImage}vz-logo-white.png';
+  static const appBarBackGround = '${pathImage}top_bar.png';
 
   /*-------------------------------Icons---------------------*/
   static const phone = '${pathIcon}phone.png';
@@ -17,4 +19,9 @@ class AssetsData {
   static const facebook = '${pathIcon}Facebook.png';
   static const snapchat = '${pathIcon}snapchat.png';
   static const continueIcon = '${pathIcon}continue.png';
+  static const chatPin = '${pathIcon}chat_pin.png';
+  static const pinIcon = '${pathIcon}pin-icon.png';
+  static const verifiedIcon = '${pathIcon}verified.png';
+  static const levelIcon = '${pathIcon}level.png';
+  static const searchIcon = '${pathIcon}search_icon.png';
 }

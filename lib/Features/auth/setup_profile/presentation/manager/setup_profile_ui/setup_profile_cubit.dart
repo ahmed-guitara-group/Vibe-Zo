@@ -13,6 +13,7 @@ class SetupProfileUiCubit extends Cubit<SetupProfileUIState> {
   String? gender;
   String? birthDate;
   File? profileImage;
+  String? formattedApiBirthDate;
 
   void changeStep(int step) {
     step == 1 ? emit(SetupProfileStepOne()) : emit(SetupProfileStepTwo());

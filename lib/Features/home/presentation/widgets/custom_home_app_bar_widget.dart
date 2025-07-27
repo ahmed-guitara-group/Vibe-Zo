@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vibe_zo/core/utils/helper.dart';
 
+import '../../../../core/utils/assets.dart';
 import '../../../../core/utils/constants.dart';
 
 class CustomHomeAppBar extends StatelessWidget {
@@ -12,68 +12,39 @@ class CustomHomeAppBar extends StatelessWidget {
     // var box = Hive.box<LoginEntity>(kUserDataBox);
     // var imageBox = Hive.box(kUserImageBox);
     // final String? imagePath = imageBox.get('image');
-    return AppBar(
-      // RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadiusDirectional.only(
-          bottomEnd: Radius.circular(context.screenWidth * .06),
-          bottomStart: Radius.circular(context.screenWidth * .06),
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(AssetsData.appBarBackGround),
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
-      ),
-      automaticallyImplyLeading: false,
-      centerTitle: false,
-      shadowColor: Colors.grey,
-      surfaceTintColor: Colors.white,
-      elevation: 3,
-      actionsIconTheme: const IconThemeData(color: Colors.white),
-      backgroundColor: Colors.white,
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.locale.translate("welcome")!,
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: context.screenWidth * .034,
-              color: kGreyTextColor,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-          Text(
-            "box.getAt(0)!.firstName",
-            style: TextStyle(
-              fontSize: context.screenWidth * .045,
-              fontWeight: FontWeight.w700,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-      // leading: imagePath != null
-      //     ? CircleAvatar(backgroundImage: FileImage(File(imagePath)))
-      //     : Padding(
-      //         padding: EdgeInsets.all(context.screenWidth * .01),
-      //         child: CircleAvatar(
-      //           backgroundColor: kBottomNavIconsColor,
-      //           child: Icon(Icons.person, color: Colors.white),
-      //         ),
-      //       ),
-      actions: [
-        InkWell(
-          onTap: () {
-            tapHandler();
-          },
-          child: Padding(
-            padding: EdgeInsets.all(context.screenWidth * .025),
-            child: Container(
-              decoration: BoxDecoration(
-                color: kBottomNavIconsColor,
-                borderRadius: BorderRadius.circular(context.screenWidth * .045),
+        SafeArea(
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: kGreyBtnColor, width: 2),
               ),
-              padding: EdgeInsets.all(context.screenWidth * .015),
-              width: context.screenWidth * .12,
-              alignment: Alignment.center,
-              child: Icon(Icons.notifications_outlined, color: Colors.white),
+            ),
+            child: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              centerTitle: true,
+              actionsPadding: EdgeInsets.symmetric(horizontal: 16),
+              actions: [
+                InkWell(
+                  onTap: () {},
+                  child: Image.asset(
+                    AssetsData.searchIcon,
+                    height: 20,
+                    width: 20,
+                  ),
+                ),
+              ],
             ),
           ),
         ),

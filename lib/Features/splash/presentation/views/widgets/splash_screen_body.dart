@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
@@ -21,7 +21,7 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
   void initState() {
     super.initState();
     initSlidingAnimation();
-    Future.delayed(const Duration(hours: 3), () {
+    Future.delayed(const Duration(seconds: 1), () {
       checkFirstSeen(context);
     });
   }
@@ -138,9 +138,9 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
   }
 
   Future<void> checkFirstSeen(BuildContext context) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    bool seen = (pref.getBool('seen') ?? false);
-    if (seen) {
+    // SharedPreferences pref = await SharedPreferences.getInstance();
+    // bool seen = (pref.getBool('seen') ?? false);
+    if (Hive.box(kUserTokenBox).get(kUserTokenBox) == null) {
       Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
 
       // if (userDataBox.isNotEmpty) {
@@ -149,8 +149,8 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
       //   Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
       // }
     } else {
-      await pref.setBool('seen', true);
-      Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
+      // await pref.setBool('seen', true);
+      Navigator.pushReplacementNamed(context, kBottomNavRoute);
     }
   }
 }
