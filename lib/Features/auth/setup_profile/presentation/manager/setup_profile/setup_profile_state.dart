@@ -5,8 +5,17 @@ sealed class SetupProfileState {}
 
 final class SetupProfileInitial extends SetupProfileState {}
 
-final class SetupProfileStepOne extends SetupProfileState {}
+class SetupProfileLoading extends SetupProfileState {
+  SetupProfileLoading();
+}
 
-final class SetupProfileStepTwo extends SetupProfileState {}
+class SetupProfileSuccessful extends SetupProfileState {
+  final SendCodeModel user;
 
-class SetupProfileStepOneDataSaved extends SetupProfileState {}
+  SetupProfileSuccessful(this.user);
+}
+
+class SetupProfileFailed extends SetupProfileState {
+  final String message;
+  SetupProfileFailed(this.message);
+}

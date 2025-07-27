@@ -36,19 +36,19 @@ class BottomNavWidget extends StatelessWidget {
             items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: context.locale.translate("home")!,
+                label: context.locale.translate("more")!,
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.shopping_cart),
-                label: context.locale.translate("cart")!,
+                label: context.locale.translate("more")!,
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.list),
-                label: context.locale.translate("orders")!,
+                label: context.locale.translate("more")!,
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.settings),
-                label: context.locale.translate("settings")!,
+                label: context.locale.translate("more")!,
               ),
             ],
           ),

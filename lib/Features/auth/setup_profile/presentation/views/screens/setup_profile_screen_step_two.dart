@@ -1,16 +1,20 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:vibe_zo/Features/auth/setup_profile/presentation/manager/get_countries/get_countries_cubit.dart';
-import 'package:vibe_zo/Features/auth/setup_profile/presentation/manager/setup_profile/setup_profile_cubit.dart';
+import 'package:vibe_zo/core/utils/commons.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/utils/network/api/network_api.dart';
+import 'package:vibe_zo/core/widgets/custom_loading_widget.dart';
 
 import '../../../../../../core/widgets/custom_alert_dialog.dart';
 import '../../../../../../core/widgets/custom_auth_app_bar.dart';
 import '../../../../../../core/widgets/custom_button.dart';
 import '../../manager/get_langs/get_langs_cubit.dart';
+import '../../manager/setup_profile/setup_profile_cubit.dart';
+import '../../manager/setup_profile_ui/setup_profile_cubit.dart';
 import '../widgets/custom_country_chip.dart';
 
 class SetupProfileScreenStepTwo extends StatefulWidget {
@@ -74,6 +78,8 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
 
   @override
   Widget build(BuildContext context) {
+    String tokenValue = Hive.box(kUserTokenBox).get(kUserTokenBox) ?? '';
+
     return MultiBlocListener(
       listeners: [
         BlocListener<GetCountriesCubit, GetCountriesState>(
@@ -81,6 +87,35 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
         ),
         BlocListener<GetLangsCubit, GetLangsState>(
           listener: (context, state) {},
+        ),
+        BlocListener<SetupProfileCubit, SetupProfileState>(
+          listener: (context, state) {
+            if (state is SetupProfileSuccessful) {
+              Navigator.pop(context);
+              //Go Home Screen
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                kBottomNavRoute,
+                (route) => false,
+              );
+            }
+            if (state is SetupProfileFailed) {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return CustomAlertDialog(title: "Failed");
+                },
+              );
+            }
+            if (state is SetupProfileLoading) {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return const Center(child: CustomLoadiNgWidget());
+                },
+              );
+            }
+          },
         ),
       ],
       child: Padding(
@@ -91,7 +126,7 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
             CustomAuthAppBar(
               hasArrowBackButton: true,
               onBackButtonPressed: () {
-                BlocProvider.of<SetupProfileCubit>(context).changeStep(1);
+                BlocProvider.of<SetupProfileUiCubit>(context).changeStep(1);
               },
               title: context.locale.translate("lets_setup_profile")!,
             ),
@@ -218,7 +253,35 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
             const Spacer(),
             CustomButton(
               screenWidth: context.screenWidth,
-              buttonTapHandler: () {},
+              buttonTapHandler: () async {
+                (selectedCountries.isNotEmpty && selectedLangs.isNotEmpty)
+                    ? await BlocProvider.of<SetupProfileCubit>(
+                        context,
+                      ).setupProfile(
+                        userName: BlocProvider.of<SetupProfileUiCubit>(
+                          context,
+                        ).idNumber!,
+                        name: BlocProvider.of<SetupProfileUiCubit>(
+                          context,
+                        ).name!,
+                        birthDate: BlocProvider.of<SetupProfileUiCubit>(
+                          context,
+                        ).birthDate!,
+                        gender: BlocProvider.of<SetupProfileUiCubit>(
+                          context,
+                        ).gender!,
+                        spokenLanguages: selectedLangs,
+                        countries: selectedCountries,
+                        photo: BlocProvider.of<SetupProfileUiCubit>(
+                          context,
+                        ).profileImage!,
+                        token: tokenValue,
+                      )
+                    : Commons.showToast(
+                        context,
+                        message: "Select at least one language and country",
+                      );
+              },
               buttonText: context.locale.translate("continue")!,
               btnTxtFontSize: 14,
               withIcon: true,

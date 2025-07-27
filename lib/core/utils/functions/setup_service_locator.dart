@@ -22,11 +22,16 @@ import '../../../Features/auth/login/domain/repositories/login_repo.dart';
 import '../../../Features/auth/login/domain/use_cases/login_use_case.dart';
 import '../../../Features/auth/login/presentation/manager/login_cubit.dart';
 import '../../../Features/auth/setup_profile/data/data_source/countries_remote_data_source.dart';
+import '../../../Features/auth/setup_profile/data/data_source/setup_profile_remote_data_source.dart';
 import '../../../Features/auth/setup_profile/data/repos/countries_repo_impl.dart';
+import '../../../Features/auth/setup_profile/data/repos/setup_profile_repo_impl.dart';
 import '../../../Features/auth/setup_profile/domain/repos/countries_repo.dart';
+import '../../../Features/auth/setup_profile/domain/repos/setup_profile_repo.dart';
 import '../../../Features/auth/setup_profile/domain/use_cases/get_countries_use_case.dart';
+import '../../../Features/auth/setup_profile/domain/use_cases/setup_profile_use_case.dart';
 import '../../../Features/auth/setup_profile/presentation/manager/get_countries/get_countries_cubit.dart';
 import '../../../Features/auth/setup_profile/presentation/manager/setup_profile/setup_profile_cubit.dart';
+import '../../../Features/auth/setup_profile/presentation/manager/setup_profile_ui/setup_profile_cubit.dart';
 import '../../../Features/home/presentation/manager/cubit/bottom_nav_cubit.dart';
 import '../../../Features/splash/data/datasources/language_local_data_source.dart';
 import '../../../Features/splash/data/datasources/language_local_data_source_impl.dart';
@@ -126,7 +131,7 @@ Future<void> init() async {
     () => CreatePasswordRemoteDataSourceImpl(),
   );
   // Setup Profile - Get Countries - Get Langs
-  getIt.registerFactory<SetupProfileCubit>(() => SetupProfileCubit());
+  getIt.registerFactory<SetupProfileUiCubit>(() => SetupProfileUiCubit());
   getIt.registerFactory<GetCountriesCubit>(
     () => GetCountriesCubit(getIt.call()),
   );
@@ -139,6 +144,19 @@ Future<void> init() async {
   );
   getIt.registerLazySingleton<GetCountriesRemoteDataSource>(
     () => GetCountriesRemoteDataSourceImpl(),
+  );
+  //Setup Profile
+  getIt.registerFactory<SetupProfileCubit>(
+    () => SetupProfileCubit(getIt.call()),
+  );
+  getIt.registerLazySingleton<SetupProfileUseCase>(
+    () => SetupProfileUseCase(getIt.call()),
+  );
+  getIt.registerLazySingleton<SetupProfileRepo>(
+    () => SetupProfileRepoImpl(getIt.call()),
+  );
+  getIt.registerLazySingleton<SetupProfileRemoteDataSource>(
+    () => SetupProfileRemoteDataSourceImpl(),
   );
 
   //Network

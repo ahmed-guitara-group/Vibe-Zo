@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 import 'package:hive/hive.dart';
-import 'package:vibe_zo/Features/auth/setup_profile/presentation/manager/setup_profile/setup_profile_cubit.dart';
 import 'package:vibe_zo/Features/auth/setup_profile/presentation/views/widgets/upload_image_widget.dart';
 import 'package:vibe_zo/core/utils/commons.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
@@ -15,6 +14,7 @@ import 'package:vibe_zo/core/widgets/custom_button.dart';
 import 'package:vibe_zo/core/widgets/custom_text_field.dart';
 
 import '../../../../../../core/utils/functions/validation_mixin.dart';
+import '../../manager/setup_profile_ui/setup_profile_cubit.dart';
 import '../widgets/custom_gender_selector.dart';
 
 class SetupProfileScreenStepOne extends StatefulWidget {
@@ -56,14 +56,14 @@ class _SetupProfileScreenStepOneState extends State<SetupProfileScreenStepOne>
         _gender != null &&
         _pickedImage != null) {
       _formKey.currentState!.save();
-      BlocProvider.of<SetupProfileCubit>(context).saveProfileData(
+      BlocProvider.of<SetupProfileUiCubit>(context).saveProfileData(
         name: _name!,
         idNumber: _idNumber!,
         gender: _gender!,
         birthDate: _birthDate!,
         image: _pickedImage,
       );
-      BlocProvider.of<SetupProfileCubit>(context).changeStep(2);
+      BlocProvider.of<SetupProfileUiCubit>(context).changeStep(2);
     } else {
       if (_pickedImage == null || _gender == null) {
         Commons.showToast(
@@ -176,7 +176,7 @@ class _SetupProfileScreenStepOneState extends State<SetupProfileScreenStepOne>
                 rowString: "Your Birthdate",
                 validator: (val) => validateInputText(val),
 
-                onChange: (val) {}, // لازم تكون موجودة حتى لو فاضية
+                onChange: (val) {},
               ),
             ),
             SizedBox(height: context.screenHeight * .04),

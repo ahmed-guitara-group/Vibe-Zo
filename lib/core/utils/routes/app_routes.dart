@@ -16,7 +16,9 @@ import '../../../Features/auth/login/presentation/manager/login_cubit.dart';
 import '../../../Features/auth/login/presentation/screens/login_screen.dart';
 import '../../../Features/auth/setup_profile/presentation/manager/get_countries/get_countries_cubit.dart';
 import '../../../Features/auth/setup_profile/presentation/manager/setup_profile/setup_profile_cubit.dart';
+import '../../../Features/auth/setup_profile/presentation/manager/setup_profile_ui/setup_profile_cubit.dart';
 import '../../../Features/auth/setup_profile/presentation/views/screens/setup_profile_screen.dart';
+import '../../../Features/home/presentation/manager/cubit/bottom_nav_cubit.dart';
 import '../../../Features/home/presentation/screens/home_screen.dart';
 import '../../../Features/home/presentation/widgets/bottom_nav_widget.dart';
 import '../../../Features/language/presentation/screens/language_screen.dart';
@@ -26,7 +28,6 @@ import '../functions/setup_service_locator.dart';
 class AppRoutes {
   static Route? onGenerateRoute(RouteSettings routeSettings) {
     final args = routeSettings.arguments;
-    print(routeSettings.name);
 
     switch (routeSettings.name) {
       case initialRoute:
@@ -48,7 +49,13 @@ class AppRoutes {
           ),
         );
       case kBottomNavRoute:
-        return MaterialPageRoute(builder: (_) => const BottomNavWidget());
+        return MaterialPageRoute(
+          builder: (_) => BlocBuilder<BottomNavCubit, BottomNavState>(
+            builder: (context, state) {
+              return const BottomNavWidget();
+            },
+          ),
+        );
       case kPhoneAuthScreenRoute:
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
@@ -63,10 +70,11 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [
-              BlocProvider(create: (context) => getIt<SetupProfileCubit>()),
+              BlocProvider(create: (context) => getIt<SetupProfileUiCubit>()),
               BlocProvider(create: (context) => getIt<GetLangsCubit>()),
               BlocProvider(create: (context) => getIt<AnimationCubit>()),
               BlocProvider(create: (context) => getIt<GetCountriesCubit>()),
+              BlocProvider(create: (context) => getIt<SetupProfileCubit>()),
             ],
             child: const SetupProfileScreen(),
           ),
@@ -95,13 +103,6 @@ class AppRoutes {
           ),
         );
 
-      // case kSetupProfileScreenStepTwoRoute:
-      //   return MaterialPageRoute(
-      //     builder: (_) => MultiBlocProvider(
-      //       providers: [],
-      //       child: const SetupProfileScreenStepTwo(),
-      //     ),
-      //   );
       default:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
     }
