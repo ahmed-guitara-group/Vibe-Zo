@@ -2,13 +2,14 @@ import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vibe_zo/Features/auth/setup_profile/presentation/manager/get_countries/get_countries_cubit.dart';
+import 'package:vibe_zo/Features/auth/setup_profile/presentation/manager/setup_profile/setup_profile_cubit.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/utils/network/api/network_api.dart';
 
+import '../../../../../../core/widgets/custom_alert_dialog.dart';
 import '../../../../../../core/widgets/custom_auth_app_bar.dart';
 import '../../../../../../core/widgets/custom_button.dart';
-import '../../../../auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
 import '../../manager/get_langs/get_langs_cubit.dart';
 import '../widgets/custom_country_chip.dart';
 
@@ -23,13 +24,18 @@ class SetupProfileScreenStepTwo extends StatefulWidget {
 class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
   List<String> selectedCountries = [];
   List<String> selectedLangs = [];
+  final int selectionLimit = 3;
 
   void toggleCountrySelection(String country) {
     setState(() {
       if (selectedCountries.contains(country)) {
         selectedCountries.remove(country);
       } else {
-        selectedCountries.add(country);
+        if (selectedCountries.length >= selectionLimit) {
+          showLimitDialog("country");
+        } else {
+          selectedCountries.add(country);
+        }
       }
     });
   }
@@ -39,9 +45,20 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
       if (selectedLangs.contains(lang)) {
         selectedLangs.remove(lang);
       } else {
-        selectedLangs.add(lang);
+        if (selectedLangs.length >= selectionLimit) {
+          showLimitDialog("language");
+        } else {
+          selectedLangs.add(lang);
+        }
       }
     });
+  }
+
+  void showLimitDialog(String type) {
+    showDialog(
+      context: context,
+      builder: (_) => CustomAlertDialog(title: "$type limit reached"),
+    );
   }
 
   @override
@@ -68,9 +85,14 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
       ],
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ListView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomAuthAppBar(
+              hasArrowBackButton: true,
+              onBackButtonPressed: () {
+                BlocProvider.of<SetupProfileCubit>(context).changeStep(1);
+              },
               title: context.locale.translate("lets_setup_profile")!,
             ),
             const SizedBox(height: 36),
@@ -81,152 +103,111 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
             BlocBuilder<GetLangsCubit, GetLangsState>(
               builder: (context, langsState) {
                 return (langsState is GetLangsSuccessful)
-                    ? BlocBuilder<AnimationCubit, AnimationState>(
-                        builder: (context, state) {
-                          if (!BlocProvider.of<AnimationCubit>(
-                            context,
-                          ).isShowAllLangs) {
-                            return Wrap(
-                              spacing: 12,
-                              runSpacing: 12,
-                              children: [
-                                ...langsState.user.data!
-                                    .take(5)
-                                    .map(
-                                      (e) => CustomCountryChip(
-                                        name: e.name ?? "",
-                                        isSelected: selectedLangs.contains(
-                                          e.name,
-                                        ),
-                                        onSelect: () =>
-                                            toggleLangSelection(e.name!),
-                                      ),
-                                    ),
-                                CustomCountryChip(
-                                  name: context.locale.translate("more")!,
-                                  isSelected: false,
-                                  onSelect: () {
-                                    BlocProvider.of<AnimationCubit>(
-                                      context,
-                                    ).showAllLanguages();
-                                  },
+                    ? Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: [
+                          ...langsState.user.data!
+                              .take(5)
+                              .map(
+                                (e) => CustomCountryChip(
+                                  name: e.name ?? "",
+                                  isSelected: selectedLangs.contains(e.name),
+                                  onSelect: () => toggleLangSelection(e.name!),
                                 ),
-                              ],
-                            );
-                          } else {
-                            return Wrap(
-                              spacing: 12,
-                              runSpacing: 12,
-                              children: [
-                                ...langsState.user.data!.map(
-                                  (e) => CustomCountryChip(
-                                    name: e.name ?? "",
-                                    isSelected: selectedLangs.contains(e.name),
-                                    onSelect: () =>
-                                        toggleLangSelection(e.name!),
+                              ),
+                          CustomCountryChip(
+                            name: context.locale.translate("more")!,
+                            isSelected: false,
+                            onSelect: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.white,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(16),
                                   ),
                                 ),
-                                CustomCountryChip(
-                                  name: context.locale.translate("more")!,
-                                  isSelected: false,
-                                  onSelect: () {
-                                    BlocProvider.of<AnimationCubit>(
-                                      context,
-                                    ).showAllLanguages();
-                                  },
+                                builder: (context) => _buildBottomSheet(
+                                  context: context,
+                                  title:
+                                      context.locale.translate(
+                                        "search_language",
+                                      ) ??
+                                      "Search",
+                                  allItems: langsState.user.data!,
+                                  isLanguage: true,
                                 ),
-                              ],
-                            );
-                          }
-                        },
+                              );
+                            },
+                          ),
+                        ],
                       )
                     : Center(
                         child: CircularProgressIndicator(color: kPrimaryColor),
                       );
               },
             ),
-
             const SizedBox(height: 24),
 
+            /// Countries
             Text(context.locale.translate("where_are_you_from")!),
             const SizedBox(height: 8),
             BlocBuilder<GetCountriesCubit, GetCountriesState>(
               builder: (context, countriesState) {
                 return (countriesState is GetCountriesSuccessful)
-                    ? BlocBuilder<AnimationCubit, AnimationState>(
-                        builder: (context, state) {
-                          if (!BlocProvider.of<AnimationCubit>(
-                            context,
-                          ).isShowAllCountries) {
-                            return Wrap(
-                              spacing: 12,
-                              runSpacing: 12,
-                              children: [
-                                ...countriesState.user.data!
-                                    .take(5)
-                                    .map(
-                                      (e) => CustomCountryChip(
-                                        flag: CountryFlag.fromCountryCode(
-                                          e.code!,
-                                          shape: Circle(),
-                                          height: 18,
-                                          width: 18,
-                                        ),
-                                        name: context.locale.isEnLocale
-                                            ? e.nameEn ?? ""
-                                            : e.nameAr ?? "",
-                                        isSelected: selectedLangs.contains(
-                                          e.code,
-                                        ),
-                                        onSelect: () =>
-                                            toggleLangSelection(e.code!),
-                                      ),
-                                    ),
-                                CustomCountryChip(
-                                  name: context.locale.translate("more")!,
-                                  isSelected: false,
-                                  onSelect: () {
-                                    BlocProvider.of<AnimationCubit>(
-                                      context,
-                                    ).showAllCountries();
-                                  },
+                    ? Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: [
+                          ...countriesState.user.data!
+                              .take(5)
+                              .map(
+                                (e) => CustomCountryChip(
+                                  flag: CountryFlag.fromCountryCode(
+                                    e.code!,
+                                    shape: Circle(),
+                                    height: 18,
+                                    width: 18,
+                                  ),
+                                  name: context.locale.isEnLocale
+                                      ? e.nameEn ?? ''
+                                      : e.nameAr ?? '',
+                                  isSelected: selectedCountries.contains(
+                                    e.code,
+                                  ),
+                                  onSelect: () =>
+                                      toggleCountrySelection(e.code!),
                                 ),
-                              ],
-                            );
-                          } else {
-                            return Wrap(
-                              spacing: 12,
-                              runSpacing: 12,
-                              children: [
-                                ...countriesState.user.data!.map(
-                                  (e) => CustomCountryChip(
-                                    flag: CountryFlag.fromCountryCode(
-                                      e.code!,
-                                      shape: Circle(),
-                                      height: 18,
-                                      width: 18,
-                                    ),
-                                    name: context.locale.isEnLocale
-                                        ? e.nameEn ?? ""
-                                        : e.nameAr ?? "",
-                                    isSelected: selectedLangs.contains(e.code),
-                                    onSelect: () =>
-                                        toggleLangSelection(e.code!),
+                              ),
+                          CustomCountryChip(
+                            name: context.locale.translate("more")!,
+                            isSelected: false,
+                            onSelect: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.white,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(16),
                                   ),
                                 ),
-                                CustomCountryChip(
-                                  name: context.locale.translate("more")!,
-                                  isSelected: false,
-                                  onSelect: () {
-                                    BlocProvider.of<AnimationCubit>(
-                                      context,
-                                    ).showAllCountries();
-                                  },
+                                builder: (context) => _buildBottomSheet(
+                                  context: context,
+                                  title:
+                                      context.locale.translate(
+                                        "search_country",
+                                      ) ??
+                                      "Search",
+                                  allItems: countriesState.user.data!,
+                                  isLanguage: false,
                                 ),
-                              ],
-                            );
-                          }
-                        },
+                              );
+                            },
+                          ),
+                        ],
                       )
                     : Center(
                         child: CircularProgressIndicator(color: kPrimaryColor),
@@ -234,22 +215,135 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
               },
             ),
 
-            const SizedBox(height: 60),
-
+            const Spacer(),
             CustomButton(
               screenWidth: context.screenWidth,
-              buttonTapHandler: () {
-                // Action on continue
-              },
+              buttonTapHandler: () {},
               buttonText: context.locale.translate("continue")!,
               btnTxtFontSize: 14,
               withIcon: true,
-              // icon: AssetsData.continueIcon,
             ),
             const SizedBox(height: 24),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildBottomSheet({
+    required BuildContext context,
+    required String title,
+    required List<dynamic> allItems,
+    required bool isLanguage,
+  }) {
+    final TextEditingController searchController = TextEditingController();
+    List<dynamic> filteredItems = List.from(allItems);
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.75,
+          minChildSize: 0.3,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (_, scrollController) {
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: Column(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(top: 8, bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.search),
+                        hintText: title,
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      onChanged: (val) {
+                        setState(() {
+                          filteredItems = allItems
+                              .where(
+                                (item) =>
+                                    (isLanguage
+                                            ? item.name
+                                            : (item.nameAr ?? '') +
+                                                  (item.nameEn ?? ''))
+                                        .toLowerCase()
+                                        .contains(val.toLowerCase()),
+                              )
+                              .toList();
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  /// Grid View
+                  Expanded(
+                    child: GridView.builder(
+                      controller: scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 180,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 12,
+                            childAspectRatio: 3.5,
+                          ),
+                      itemCount: filteredItems.length,
+                      itemBuilder: (context, index) {
+                        final e = filteredItems[index];
+                        return CustomCountryChip(
+                          flag: isLanguage
+                              ? null
+                              : CountryFlag.fromCountryCode(
+                                  e.code!,
+                                  shape: Circle(),
+                                  height: 18,
+                                  width: 18,
+                                ),
+                          name: isLanguage
+                              ? e.name ?? ''
+                              : (context.locale.isEnLocale
+                                    ? e.nameEn ?? ''
+                                    : e.nameAr ?? ''),
+                          isSelected: isLanguage
+                              ? selectedLangs.contains(e.name)
+                              : selectedCountries.contains(e.code),
+                          onSelect: () {
+                            isLanguage
+                                ? toggleLangSelection(e.name!)
+                                : toggleCountrySelection(e.code!);
+                            setState(() {});
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

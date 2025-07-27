@@ -21,9 +21,11 @@ class CustomTextField extends StatefulWidget {
   final bool isRequired;
   final void Function(String?)? onChange;
   final int? maxLength;
+  final bool? enabled;
   const CustomTextField({
     super.key,
     this.maxLength,
+    this.enabled,
     this.onChange,
     this.initialValue,
     this.width,
@@ -122,7 +124,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               }) {
                 return null;
               },
-
+          enabled: widget.enabled ?? true,
           //  initialValue: widget.initialValue,
           onChanged: widget.onChange,
           textAlignVertical: TextAlignVertical.top,

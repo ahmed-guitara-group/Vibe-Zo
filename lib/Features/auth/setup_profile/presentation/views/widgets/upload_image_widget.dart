@@ -1,16 +1,37 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 
-class ProfileImagePicker extends StatelessWidget {
+class ProfileImagePicker extends StatefulWidget {
   final String initials;
-  final VoidCallback onTap;
+  final Function(File) onImagePicked;
 
   const ProfileImagePicker({
     super.key,
     required this.initials,
-    required this.onTap,
+    required this.onImagePicked,
   });
+
+  @override
+  State<ProfileImagePicker> createState() => _ProfileImagePickerState();
+}
+
+class _ProfileImagePickerState extends State<ProfileImagePicker> {
+  File? _pickedImage;
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _pickedImage = File(image.path);
+      });
+      widget.onImagePicked(_pickedImage!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,25 +41,25 @@ class ProfileImagePicker extends StatelessWidget {
         CircleAvatar(
           radius: 40,
           backgroundColor: const Color(0xFFF5F6F8),
-          child: Text(
-            initials,
-            style: const TextStyle(
-              fontSize: 16,
-              color: kBlackTextColor,
-              // fontWeight: FontWeight.bold,
-            ),
-          ),
+          backgroundImage: _pickedImage != null
+              ? FileImage(_pickedImage!)
+              : null,
+          child: _pickedImage == null
+              ? Text(
+                  widget.initials,
+                  style: const TextStyle(fontSize: 16, color: kBlackTextColor),
+                )
+              : null,
         ),
-
         Positioned(
           bottom: -12,
           left: context.screenWidth / 2 - 8,
           child: GestureDetector(
-            onTap: onTap,
+            onTap: _pickImage,
             child: Container(
               width: 45,
               height: 45,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
@@ -49,68 +70,6 @@ class ProfileImagePicker extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class GenderSelector extends StatefulWidget {
-  const GenderSelector({super.key});
-
-  @override
-  State<GenderSelector> createState() => _GenderSelectorState();
-}
-
-class _GenderSelectorState extends State<GenderSelector> {
-  String? selectedGender;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildGenderButton(
-          label: "Female",
-          icon: Icons.female,
-          color: Colors.pink,
-          value: "female",
-        ),
-        const SizedBox(width: 12),
-        _buildGenderButton(
-          label: "Male",
-          icon: Icons.male,
-          color: Colors.blue,
-          value: "male",
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGenderButton({
-    required String label,
-    required IconData icon,
-    required Color color,
-    required String value,
-  }) {
-    final isSelected = selectedGender == value;
-    return OutlinedButton.icon(
-      onPressed: () {
-        setState(() {
-          selectedGender = value;
-        });
-      },
-      icon: Icon(icon, color: isSelected ? Colors.white : color),
-      label: Text(
-        label,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: isSelected ? Colors.white : color,
-        ),
-      ),
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(color: color),
-        backgroundColor: isSelected ? color : Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
     );
   }
 }

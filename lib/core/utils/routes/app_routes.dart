@@ -89,6 +89,7 @@ class AppRoutes {
           builder: (_) => MultiBlocProvider(
             providers: [
               BlocProvider(create: (context) => getIt<CreatePasswordCubit>()),
+              BlocProvider(create: (context) => getIt<AnimationCubit>()),
             ],
             child: const CreatePasswordScreen(),
           ),

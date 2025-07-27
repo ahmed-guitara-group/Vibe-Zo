@@ -76,7 +76,7 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
                   hasArrowBackButton: true,
                   title: context.locale.translate("login_to_your_account")!,
                   onBackButtonPressed: () {
-                    Navigator.pushNamed(context, kPhoneAuthScreenRoute);
+                    Navigator.pop(context);
                   },
                 ),
                 Gaps.vGap30,

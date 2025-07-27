@@ -7,6 +7,9 @@ class AssetsData {
   static const splashImage = '${pathImage}splash_image.png';
   static const arabicLangImage = '${pathImage}arabic_lang_image.png';
   static const englishLangImage = '${pathImage}english_lang_image.png';
+  static const errorImage = '${pathImage}error.png';
+  static const loading = '${pathImage}loading.gif';
+
   /*-------------------------------Icons---------------------*/
   static const phone = '${pathIcon}phone.png';
   static const apple = '${pathIcon}apple.png';
