@@ -14,7 +14,10 @@ class ChatsList extends StatelessWidget {
       child: ListView.builder(
         itemCount: 10,
         itemBuilder: (context, index) {
-          return CustomChatItem(isPinnedChat: index < 4 ? true : false);
+          return CustomChatItem(
+            isPinnedChat: index < 4 ? true : false,
+            index: index,
+          );
         },
       ),
     );

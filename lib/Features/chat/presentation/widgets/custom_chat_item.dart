@@ -1,16 +1,24 @@
-import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
-import 'package:vibe_zo/Features/chat/presentation/widgets/custom_level_container.dart';
+import 'package:vibe_zo/core/utils/constants.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 
 import '../../../../core/utils/assets.dart';
+import 'custom_chat_title.dart';
 
 class CustomChatItem extends StatelessWidget {
-  const CustomChatItem({super.key, required this.isPinnedChat});
+  const CustomChatItem({
+    super.key,
+    required this.isPinnedChat,
+    required this.index,
+  });
   final bool isPinnedChat;
+  final int index;
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () {
+        Navigator.pushNamed(context, kChatDetailsScreenRoute);
+      },
       contentPadding: EdgeInsets.all(0),
       leading: SizedBox(
         width: context.screenWidth * .13,
@@ -38,7 +46,7 @@ class CustomChatItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(9999),
                   child: isPinnedChat
                       ? Image.asset(AssetsData.vZLogoWhite)
-                      : Image.network("https://i.pravatar.cc/300"),
+                      : Image.network("https://i.pravatar.cc/${index * 100}"),
                 ),
               ),
             ),
@@ -52,36 +60,10 @@ class CustomChatItem extends StatelessWidget {
         ),
       ),
 
-      title: Row(
-        children: [
-          isPinnedChat ? SizedBox() : CustomLevelContainer(),
-          SizedBox(width: 4),
-          Expanded(
-            child: Text(
-              isPinnedChat ? 'Vibe Zo Team Middle East' : "Laila Mostafa",
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: const Color(0xFF1F2A37),
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                height: 1.17,
-              ),
-            ),
-          ),
-          SizedBox(width: 4),
-          !isPinnedChat
-              ? Image.asset(AssetsData.verifiedIcon, width: 16, height: 16)
-              : SizedBox(),
-          SizedBox(width: 4),
-          !isPinnedChat
-              ? CountryFlag.fromCountryCode(
-                  "EG",
-                  shape: RoundedRectangle(4),
-                  height: 18,
-                  width: 18,
-                )
-              : SizedBox(),
-        ],
+      title: CustomChatTitle(
+        isPinnedChat: isPinnedChat,
+        isExpanded: true,
+        isChatDetailsBar: false,
       ),
 
       subtitle: Text(

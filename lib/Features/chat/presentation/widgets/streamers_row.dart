@@ -17,7 +17,7 @@ class StreamersRow extends StatelessWidget {
       itemBuilder: (context, index) {
         return CircleAvatar(
           radius: context.screenWidth * .07,
-          backgroundImage: NetworkImage("https://i.pravatar.cc/300"),
+          backgroundImage: NetworkImage("https://i.pravatar.cc/${index * 100}"),
         );
       },
     );

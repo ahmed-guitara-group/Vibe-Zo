@@ -25,7 +25,7 @@ class BottomNavWidget extends StatelessWidget {
               preferredSize: Size.fromHeight(
                 MediaQuery.of(context).size.height * 0.07,
               ),
-              child: CustomHomeAppBar(tapHandler: () {}),
+              child: CustomHomeAppBar(hasSearchIcon: true),
             ),
             bottomNavigationBar: BottomNavigationBar(
               showSelectedLabels: true,

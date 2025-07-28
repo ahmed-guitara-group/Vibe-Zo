@@ -24,4 +24,12 @@ class AssetsData {
   static const verifiedIcon = '${pathIcon}verified.png';
   static const levelIcon = '${pathIcon}level.png';
   static const searchIcon = '${pathIcon}search_icon.png';
+  static const liveIcon = '${pathIcon}live_icon.gif';
+  static const arrowBack = '${pathIcon}arrow_back.png';
+  static const moreIcon = '${pathIcon}more.png';
+  static const addUser = '${pathIcon}add_user.png';
+  static const seen = '${pathIcon}seen.png';
+  static const happyFace = '${pathIcon}happy_face.png';
+  static const gift = '${pathIcon}gift.png';
+  static const mic = '${pathIcon}mic.png';
 }

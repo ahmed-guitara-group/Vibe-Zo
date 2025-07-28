@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:vibe_zo/core/utils/helper.dart';
 
 import '../../../../core/utils/assets.dart';
 import '../../../../core/utils/constants.dart';
 
 class CustomHomeAppBar extends StatelessWidget {
-  const CustomHomeAppBar({super.key, required this.tapHandler});
-  final Function tapHandler;
+  const CustomHomeAppBar({
+    super.key,
+
+    this.hasSearchIcon = false,
+    this.titleWidget,
+    this.leadingWidget,
+    this.actions,
+  });
+
+  final bool hasSearchIcon;
+  final Widget? titleWidget;
+  final Widget? leadingWidget;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
@@ -30,21 +42,30 @@ class CustomHomeAppBar extends StatelessWidget {
               ),
             ),
             child: AppBar(
+              leadingWidth: context.screenWidth * .1,
+              title: titleWidget,
               automaticallyImplyLeading: false,
               backgroundColor: Colors.transparent,
               elevation: 0,
               centerTitle: true,
+              leading: leadingWidget,
+              titleSpacing: 0,
+
               actionsPadding: EdgeInsets.symmetric(horizontal: 16),
-              actions: [
-                InkWell(
-                  onTap: () {},
-                  child: Image.asset(
-                    AssetsData.searchIcon,
-                    height: 20,
-                    width: 20,
-                  ),
-                ),
-              ],
+              actions:
+                  actions ??
+                  [
+                    hasSearchIcon
+                        ? InkWell(
+                            onTap: () {},
+                            child: Image.asset(
+                              AssetsData.searchIcon,
+                              height: 20,
+                              width: 20,
+                            ),
+                          )
+                        : SizedBox(),
+                  ],
             ),
           ),
         ),

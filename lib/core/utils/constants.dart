@@ -19,12 +19,10 @@ const String kSetupProfileScreenRoute = '/setupProfileScreen';
 const String kSetupProfileScreenStepOneRoute = '/setupProfileScreenStepOne';
 const String kSetupProfileScreenStepTwoRoute = '/setupProfileScreenStepTwo';
 
-const String kProfileScreenRoute = '/profileScreen';
+//Chat Screen
+const String kChatDetailsScreenRoute = '/chatDetailsScreen';
 
 const String kLanguageScreenRoute = '/languageScreen';
-const String kProductDetailsScreenRoute = '/productDetailsScreen';
-const String kAllProductsScreenRoute = '/allProductsScreen';
-const String kOrderDetailsScreenRoute = '/orderDetailsScreen';
 
 // saved sharedprefernces
 const String locale = 'locale';

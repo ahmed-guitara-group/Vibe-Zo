@@ -53,6 +53,11 @@ dependencies:
   build_runner: 
   hive_generator: 
   country_flags: ^3.3.0
+  flutter_slidable: ^4.0.0
+  just_audio: ^0.10.4
+  just_waveform: ^0.0.7
+  record: ^6.0.0
+  path_provider: ^2.1.5
  
 dev_dependencies:
   flutter_test:
