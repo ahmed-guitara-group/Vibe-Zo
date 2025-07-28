@@ -7,9 +7,9 @@ import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/widgets/custom_text_field.dart';
 
 import '../../../../../core/utils/assets.dart';
-import '../../../../../core/utils/commons.dart';
 import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/gaps.dart';
+import '../../../../../core/widgets/custom_alert_dialog.dart';
 import '../../../../../core/widgets/custom_auth_app_bar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../core/widgets/custom_loading_widget.dart';
@@ -101,10 +101,13 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen>
                               kSetupProfileScreenRoute,
                             );
                     } else if (state is CreatePasswordFailed) {
-                      Commons.showToast(
-                        context,
-                        message: state.errorCode,
-                        color: Colors.red,
+                      Navigator.pop(context);
+
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return CustomAlertDialog(title: state.errorCode);
+                        },
                       );
                     }
                     if (state is CreatePasswordLoading) {

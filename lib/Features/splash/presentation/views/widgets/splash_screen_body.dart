@@ -150,7 +150,9 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
       // }
     } else {
       // await pref.setBool('seen', true);
-      Navigator.pushReplacementNamed(context, kBottomNavRoute);
+      Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
+
+      // Navigator.pushReplacementNamed(context, kBottomNavRoute);
     }
   }
 }

@@ -41,7 +41,12 @@ mixin ValidationMixin<T extends StatefulWidget> on State<T> {
       return AppLocalizations.of(
         context,
       )!.translate("Please_enter_length_password");
+    } else if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z]).+$').hasMatch(passWord)) {
+      return AppLocalizations.of(
+        context,
+      )!.translate("password_must_contain_upper_and_lower");
     }
+
     return null;
   }
 
