@@ -3,9 +3,14 @@ import 'package:vibe_zo/Features/chat/presentation/widgets/chat_field.dart';
 
 import 'chat_bubble.dart';
 
-class ChatDetailsScreenBody extends StatelessWidget {
-  ChatDetailsScreenBody({super.key});
+class ChatDetailsScreenBody extends StatefulWidget {
+  const ChatDetailsScreenBody({super.key});
 
+  @override
+  State<ChatDetailsScreenBody> createState() => _ChatDetailsScreenBodyState();
+}
+
+class _ChatDetailsScreenBodyState extends State<ChatDetailsScreenBody> {
   final String currentUserId = '123';
 
   final List<Message> messages = List.generate(
@@ -19,6 +24,8 @@ class ChatDetailsScreenBody extends StatelessWidget {
       type: MessageType.text,
     ),
   );
+
+  Message? repliedTo;
 
   bool _shouldShowAvatar(int index) {
     if (index == 0) return true;
@@ -44,40 +51,29 @@ class ChatDetailsScreenBody extends StatelessWidget {
                 final message = messages[index];
                 final isMe = message.senderId == currentUserId;
                 final showAvatar = _shouldShowAvatar(index);
-                return Dismissible(
-                  key: ValueKey(message.id),
-                  direction: DismissDirection.startToEnd,
-                  confirmDismiss: (direction) async {
-                    return false;
+                return ChatBubble(
+                  message: message,
+                  isMe: isMe,
+                  showAvatar: showAvatar,
+                  onReply: (msg) {
+                    setState(() {
+                      repliedTo = msg;
+                    });
                   },
-                  child: GestureDetector(
-                    onLongPress: () {
-                      showDialog(
-                        barrierDismissible: true,
-                        context: context,
-                        builder: (context) {
-                          return Center(
-                            child: Container(
-                              color: Colors.red,
-                              child: Text("data"),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: ChatBubble(
-                      message: message,
-                      isMe: isMe,
-                      showAvatar: showAvatar,
-                    ),
-                  ),
                 );
               },
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: ChatField(),
+            child: ChatField(
+              repliedTo: repliedTo,
+              onCancelReply: () {
+                setState(() {
+                  repliedTo = null;
+                });
+              },
+            ),
           ),
         ],
       ),

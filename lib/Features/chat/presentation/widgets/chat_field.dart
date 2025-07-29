@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
@@ -9,9 +10,13 @@ import 'package:vibe_zo/core/utils/assets.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 
 import '../../../../core/utils/gaps.dart';
+import 'chat_bubble.dart';
 
 class ChatField extends StatefulWidget {
-  const ChatField({super.key});
+  final Message? repliedTo;
+  final VoidCallback? onCancelReply;
+
+  const ChatField({super.key, this.repliedTo, this.onCancelReply});
 
   @override
   State<ChatField> createState() => _ChatFieldState();
@@ -20,7 +25,6 @@ class ChatField extends StatefulWidget {
 class _ChatFieldState extends State<ChatField> {
   final AudioRecorder _recorder = AudioRecorder();
   final AudioPlayer _player = AudioPlayer();
-
   late final RecorderController _waveformController;
 
   bool _isRecording = false;
@@ -28,12 +32,17 @@ class _ChatFieldState extends State<ChatField> {
   bool _cancelRecording = false;
   Offset _startOffset = Offset.zero;
   String? _recordedFilePath;
+  double _micScale = 1.0;
+
+  Duration _currentDuration = Duration.zero;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _waveformController = RecorderController()
-      ..updateFrequency = const Duration(milliseconds: 100);
+      ..updateFrequency = const Duration(milliseconds: 100)
+      ..refresh();
   }
 
   Future<String> _getTempFilePath() async {
@@ -51,6 +60,17 @@ class _ChatFieldState extends State<ChatField> {
       _recordedFilePath = path;
       _waveformController.reset();
       _waveformController.record();
+
+      _currentDuration = Duration.zero;
+      _timer?.cancel();
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (mounted) {
+          setState(() {
+            _currentDuration += const Duration(seconds: 1);
+          });
+        }
+      });
+
       setState(() {
         _isRecording = true;
         _cancelRecording = false;
@@ -59,12 +79,15 @@ class _ChatFieldState extends State<ChatField> {
   }
 
   Future<void> _stopRecording() async {
+    _timer?.cancel();
     final path = await _recorder.stop();
     await _waveformController.stop();
 
     setState(() {
       _isRecording = false;
+      _micScale = 1.0;
       _recordedFilePath = _cancelRecording ? null : path;
+      _currentDuration = Duration.zero;
     });
 
     if (_cancelRecording && path != null) {
@@ -94,8 +117,103 @@ class _ChatFieldState extends State<ChatField> {
     }
   }
 
+  Widget _buildRecordingStatus() {
+    final minutes = _currentDuration.inMinutes
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
+    final seconds = _currentDuration.inSeconds
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: AudioWaveforms(
+            size: const Size(double.infinity, 40),
+            recorderController: _waveformController,
+            enableGesture: false,
+            waveStyle: const WaveStyle(
+              spacing: 4,
+              showMiddleLine: false,
+              extendWaveform: true,
+              waveColor: kPrimaryColor,
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Container(
+          height: 50,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            border: Border.all(color: kGreyTextColor),
+            borderRadius: BorderRadius.circular(99999),
+            color: Colors.grey.shade100,
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.fiber_manual_record,
+                color: _cancelRecording ? Colors.grey : Colors.red,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '$minutes:$seconds',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: kPrimaryColor,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Text(
+                "اسحب لليسار للإلغاء",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: _cancelRecording ? Colors.grey : kGreyTextColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildReplyHeader() {
+    if (widget.repliedTo == null) return const SizedBox();
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: kPrimaryColor.withOpacity(.3),
+        borderRadius: BorderRadius.circular(99999),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              widget.repliedTo!.content,
+              style: TextStyle(fontSize: 14, height: 1.29),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: widget.onCancelReply,
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   void dispose() {
+    _timer?.cancel();
     _recorder.dispose();
     _player.dispose();
     _waveformController.dispose();
@@ -104,102 +222,71 @@ class _ChatFieldState extends State<ChatField> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: _isRecording
-              ? AudioWaveforms(
-                  size: const Size(double.infinity, 50),
-                  recorderController: _waveformController,
-                  enableGesture: false,
-                  margin: const EdgeInsets.all(0),
-                  waveStyle: WaveStyle(
-                    showMiddleLine: false,
-                    showBottom: true,
-                    extendWaveform: true,
-                  ),
-                )
-              : TextField(
-                  minLines: 1,
-                  maxLines: 4,
-                  cursorColor: kPrimaryColor,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: kGreyTextColor,
-                        width: 1.0,
+        if (widget.repliedTo != null) _buildReplyHeader(),
+        Row(
+          children: [
+            Expanded(
+              child: _isRecording
+                  ? _buildRecordingStatus()
+                  : TextField(
+                      minLines: 1,
+                      maxLines: 3,
+                      cursorColor: kPrimaryColor,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: kGreyTextColor),
+                          borderRadius: BorderRadius.circular(99999),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: kPrimaryColor),
+                          borderRadius: BorderRadius.circular(99999),
+                        ),
+                        suffixIcon: Image.asset(AssetsData.gift),
+                        contentPadding: const EdgeInsets.all(0),
+                        prefixIcon: InkWell(
+                          onTap: () {},
+                          child: Image.asset(AssetsData.happyFace),
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(99999),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: kPrimaryColor,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(99999),
-                    ),
-                    suffixIcon: Image.asset(AssetsData.gift),
-                    contentPadding: const EdgeInsets.all(0),
-                    prefixIcon: InkWell(
-                      onTap: () {},
-                      child: Image.asset(AssetsData.happyFace),
-                    ),
-                  ),
-                ),
-        ),
-        Gaps.hGap8,
-
-        /// زر التسجيل بالضغط المستمر
-        GestureDetector(
-          onLongPressStart: (details) async {
-            _startOffset = details.globalPosition;
-            await _startRecording();
-          },
-          onLongPressMoveUpdate: (details) {
-            final dy = details.globalPosition.dy;
-            if (_startOffset.dy - dy > 100) {
-              setState(() {
-                _cancelRecording = true;
-              });
-            } else {
-              setState(() {
-                _cancelRecording = false;
-              });
-            }
-          },
-          onLongPressEnd: (details) async {
-            await _stopRecording();
-
-            if (_cancelRecording) {
-            } else {}
-          },
-          child: CircleAvatar(
-            radius: 25,
-            backgroundColor: _isRecording
-                ? (_cancelRecording ? Colors.grey : kPrimaryColor)
-                : kLightGreyColor,
-            child: Image.asset(
-              _isRecording ? AssetsData.sendMsg : AssetsData.mic,
-              width: 40,
-              height: 40,
-              //    color: Colors.white,
             ),
-          ),
+            Gaps.hGap8,
+            GestureDetector(
+              onLongPressStart: (details) async {
+                _startOffset = details.globalPosition;
+                setState(() => _micScale = 1.0);
+                await _startRecording();
+              },
+              onLongPressMoveUpdate: (details) {
+                final dx = details.globalPosition.dx;
+                setState(() {
+                  _cancelRecording = _startOffset.dx - dx > 100;
+                });
+              },
+              onLongPressEnd: (_) async {
+                setState(() => _micScale = 1.0);
+                await _stopRecording();
+              },
+              child: CircleAvatar(
+                radius: 25 * _micScale,
+                backgroundColor: _isRecording
+                    ? (_cancelRecording ? Colors.red : kPrimaryColor)
+                    : kLightGreyColor,
+                child: Image.asset(
+                  (_isRecording && _cancelRecording)
+                      ? AssetsData.trash
+                      : _isRecording
+                      ? AssetsData.sendMsg
+                      : AssetsData.mic,
+                  width: 30,
+                  height: 30,
+                ),
+              ),
+            ),
+          ],
         ),
-        //  Gaps.hGap8,
-
-        /// زر التشغيل
-        // if (_recordedFilePath != null && !_isRecording)
-        //   InkWell(
-        //     onTap: _togglePlayback,
-        //     child: CircleAvatar(
-        //       backgroundColor: Colors.green[200],
-        //       child: Icon(
-        //         _isPlaying ? Icons.pause : Icons.play_arrow,
-        //         color: Colors.white,
-        //       ),
-        //     ),
-        //   ),
       ],
     );
   }

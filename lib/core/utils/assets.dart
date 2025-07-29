@@ -33,4 +33,11 @@ class AssetsData {
   static const gift = '${pathIcon}gift.png';
   static const mic = '${pathIcon}mic.png';
   static const sendMsg = '${pathIcon}send_message.png';
+
+  static const infoIcon = '${pathIcon}info.png';
+  static const replyIcon = '${pathIcon}reply.png';
+  static const trash = '${pathIcon}trash.png';
+  static const trash1 = '${pathIcon}trash1.png';
+  static const reportIcon = '${pathIcon}report.png';
+  static const copy = '${pathIcon}copy.png';
 }

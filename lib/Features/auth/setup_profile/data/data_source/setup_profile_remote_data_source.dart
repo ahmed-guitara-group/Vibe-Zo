@@ -1,12 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/data/models/send_code_model/send_code_model.dart';
-import 'package:vibe_zo/core/utils/network/api/network_api.dart';
 
-import '../../../../../../core/utils/functions/setup_service_locator.dart';
-import '../../../../../../core/utils/network/network_request.dart';
+import '../../../../../core/utils/functions/setup_service_locator.dart';
+import '../../../../../core/utils/network/api/network_api.dart';
+import '../../../../../core/utils/network/network_request.dart';
 import '../../../../../core/utils/network/network_utils.dart';
 
 typedef SetupProfileResponse = Either<String, SendCodeModel>;
@@ -37,18 +38,18 @@ class SetupProfileRemoteDataSourceImpl extends SetupProfileRemoteDataSource {
     required String token,
   }) async {
     SetupProfileResponse responseResult = left("حدث خطأ أثناء رفع البيانات");
-    var body = {
-      'username': userName,
-      'name': name,
-      'birthDate': birthDate,
-      'gender': gender,
-      'speakLanguage': spokenLanguages.join(','),
-      'country': countries.join(','),
-      'photo': await MultipartFile.fromFile(
-        photo.path,
-        filename: photo.path.split('/').last,
-      ),
-    };
+    // var body = {
+    //   'username': userName,
+    //   'name': name,
+    //   'birthDate': birthDate,
+    //   'gender': gender,
+    //   'speakLanguage': spokenLanguages.join(','),
+    //   'country': countries.join(','),
+    //   'photo': await MultipartFile.fromFile(
+    //     photo.path,
+    //     filename: photo.path.split('/').last,
+    //   ),
+    // };
 
     try {
       final formData = FormData.fromMap({
@@ -56,18 +57,17 @@ class SetupProfileRemoteDataSourceImpl extends SetupProfileRemoteDataSource {
         'name': name,
         'birthDate': birthDate,
         'gender': gender,
-        'speakLanguage': spokenLanguages.join(','),
-        'country': countries.join(','),
+        'speakLanguage': jsonEncode(spokenLanguages),
+        'country': jsonEncode(countries),
         'photo': await MultipartFile.fromFile(
           photo.path,
           filename: photo.path.split('/').last,
         ),
       });
-
       await getIt<NetworkRequest>().requestFutureData<SendCodeModel>(
         Method.post,
         url: Api.doServerAddDataApiCall,
-        params: body,
+        //  params: body,
         isFormData: true,
         formData: formData,
         options: Options(

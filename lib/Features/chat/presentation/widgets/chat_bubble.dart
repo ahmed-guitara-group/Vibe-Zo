@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:vibe_zo/Features/chat/presentation/widgets/bubble_interactions.dart';
 import 'package:vibe_zo/core/utils/assets.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 import 'package:vibe_zo/core/utils/gaps.dart';
@@ -29,122 +30,148 @@ class ChatBubble extends StatelessWidget {
   final Message message;
   final bool isMe;
   final bool showAvatar;
+  final void Function(Message)? onReply;
 
   const ChatBubble({
     super.key,
     required this.message,
     required this.isMe,
     required this.showAvatar,
+    this.onReply,
   });
 
   @override
   Widget build(BuildContext context) {
-    // final alignment = isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    final bubbleColor = isMe ? Color(0Xccda5280) : Colors.grey[300];
+    final bubbleColor = isMe ? const Color(0Xccda5280) : Colors.grey[300];
     final textColor = isMe ? Colors.white : Colors.black87;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        if (!isMe)
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 16,
-            backgroundImage: showAvatar
-                ? NetworkImage(
-                    'https://i.pravatar.cc/150?u=${message.senderId}',
-                  )
-                : null,
-          ),
-        const SizedBox(width: 8),
-        Stack(
-          alignment: isMe ? Alignment.bottomLeft : Alignment.bottomRight,
+    return Dismissible(
+      key: ValueKey(message.id),
+      direction: DismissDirection.startToEnd,
+      confirmDismiss: (direction) async {
+        if (onReply != null) {
+          onReply!(message);
+        }
+        return false;
+      },
+      child: GestureDetector(
+        onLongPress: () {
+          showDialog(
+            barrierColor: Colors.white,
+            context: context,
+            builder: (context) {
+              return BubbleInteractions(message: message);
+            },
+          );
+        },
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: isMe
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
           children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: context.screenWidth * 0.60),
-              child: IntrinsicWidth(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
+            if (!isMe)
+              CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 16,
+                backgroundImage: showAvatar
+                    ? NetworkImage(
+                        'https://i.pravatar.cc/150?u=${message.senderId}',
+                      )
+                    : null,
+              ),
+            const SizedBox(width: 8),
+            Stack(
+              alignment: isMe ? Alignment.bottomLeft : Alignment.bottomRight,
+              children: [
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: context.screenWidth * 0.60,
                   ),
-                  margin: message.react != null
-                      ? const EdgeInsets.only(bottom: 10)
-                      : const EdgeInsets.only(bottom: 4),
-                  decoration: BoxDecoration(
-                    color: bubbleColor,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: isMe
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        int.tryParse(message.id) != null &&
-                                int.parse(message.id) % 2 == 0
-                            ? message.content
-                            : message.content * 5,
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          height: 1.17,
-                        ),
+                  child: IntrinsicWidth(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
                       ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: isMe
-                            ? MainAxisAlignment.start
-                            : MainAxisAlignment.end,
+                      margin: message.react != null
+                          ? const EdgeInsets.only(bottom: 10)
+                          : const EdgeInsets.only(bottom: 4),
+                      decoration: BoxDecoration(
+                        color: bubbleColor,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: isMe
+                            ? CrossAxisAlignment.end
+                            : CrossAxisAlignment.start,
                         children: [
-                          if (isMe)
-                            CircleAvatar(
-                              maxRadius: context.screenWidth * 0.02,
-                              backgroundColor: const Color(0X33DA5280),
-                              child: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Image.asset(AssetsData.seen),
-                              ),
-                            ),
-                          Gaps.hGap4,
                           Text(
-                            DateFormat('HH:mm').format(message.timestamp),
+                            int.tryParse(message.id) != null &&
+                                    int.parse(message.id) % 2 == 0
+                                ? message.content
+                                : message.content * 5,
                             style: TextStyle(
-                              color: isMe
-                                  ? Colors.white.withOpacity(0.8)
-                                  : kGreyTextColor,
-                              fontSize: 8,
-                              fontWeight: FontWeight.w400,
+                              color: textColor,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              height: 1.17,
                             ),
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisAlignment: isMe
+                                ? MainAxisAlignment.start
+                                : MainAxisAlignment.end,
+                            children: [
+                              if (isMe)
+                                CircleAvatar(
+                                  maxRadius: context.screenWidth * 0.02,
+                                  backgroundColor: const Color(0X33DA5280),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: Image.asset(AssetsData.seen),
+                                  ),
+                                ),
+                              Gaps.hGap4,
+                              Text(
+                                DateFormat('HH:mm').format(message.timestamp),
+                                style: TextStyle(
+                                  color: isMe
+                                      ? Colors.white.withOpacity(0.8)
+                                      : kGreyTextColor,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                if (message.react != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isMe ? Colors.white24 : Colors.black12,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      message.react!,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+              ],
             ),
-            if (message.react != null)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 2,
-                ),
-                decoration: BoxDecoration(
-                  color: isMe ? Colors.white24 : Colors.black12,
-                  shape: BoxShape.circle,
-                ),
-                child: Text(
-                  message.react!,
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ),
           ],
         ),
-      ],
+      ),
     );
   }
 }

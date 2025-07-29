@@ -1,8 +1,9 @@
 class Api {
   //base Url
-  static const String mainAppUrl = "http://10.5.50.6:3333/";
+  static const String mainAppUrl = "http://192.168.10.32:3333/";
   //end points
   static const String baseUrl = "${mainAppUrl}api/";
+  static const String baseImageUrl = "${mainAppUrl}uploads/";
   static const String doServerRegisterApiCall = "${baseUrl}auth/register";
   static const String doServerSendCodeApiCall =
       "${baseUrl}auth/sendVerificationCode";
