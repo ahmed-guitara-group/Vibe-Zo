@@ -32,4 +32,5 @@ class AssetsData {
   static const happyFace = '${pathIcon}happy_face.png';
   static const gift = '${pathIcon}gift.png';
   static const mic = '${pathIcon}mic.png';
+  static const sendMsg = '${pathIcon}send_message.png';
 }

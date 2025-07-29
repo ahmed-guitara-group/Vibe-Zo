@@ -11,7 +11,12 @@ class CustomAlertDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Colors.white,
-      title: Text(title, style: TextStyle(fontSize: 18, color: kPrimaryColor)),
+
+      title: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 18, color: kPrimaryColor),
+      ),
       content: Image.asset(
         AssetsData.errorImage,
         height: context.screenHeight * .2,

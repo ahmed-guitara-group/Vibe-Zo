@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,11 +21,20 @@ class _ChatFieldState extends State<ChatField> {
   final AudioRecorder _recorder = AudioRecorder();
   final AudioPlayer _player = AudioPlayer();
 
+  late final RecorderController _waveformController;
+
   bool _isRecording = false;
   bool _isPlaying = false;
   bool _cancelRecording = false;
   Offset _startOffset = Offset.zero;
   String? _recordedFilePath;
+
+  @override
+  void initState() {
+    super.initState();
+    _waveformController = RecorderController()
+      ..updateFrequency = const Duration(milliseconds: 100);
+  }
 
   Future<String> _getTempFilePath() async {
     final dir = await getTemporaryDirectory();
@@ -39,6 +49,8 @@ class _ChatFieldState extends State<ChatField> {
         path: path,
       );
       _recordedFilePath = path;
+      _waveformController.reset();
+      _waveformController.record();
       setState(() {
         _isRecording = true;
         _cancelRecording = false;
@@ -48,10 +60,13 @@ class _ChatFieldState extends State<ChatField> {
 
   Future<void> _stopRecording() async {
     final path = await _recorder.stop();
+    await _waveformController.stop();
+
     setState(() {
       _isRecording = false;
       _recordedFilePath = _cancelRecording ? null : path;
     });
+
     if (_cancelRecording && path != null) {
       final file = File(path);
       if (await file.exists()) {
@@ -83,6 +98,7 @@ class _ChatFieldState extends State<ChatField> {
   void dispose() {
     _recorder.dispose();
     _player.dispose();
+    _waveformController.dispose();
     super.dispose();
   }
 
@@ -91,27 +107,45 @@ class _ChatFieldState extends State<ChatField> {
     return Row(
       children: [
         Expanded(
-          child: TextField(
-            minLines: 1,
-            maxLines: 4,
-            cursorColor: kPrimaryColor,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: const BorderSide(color: kGreyTextColor, width: 1.0),
-                borderRadius: BorderRadius.circular(99999),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: kPrimaryColor, width: 1),
-                borderRadius: BorderRadius.circular(99999),
-              ),
-              suffixIcon: Image.asset(AssetsData.gift),
-              contentPadding: const EdgeInsets.all(0),
-              prefixIcon: InkWell(
-                onTap: () {},
-                child: Image.asset(AssetsData.happyFace),
-              ),
-            ),
-          ),
+          child: _isRecording
+              ? AudioWaveforms(
+                  size: const Size(double.infinity, 50),
+                  recorderController: _waveformController,
+                  enableGesture: false,
+                  margin: const EdgeInsets.all(0),
+                  waveStyle: WaveStyle(
+                    showMiddleLine: false,
+                    showBottom: true,
+                    extendWaveform: true,
+                  ),
+                )
+              : TextField(
+                  minLines: 1,
+                  maxLines: 4,
+                  cursorColor: kPrimaryColor,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: kGreyTextColor,
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(99999),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: kPrimaryColor,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(99999),
+                    ),
+                    suffixIcon: Image.asset(AssetsData.gift),
+                    contentPadding: const EdgeInsets.all(0),
+                    prefixIcon: InkWell(
+                      onTap: () {},
+                      child: Image.asset(AssetsData.happyFace),
+                    ),
+                  ),
+                ),
         ),
         Gaps.hGap8,
 
@@ -124,7 +158,6 @@ class _ChatFieldState extends State<ChatField> {
           onLongPressMoveUpdate: (details) {
             final dy = details.globalPosition.dy;
             if (_startOffset.dy - dy > 100) {
-              // المستخدم سحب لأعلى 100px
               setState(() {
                 _cancelRecording = true;
               });
@@ -138,41 +171,35 @@ class _ChatFieldState extends State<ChatField> {
             await _stopRecording();
 
             if (_cancelRecording) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text("تم إلغاء التسجيل")));
-            } else {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text("تم حفظ التسجيل")));
-            }
+            } else {}
           },
           child: CircleAvatar(
             radius: 25,
             backgroundColor: _isRecording
-                ? (_cancelRecording ? Colors.grey : Colors.red)
+                ? (_cancelRecording ? Colors.grey : kPrimaryColor)
                 : kLightGreyColor,
-            child: Icon(
-              _isRecording ? Icons.stop : Icons.mic,
-              color: Colors.white,
+            child: Image.asset(
+              _isRecording ? AssetsData.sendMsg : AssetsData.mic,
+              width: 40,
+              height: 40,
+              //    color: Colors.white,
             ),
           ),
         ),
-
-        Gaps.hGap8,
+        //  Gaps.hGap8,
 
         /// زر التشغيل
-        if (_recordedFilePath != null && !_isRecording)
-          InkWell(
-            onTap: _togglePlayback,
-            child: CircleAvatar(
-              backgroundColor: Colors.green[200],
-              child: Icon(
-                _isPlaying ? Icons.pause : Icons.play_arrow,
-                color: Colors.white,
-              ),
-            ),
-          ),
+        // if (_recordedFilePath != null && !_isRecording)
+        //   InkWell(
+        //     onTap: _togglePlayback,
+        //     child: CircleAvatar(
+        //       backgroundColor: Colors.green[200],
+        //       child: Icon(
+        //         _isPlaying ? Icons.pause : Icons.play_arrow,
+        //         color: Colors.white,
+        //       ),
+        //     ),
+        //   ),
       ],
     );
   }

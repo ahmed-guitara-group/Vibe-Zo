@@ -6,14 +6,14 @@ import 'chat_bubble.dart';
 class ChatDetailsScreenBody extends StatelessWidget {
   ChatDetailsScreenBody({super.key});
 
-  final String currentUserId = '123'; // المستخدم الحالي
+  final String currentUserId = '123';
 
   final List<Message> messages = List.generate(
     50,
     (index) => Message(
       react: '❤️',
       id: index.toString(),
-      senderId: index % 3 == 0 ? '123' : '456', // كل 3 رسائل من المستخدم الحالي
+      senderId: index % 3 == 0 ? '123' : '456',
       content: 'رسالة رقم $index',
       timestamp: DateTime.now().subtract(Duration(minutes: index * 3)),
       type: MessageType.text,
@@ -21,10 +21,10 @@ class ChatDetailsScreenBody extends StatelessWidget {
   );
 
   bool _shouldShowAvatar(int index) {
-    if (index == 0) return true; // أول رسالة (أحدث) لازم يظهر فيها الأفاتار
+    if (index == 0) return true;
 
     final current = messages[index];
-    final previous = messages[index - 1]; // لأننا reverse
+    final previous = messages[index - 1];
 
     return current.senderId != previous.senderId;
   }

@@ -78,7 +78,7 @@ class SetupProfileRemoteDataSourceImpl extends SetupProfileRemoteDataSource {
           if (data.status == true) {
             responseResult = right(data);
           } else {
-            responseResult = left(data.message!);
+            responseResult = left(data.message ?? "حدث خطاء");
           }
         },
         onError: (code, msg) {

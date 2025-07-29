@@ -104,7 +104,7 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
               showDialog(
                 context: context,
                 builder: (context) {
-                  return CustomAlertDialog(title: "Failed");
+                  return CustomAlertDialog(title: state.message);
                 },
               );
             }
