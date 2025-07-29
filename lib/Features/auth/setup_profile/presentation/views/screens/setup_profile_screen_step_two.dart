@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:vibe_zo/Features/auth/setup_profile/presentation/manager/get_countries/get_countries_cubit.dart';
-import 'package:vibe_zo/core/utils/commons.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/utils/network/api/network_api.dart';
 import 'package:vibe_zo/core/widgets/custom_loading_widget.dart';
 
+import '../../../../../../core/utils/commons.dart';
 import '../../../../../../core/widgets/custom_alert_dialog.dart';
 import '../../../../../../core/widgets/custom_auth_app_bar.dart';
 import '../../../../../../core/widgets/custom_button.dart';
@@ -44,15 +44,15 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
     });
   }
 
-  void toggleLangSelection(String lang) {
+  void toggleLangSelection(String langCode) {
     setState(() {
-      if (selectedLangs.contains(lang)) {
-        selectedLangs.remove(lang);
+      if (selectedLangs.contains(langCode)) {
+        selectedLangs.remove(langCode);
       } else {
         if (selectedLangs.length >= selectionLimit) {
           showLimitDialog("language");
         } else {
-          selectedLangs.add(lang);
+          selectedLangs.add(langCode);
         }
       }
     });
@@ -92,12 +92,6 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
           listener: (context, state) {
             if (state is SetupProfileSuccessful) {
               Navigator.pop(context);
-              //Go Home Screen
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                kBottomNavRoute,
-                (route) => false,
-              );
             }
             if (state is SetupProfileFailed) {
               Navigator.pop(context);
@@ -144,12 +138,21 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
                         runSpacing: 12,
                         children: [
                           ...langsState.user.data!
-                              .take(5)
+                              .where((e) => selectedLangs.contains(e.code))
+                              .followedBy(
+                                langsState.user.data!
+                                    .where(
+                                      (e) => !selectedLangs.contains(e.code),
+                                    )
+                                    .take(5 - selectedLangs.length),
+                              )
+                              .toSet()
+                              .toList()
                               .map(
                                 (e) => CustomCountryChip(
                                   name: e.name ?? "",
-                                  isSelected: selectedLangs.contains(e.name),
-                                  onSelect: () => toggleLangSelection(e.name!),
+                                  isSelected: selectedLangs.contains(e.code!),
+                                  onSelect: () => toggleLangSelection(e.code!),
                                 ),
                               ),
                           CustomCountryChip(
@@ -198,7 +201,17 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
                         runSpacing: 12,
                         children: [
                           ...countriesState.user.data!
-                              .take(5)
+                              .where((e) => selectedCountries.contains(e.code))
+                              .followedBy(
+                                countriesState.user.data!
+                                    .where(
+                                      (e) =>
+                                          !selectedCountries.contains(e.code),
+                                    )
+                                    .take(5 - selectedCountries.length),
+                              )
+                              .toSet()
+                              .toList()
                               .map(
                                 (e) => CustomCountryChip(
                                   flag: CountryFlag.fromCountryCode(
@@ -255,6 +268,8 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
             CustomButton(
               screenWidth: context.screenWidth,
               buttonTapHandler: () async {
+                print(selectedLangs);
+                print(selectedCountries);
                 (selectedCountries.isNotEmpty && selectedLangs.isNotEmpty)
                     ? await BlocProvider.of<SetupProfileCubit>(
                         context,
@@ -360,7 +375,6 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
                   ),
                   const SizedBox(height: 16),
 
-                  /// Grid View
                   Expanded(
                     child: GridView.builder(
                       controller: scrollController,
@@ -390,13 +404,15 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
                                     ? e.nameEn ?? ''
                                     : e.nameAr ?? ''),
                           isSelected: isLanguage
-                              ? selectedLangs.contains(e.name)
+                              ? selectedLangs.contains(e.code)
                               : selectedCountries.contains(e.code),
                           onSelect: () {
-                            isLanguage
-                                ? toggleLangSelection(e.name!)
-                                : toggleCountrySelection(e.code!);
-                            setState(() {});
+                            if (e.code != null) {
+                              isLanguage
+                                  ? toggleLangSelection(e.code!)
+                                  : toggleCountrySelection(e.code!);
+                              setState(() {});
+                            }
                           },
                         );
                       },

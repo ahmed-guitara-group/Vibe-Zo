@@ -14,4 +14,5 @@ class Api {
   static const String doServerGetCountriesApiCall = "${mainAppUrl}getCountries";
   static const String doServerGetLanguagesApiCall = "${mainAppUrl}getLanguages";
   static const String doServerAddDataApiCall = "${baseUrl}auth/adddata";
+  static const String doServerCheckTokenApiCall = "${baseUrl}auth/checkToken";
 }

@@ -2,6 +2,7 @@ import 'package:vibe_zo/Features/auth/auth_welcome_screen/data/models/register_p
 
 import '../../../Features/auth/auth_welcome_screen/data/models/send_code_model/send_code_model.dart';
 import '../../../Features/auth/setup_profile/data/models/languages_model/languages_model.dart';
+import '../../../Features/splash/data/models/validate_token_model/validate_token_model.dart';
 import 'base_response/general_response.dart';
 import 'net_response.dart';
 
@@ -17,6 +18,8 @@ class EntityFactory {
       return SendCodeModel.fromJson(json) as T;
     } else if (T.toString() == "CountriesModel") {
       return CountriesModel.fromJson(json) as T;
+    } else if (T.toString() == "ValidateTokenModel") {
+      return ValidateTokenModel.fromJson(json) as T;
     } else {
       return null;
     }
