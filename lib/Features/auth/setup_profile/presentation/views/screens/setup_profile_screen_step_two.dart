@@ -92,6 +92,12 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
           listener: (context, state) {
             if (state is SetupProfileSuccessful) {
               Navigator.pop(context);
+              //Go Home Screen
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                kBottomNavRoute,
+                (route) => false,
+              );
             }
             if (state is SetupProfileFailed) {
               Navigator.pop(context);

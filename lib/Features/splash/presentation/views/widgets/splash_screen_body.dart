@@ -1,6 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:vibe_zo/Features/splash/presentation/manger/validate_token/validate_token_cubit.dart';
 
 import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
@@ -21,9 +23,16 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
   void initState() {
     super.initState();
     initSlidingAnimation();
-    Future.delayed(const Duration(seconds: 1), () {
-      checkFirstSeen(context);
-    });
+    if (Hive.box(kUserTokenBox).get(kUserTokenBox) != null) {
+      BlocProvider.of<ValidateTokenCubit>(
+        context,
+      ).validateToken(token: Hive.box(kUserTokenBox).get(kUserTokenBox));
+    } else {
+      Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
+    }
+    // Future.delayed(const Duration(seconds: 1), () {
+    //   checkFirstSeen(context);
+    // });
   }
 
   @override
@@ -36,89 +45,98 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          useSafeArea: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(20),
-          ),
-          isDismissible: false,
-          enableDrag: false,
-          backgroundColor: Colors.white,
-          builder: (context) {
-            return SizedBox();
+        // showModalBottomSheet(
+        //   context: context,
+        //   isScrollControlled: true,
+        //   useSafeArea: true,
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadiusGeometry.circular(20),
+        //   ),
+        //   isDismissible: false,
+        //   enableDrag: false,
+        //   backgroundColor: Colors.white,
+        //   builder: (context) {
+        //     return SizedBox();
 
-            //  FractionallySizedBox(
-            //   child: MultiBlocProvider(
-            //     providers: [
-            //       // BlocProvider(
-            //       //   create: (context) => getIt<AuthBottomSheetCubit>(),
-            //       // ),
-            //       // BlocProvider(create: (context) => getIt<AnimationCubit>()),
-            //       // BlocProvider(
-            //       //   create: (context) => getIt<RegisterPhoneCubit>(),
-            //       // ),
-            //       // BlocProvider(create: (context) => getIt<SendCodeCubit>()),
-            //       // BlocProvider(create: (context) => getIt<VerifyCodeCubit>()),
-            //       // BlocProvider(
-            //       //   create: (context) => getIt<CreatePasswordCubit>(),
-            //       // ),
-            //       // BlocProvider(create: (context) => getIt<SetupProfileUiCubit>()),
-            //       // BlocProvider(create: (context) => getIt<GetCountriesCubit>()),
-            //       // BlocProvider(create: (context) => getIt<GetLangsCubit>()),
-            //     ],
-            //     child: BlocBuilder<AuthBottomSheetCubit, AuthBottomSheetState>(
-            //       builder: (context, state) {
-            //         Widget child;
-            //         // if (state is AuthBottomSheetChanged) {
-            //         //   if (state.activePageRoute == kPhoneAuthScreenRoute) {
-            //         //     child = const ContinueWithPhoneScreen();
-            //         //   } else if (state.activePageRoute ==
-            //         //       kVerifyPhoneNumberScreenRoute) {
-            //         //     child = VerifyPhoneNumberScreen();
-            //         //   } else if (state.activePageRoute ==
-            //         //       kCreatePasswordScreenRoute) {
-            //         //     child = const CreatePasswordScreen();
-            //         //   } else if (state.activePageRoute == kLoginScreenRoute) {
-            //         //     child = const LoginScreen();
-            //         //   } else if (state.activePageRoute ==
-            //         //       kSetupProfileScreenRoute) {
-            //         //     child = SetupProfileScreen();
-            //         //   } else if (state.activePageRoute ==
-            //         //       kSetupProfileScreenStepOneRoute) {
-            //         //     child = SetupProfileScreenStepOne();
-            //         //   } else if (state.activePageRoute ==
-            //         //       kSetupProfileScreenStepTwoRoute) {
-            //         //     child = SetupProfileScreenStepTwo();
-            //         //   } else {
-            //         //     child = AuthWelcomeScreen();
-            //         //   }
-            //         // }
+        //     //  FractionallySizedBox(
+        //     //   child: MultiBlocProvider(
+        //     //     providers: [
+        //     //       // BlocProvider(
+        //     //       //   create: (context) => getIt<AuthBottomSheetCubit>(),
+        //     //       // ),
+        //     //       // BlocProvider(create: (context) => getIt<AnimationCubit>()),
+        //     //       // BlocProvider(
+        //     //       //   create: (context) => getIt<RegisterPhoneCubit>(),
+        //     //       // ),
+        //     //       // BlocProvider(create: (context) => getIt<SendCodeCubit>()),
+        //     //       // BlocProvider(create: (context) => getIt<VerifyCodeCubit>()),
+        //     //       // BlocProvider(
+        //     //       //   create: (context) => getIt<CreatePasswordCubit>(),
+        //     //       // ),
+        //     //       // BlocProvider(create: (context) => getIt<SetupProfileUiCubit>()),
+        //     //       // BlocProvider(create: (context) => getIt<GetCountriesCubit>()),
+        //     //       // BlocProvider(create: (context) => getIt<GetLangsCubit>()),
+        //     //     ],
+        //     //     child: BlocBuilder<AuthBottomSheetCubit, AuthBottomSheetState>(
+        //     //       builder: (context, state) {
+        //     //         Widget child;
+        //     //         // if (state is AuthBottomSheetChanged) {
+        //     //         //   if (state.activePageRoute == kPhoneAuthScreenRoute) {
+        //     //         //     child = const ContinueWithPhoneScreen();
+        //     //         //   } else if (state.activePageRoute ==
+        //     //         //       kVerifyPhoneNumberScreenRoute) {
+        //     //         //     child = VerifyPhoneNumberScreen();
+        //     //         //   } else if (state.activePageRoute ==
+        //     //         //       kCreatePasswordScreenRoute) {
+        //     //         //     child = const CreatePasswordScreen();
+        //     //         //   } else if (state.activePageRoute == kLoginScreenRoute) {
+        //     //         //     child = const LoginScreen();
+        //     //         //   } else if (state.activePageRoute ==
+        //     //         //       kSetupProfileScreenRoute) {
+        //     //         //     child = SetupProfileScreen();
+        //     //         //   } else if (state.activePageRoute ==
+        //     //         //       kSetupProfileScreenStepOneRoute) {
+        //     //         //     child = SetupProfileScreenStepOne();
+        //     //         //   } else if (state.activePageRoute ==
+        //     //         //       kSetupProfileScreenStepTwoRoute) {
+        //     //         //     child = SetupProfileScreenStepTwo();
+        //     //         //   } else {
+        //     //         //     child = AuthWelcomeScreen();
+        //     //         //   }
+        //     //         // }
 
-            //         child = AuthWelcomeScreen();
+        //     //         child = AuthWelcomeScreen();
 
-            //         return MediaQuery.removeViewInsets(
-            //           removeBottom: true,
-            //           context: context,
-            //           child: child,
-            //         );
-            //       },
-            //     ),
-            //   ),
-            // );
-          },
-        );
+        //     //         return MediaQuery.removeViewInsets(
+        //     //           removeBottom: true,
+        //     //           context: context,
+        //     //           child: child,
+        //     //         );
+        //     //       },
+        //     //     ),
+        //     //   ),
+        //     // );
+        //   },
+        // );
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 2,
-            child: ZoomIn(child: Image.asset(AssetsData.vZLogo)),
-          ),
-        ],
+      child: BlocListener<ValidateTokenCubit, ValidateTokenState>(
+        listener: (context, state) {
+          if (state is ValidateTokenSuccessful) {
+            Navigator.pushReplacementNamed(context, kBottomNavRoute);
+          } else {
+            Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
+          }
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 2,
+              child: ZoomIn(child: Image.asset(AssetsData.vZLogo)),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -137,22 +155,22 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
     animationController.forward();
   }
 
-  Future<void> checkFirstSeen(BuildContext context) async {
-    // SharedPreferences pref = await SharedPreferences.getInstance();
-    // bool seen = (pref.getBool('seen') ?? false);
-    if (Hive.box(kUserTokenBox).get(kUserTokenBox) == null) {
-      Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
+  // Future<void> checkFirstSeen(BuildContext context) async {
+  //   // SharedPreferences pref = await SharedPreferences.getInstance();
+  //   // bool seen = (pref.getBool('seen') ?? false);
+  //   if (Hive.box(kUserTokenBox).get(kUserTokenBox) == null) {
+  //     Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
 
-      // if (userDataBox.isNotEmpty) {
-      //   Navigator.pushReplacementNamed(context, kBottomNavRoute);
-      // } else {
-      //   Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
-      // }
-    } else {
-      // await pref.setBool('seen', true);
-      Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
+  //     // if (userDataBox.isNotEmpty) {
+  //     //   Navigator.pushReplacementNamed(context, kBottomNavRoute);
+  //     // } else {
+  //     //   Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
+  //     // }
+  //   } else {
+  //     // await pref.setBool('seen', true);
+  //     Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
 
-      // Navigator.pushReplacementNamed(context, kBottomNavRoute);
-    }
-  }
+  //     // Navigator.pushReplacementNamed(context, kBottomNavRoute);
+  //   }
+  // }
 }

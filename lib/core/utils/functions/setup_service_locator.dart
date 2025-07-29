@@ -35,11 +35,16 @@ import '../../../Features/auth/setup_profile/presentation/manager/setup_profile_
 import '../../../Features/home/presentation/manager/cubit/bottom_nav_cubit.dart';
 import '../../../Features/splash/data/datasources/language_local_data_source.dart';
 import '../../../Features/splash/data/datasources/language_local_data_source_impl.dart';
+import '../../../Features/splash/data/datasources/validate_token_remote_data_source.dart';
 import '../../../Features/splash/data/repositories/language_repository_impl.dart';
+import '../../../Features/splash/data/repositories/validate_token_repo_impl.dart';
 import '../../../Features/splash/domain/repositories/language_repository.dart';
+import '../../../Features/splash/domain/repositories/validate_token_repo.dart';
 import '../../../Features/splash/domain/usecases/change_locale_use_case.dart';
 import '../../../Features/splash/domain/usecases/get_saved_lang_use_case.dart';
+import '../../../Features/splash/domain/usecases/validate_token_use_case.dart';
 import '../../../Features/splash/presentation/manger/locale_cubit/locale_cubit.dart';
+import '../../../Features/splash/presentation/manger/validate_token/validate_token_cubit.dart';
 import '../api_service.dart';
 import '../network/network_request.dart';
 
@@ -157,6 +162,19 @@ Future<void> init() async {
   );
   getIt.registerLazySingleton<SetupProfileRemoteDataSource>(
     () => SetupProfileRemoteDataSourceImpl(),
+  );
+  //Validate token
+    getIt.registerFactory<ValidateTokenCubit>(
+    () => ValidateTokenCubit(getIt.call()),
+  );
+  getIt.registerLazySingleton<ValidateTokenUseCase>(
+    () => ValidateTokenUseCase(getIt.call()),
+  );
+  getIt.registerLazySingleton<ValidateTokenRepo>(
+    () => ValidateTokenRepoImpl(getIt.call()),
+  );
+  getIt.registerLazySingleton<ValidateTokenRemoteDataSource>(
+    () => ValidateTokenRemoteDataSourceImpl(),
   );
 
   //Network

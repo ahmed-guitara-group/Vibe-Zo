@@ -6,6 +6,7 @@ import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/manager/v
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/auth_welcome_screen.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/presentation/views/create_password_screen.dart';
 import 'package:vibe_zo/Features/auth/setup_profile/presentation/manager/get_langs/get_langs_cubit.dart';
+import 'package:vibe_zo/Features/splash/presentation/manger/validate_token/validate_token_cubit.dart';
 
 import '../../../Features/Splash/presentation/views/splash_screen.dart';
 import '../../../Features/auth/auth_welcome_screen/presentation/manager/animation/animation_cubit.dart';
@@ -32,7 +33,12 @@ class AppRoutes {
 
     switch (routeSettings.name) {
       case initialRoute:
-        return MaterialPageRoute(builder: (_) => const SplashScreen());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<ValidateTokenCubit>(),
+            child: const SplashScreen(),
+          ),
+        );
       case kLanguageScreenRoute:
         return MaterialPageRoute(builder: (_) => const LanguageScreen());
       case kHomeScreenRoute:
