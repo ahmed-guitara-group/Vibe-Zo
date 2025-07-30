@@ -10,10 +10,12 @@ class CustomChatTitle extends StatelessWidget {
     required this.isPinnedChat,
     required this.isExpanded,
     required this.isChatDetailsBar,
+    this.userName,
   });
   final bool isPinnedChat;
   final bool isExpanded;
   final bool isChatDetailsBar;
+  final String? userName;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -23,7 +25,7 @@ class CustomChatTitle extends StatelessWidget {
         SizedBox(width: 4),
 
         Text(
-          isPinnedChat ? 'Vibe Zo Team Middle East' : "Laila Mostafa",
+          isPinnedChat ? 'Vibe Zo Team Middle East' : userName ?? "",
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: const Color(0xFF1F2A37),

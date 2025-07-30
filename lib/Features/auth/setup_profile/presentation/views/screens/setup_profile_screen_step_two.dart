@@ -95,8 +95,8 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
             if (state is SetupProfileSuccessful) {
               //خزن الداتا يعني اعمل فاليديت توكن
 
-              Hive.box(kLoginTokenBox).clear();
-              Hive.box(
+              await Hive.box(kLoginTokenBox).clear();
+              await Hive.box(
                 kLoginTokenBox,
               ).put(kLoginTokenBox, state.user.data!.token!.token);
               await BlocProvider.of<ValidateTokenCubit>(context).validateToken(

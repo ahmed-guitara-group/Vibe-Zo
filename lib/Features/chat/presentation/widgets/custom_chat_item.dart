@@ -3,6 +3,7 @@ import 'package:vibe_zo/core/utils/constants.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 
 import '../../../../core/utils/assets.dart';
+import '../../data/models/get_all_chats_model/get_all_chats_model.dart';
 import 'custom_chat_title.dart';
 
 class CustomChatItem extends StatelessWidget {
@@ -10,14 +11,20 @@ class CustomChatItem extends StatelessWidget {
     super.key,
     required this.isPinnedChat,
     required this.index,
+    required this.allChatsModel,
   });
   final bool isPinnedChat;
   final int index;
+  final GetAllChatsModel allChatsModel;
   @override
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        Navigator.pushNamed(context, kChatDetailsScreenRoute);
+        Navigator.pushNamed(
+          context,
+          kChatDetailsScreenRoute,
+          arguments: allChatsModel.data!.users![index].id.toString(),
+        );
       },
       contentPadding: EdgeInsets.all(0),
       leading: SizedBox(

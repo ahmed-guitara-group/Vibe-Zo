@@ -11,7 +11,6 @@ class SocketManager {
 
   IO.Socket? getSocket(String channelName) => _sockets[channelName];
 
-
   void initSocketForChannel({
     required String userId,
     required String channelName,
@@ -86,6 +85,4 @@ class SocketManager {
     _sockets.clear();
     print("🗑️ Disposed ALL sockets");
   }
-
-
 }

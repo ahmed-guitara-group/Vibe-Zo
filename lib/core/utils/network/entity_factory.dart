@@ -1,8 +1,10 @@
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/data/models/register_phone_model/register_phone_model.dart';
+import 'package:vibe_zo/Features/chat/data/models/get_all_chats_model/get_all_chats_model.dart';
 
 import '../../../Features/auth/auth_welcome_screen/data/models/send_code_model/send_code_model.dart';
 import '../../../Features/auth/setup_profile/data/models/languages_model/languages_model.dart';
 import '../../../Features/auth/setup_profile/data/models/setup_profile_model/setup_profile_model.dart';
+import '../../../Features/chat/data/models/create_oro_get_chat_model/create_oro_get_chat_model.dart';
 import '../../../Features/splash/data/models/validate_token_model/validate_token_model.dart';
 import 'base_response/general_response.dart';
 import 'net_response.dart';
@@ -23,6 +25,10 @@ class EntityFactory {
       return SetupProfileModel.fromJson(json) as T;
     } else if (T.toString() == "ValidateTokenModel") {
       return ValidateTokenModel.fromJson(json) as T;
+    } else if (T.toString() == "GetAllChatsModel") {
+      return GetAllChatsModel.fromJson(json) as T;
+    } else if (T.toString() == "CreateOrGetChatModel") {
+      return CreateOrGetChatModel.fromJson(json) as T;
     } else {
       return null;
     }

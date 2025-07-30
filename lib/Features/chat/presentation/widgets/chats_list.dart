@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:vibe_zo/Features/chat/presentation/widgets/custom_chat_item.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 
-class ChatsList extends StatelessWidget {
-  const ChatsList({super.key});
+import '../../data/models/get_all_chats_model/get_all_chats_model.dart';
 
+class ChatsList extends StatelessWidget {
+  const ChatsList({super.key, required this.allChatsModel});
+  final GetAllChatsModel allChatsModel;
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -12,9 +14,10 @@ class ChatsList extends StatelessWidget {
       color: kPrimaryColor,
       backgroundColor: Colors.white,
       child: ListView.builder(
-        itemCount: 10,
+        itemCount: allChatsModel.data!.chats!.length,
         itemBuilder: (context, index) {
           return CustomChatItem(
+            allChatsModel: allChatsModel,
             isPinnedChat: index < 4 ? true : false,
             index: index,
           );

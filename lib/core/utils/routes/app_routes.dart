@@ -19,6 +19,7 @@ import '../../../Features/auth/setup_profile/presentation/manager/get_countries/
 import '../../../Features/auth/setup_profile/presentation/manager/setup_profile/setup_profile_cubit.dart';
 import '../../../Features/auth/setup_profile/presentation/manager/setup_profile_ui/setup_profile_cubit.dart';
 import '../../../Features/auth/setup_profile/presentation/views/screens/setup_profile_screen.dart';
+import '../../../Features/chat/presentation/manager/create_or_get_chat/create_or_get_chat_cubit.dart';
 import '../../../Features/chat/presentation/views/chat_details_screen.dart';
 import '../../../Features/home/presentation/manager/cubit/bottom_nav_cubit.dart';
 import '../../../Features/home/presentation/screens/home_screen.dart';
@@ -123,7 +124,12 @@ class AppRoutes {
           ),
         );
       case kChatDetailsScreenRoute:
-        return MaterialPageRoute(builder: (_) => const ChatDetailsScreen());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<CreateOrGetChatCubit>(),
+            child: ChatDetailsScreen(toUserId: args as String),
+          ),
+        );
       default:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
     }

@@ -17,7 +17,7 @@ void main() async {
   Hive.registerAdapter(LoginEntityAdapter());
 
   //Auth Boxes
-   await Hive.openBox<LoginEntity>(kUserDataBox);
+  await Hive.openBox<LoginEntity>(kUserDataBox);
   await Hive.openBox(kUserTokenBox);
   await Hive.openBox(kUserPhoneBox);
   await Hive.openBox(kSelectedMethodBox);

@@ -32,6 +32,13 @@ import '../../../Features/auth/setup_profile/domain/use_cases/setup_profile_use_
 import '../../../Features/auth/setup_profile/presentation/manager/get_countries/get_countries_cubit.dart';
 import '../../../Features/auth/setup_profile/presentation/manager/setup_profile/setup_profile_cubit.dart';
 import '../../../Features/auth/setup_profile/presentation/manager/setup_profile_ui/setup_profile_cubit.dart';
+import '../../../Features/chat/data/remote_data_source.dart/get_all_chats_remote_data_source.dart';
+import '../../../Features/chat/data/repos_impl/get_all_chats_repo_impl.dart';
+import '../../../Features/chat/domain/repos/get_all_chat_repo.dart';
+import '../../../Features/chat/domain/use_cases/create_or_get_chat_use_case.dart';
+import '../../../Features/chat/domain/use_cases/get_all_chats_use_case.dart';
+import '../../../Features/chat/presentation/manager/create_or_get_chat/create_or_get_chat_cubit.dart';
+import '../../../Features/chat/presentation/manager/get_all_chats/get_all_chats_cubit.dart';
 import '../../../Features/home/presentation/manager/cubit/bottom_nav_cubit.dart';
 import '../../../Features/splash/data/datasources/language_local_data_source.dart';
 import '../../../Features/splash/data/datasources/language_local_data_source_impl.dart';
@@ -176,7 +183,29 @@ Future<void> init() async {
   getIt.registerLazySingleton<ValidateTokenRemoteDataSource>(
     () => ValidateTokenRemoteDataSourceImpl(),
   );
+  // GetAllChats
+  getIt.registerFactory<GetAllChatsCubit>(() => GetAllChatsCubit(getIt.call()));
+  getIt.registerLazySingleton<GetAllChatsUseCase>(
+    () => GetAllChatsUseCase(getIt.call()),
+  );
+  getIt.registerLazySingleton<GetAllChatsRepo>(
+    () => GetAllChatsRepoImpl(getIt.call()),
+  );
+  getIt.registerLazySingleton<GetAllChatsRemoteDataSource>(
+    () => GetAllChatsRemoteDataSourceImpl(),
+  );
 
+  // CreateOrGetChat
+  getIt.registerFactory<CreateOrGetChatCubit>(() => CreateOrGetChatCubit(getIt.call()));
+  getIt.registerLazySingleton<CreateOrGetChatUseCase>(
+    () => CreateOrGetChatUseCase(getIt.call()),
+  );
+  getIt.registerLazySingleton<CreateOrGetChatRepo>(
+    () => CreateOrGetChatRepoImpl(getIt.call()),
+  );
+  getIt.registerLazySingleton<CreateOrGetChatRemoteDataSource>(
+    () => CreateOrGetChatRemoteDataSourceImpl(),
+  );
   //Network
   getIt.registerLazySingleton<NetworkRequest>(() => NetworkRequestImp());
 
