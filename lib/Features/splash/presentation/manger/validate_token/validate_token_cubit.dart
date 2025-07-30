@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:vibe_zo/Features/splash/data/models/validate_token_model/validate_token_model.dart';
 
+import '../../../domain/entity/login_entity.dart';
 import '../../../domain/usecases/validate_token_use_case.dart';
 
 part 'validate_token_state.dart';

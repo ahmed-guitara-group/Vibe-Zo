@@ -10,7 +10,7 @@ class SetupProfileLoading extends SetupProfileState {
 }
 
 class SetupProfileSuccessful extends SetupProfileState {
-  final SendCodeModel user;
+  final SetupProfileModel user;
 
   SetupProfileSuccessful(this.user);
 }

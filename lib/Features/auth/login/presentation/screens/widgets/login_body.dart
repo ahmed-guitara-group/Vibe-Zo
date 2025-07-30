@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 import 'package:hive/hive.dart';
+import 'package:vibe_zo/Features/splash/presentation/manger/validate_token/validate_token_cubit.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/widgets/custom_alert_dialog.dart';
 import 'package:vibe_zo/core/widgets/custom_auth_app_bar.dart'
@@ -14,6 +15,7 @@ import '../../../../../../core/utils/functions/validation_mixin.dart';
 import '../../../../../../core/utils/gaps.dart';
 import '../../../../../../core/widgets/custom_button.dart';
 import '../../../../../../core/widgets/custom_text_field.dart';
+import '../../../../../splash/domain/entity/login_entity.dart';
 import '../../manager/login_cubit.dart';
 
 class LoginBody extends StatefulWidget {
@@ -33,30 +35,50 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     return MultiBlocListener(
       listeners: [
+        BlocListener<ValidateTokenCubit, ValidateTokenState>(
+          listener: (context, state) async {
+            if (state is ValidateTokenSuccessful) {
+              //Save token to hive box
+              await Hive.box<LoginEntity>(kUserDataBox).clear();
+              await Hive.box<LoginEntity>(
+                kUserDataBox,
+              ).put(kUserDataBox, state.user);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                kBottomNavRoute,
+                (route) => false,
+              );
+            }
+          },
+        ),
         BlocListener<LoginCubit, LoginState>(
           listener: (context, state) async {
             if (state is LoginSuccessful) {
-              //Save token to hive box
+              //Save user data to hive box
+
               await Hive.box(kLoginTokenBox).clear();
 
               await Hive.box(
                 kLoginTokenBox,
               ).put(kLoginTokenBox, state.user.data!.token!.token);
               // Hide loading dialog
-              Navigator.pop(context);
+              //  Navigator.pop(context);
               // if code H10 Go to home screen
               // if code A15 Go to Setup profile screen
               if (state.user.code == 'H10') {
                 await Hive.box(kUserTokenBox).clear();
                 await Hive.box(
-                  kUserTokenBox,
-                ).put(kUserTokenBox, state.user.data!.token!.token);
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  kBottomNavRoute,
-                  (route) => false,
-                );
+                  kLoginTokenBox,
+                ).put(kLoginTokenBox, state.user.data!.token!.token);
+                await Hive.box(kLoginTokenBox).get(kLoginTokenBox) != null
+                    ? BlocProvider.of<ValidateTokenCubit>(
+                        context,
+                      ).validateToken(
+                        token: Hive.box(kLoginTokenBox).get(kLoginTokenBox),
+                      )
+                    : null;
               } else if (state.user.code == 'A15') {
+                Navigator.pop(context);
                 Navigator.pushNamed(context, kSetupProfileScreenRoute);
               } else {}
             }

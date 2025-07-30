@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:vibe_zo/Features/splash/domain/entity/login_entity.dart';
 import 'package:vibe_zo/Features/splash/presentation/manger/validate_token/validate_token_cubit.dart';
 
 import '../../../../../core/utils/assets.dart';
@@ -124,8 +125,13 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
         // );
       },
       child: BlocListener<ValidateTokenCubit, ValidateTokenState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is ValidateTokenSuccessful) {
+            final box = Hive.box<LoginEntity>(kUserDataBox);
+            await box.clear();
+
+            await box.put(kUserDataBox, state.user);
+
             Navigator.pushReplacementNamed(context, kBottomNavRoute);
           } else {
             Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);

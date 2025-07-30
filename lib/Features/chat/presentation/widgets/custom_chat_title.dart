@@ -22,17 +22,14 @@ class CustomChatTitle extends StatelessWidget {
 
         SizedBox(width: 4),
 
-        Expanded(
-          flex: isExpanded ? 1 : 0,
-          child: Text(
-            isPinnedChat ? 'Vibe Zo Team Middle East' : "Laila Mostafa",
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: const Color(0xFF1F2A37),
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              height: 1.17,
-            ),
+        Text(
+          isPinnedChat ? 'Vibe Zo Team Middle East' : "Laila Mostafa",
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: const Color(0xFF1F2A37),
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            height: 1.17,
           ),
         ),
         SizedBox(width: 4),

@@ -6,8 +6,9 @@ import '../../../../../../core/utils/functions/setup_service_locator.dart';
 import '../../../../../../core/utils/network/api/network_api.dart';
 import '../../../../../../core/utils/network/network_request.dart';
 import '../../../../../../core/utils/network/network_utils.dart';
+import '../../domain/entity/login_entity.dart';
 
-typedef ValidateTokenResponse = Either<String, ValidateTokenModel>;
+typedef ValidateTokenResponse = Either<String, LoginEntity>;
 
 abstract class ValidateTokenRemoteDataSource {
   Future<ValidateTokenResponse> validateToken(String token);

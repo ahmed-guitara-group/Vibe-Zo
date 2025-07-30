@@ -2,6 +2,7 @@ import 'dart:io';
 
 import '../../data/data_source/setup_profile_remote_data_source.dart';
 import '../../data/models/languages_model/languages_model.dart';
+import '../../data/models/setup_profile_model/setup_profile_model.dart';
 import '../repos/setup_profile_repo.dart';
 
 abstract class UseCase<type> {
@@ -17,7 +18,7 @@ abstract class UseCase<type> {
   });
 }
 
-class SetupProfileUseCase extends UseCase<CountriesModel> {
+class SetupProfileUseCase extends UseCase<SetupProfileModel> {
   final SetupProfileRepo setupProfileRepo;
   SetupProfileUseCase(this.setupProfileRepo);
 

@@ -9,8 +9,9 @@ import '../../../../../core/utils/functions/setup_service_locator.dart';
 import '../../../../../core/utils/network/api/network_api.dart';
 import '../../../../../core/utils/network/network_request.dart';
 import '../../../../../core/utils/network/network_utils.dart';
+import '../models/setup_profile_model/setup_profile_model.dart';
 
-typedef SetupProfileResponse = Either<String, SendCodeModel>;
+typedef SetupProfileResponse = Either<String, SetupProfileModel>;
 
 abstract class SetupProfileRemoteDataSource {
   Future<SetupProfileResponse> setupProfile({
@@ -64,7 +65,7 @@ class SetupProfileRemoteDataSourceImpl extends SetupProfileRemoteDataSource {
           filename: photo.path.split('/').last,
         ),
       });
-      await getIt<NetworkRequest>().requestFutureData<SendCodeModel>(
+      await getIt<NetworkRequest>().requestFutureData<SetupProfileModel>(
         Method.post,
         url: Api.doServerAddDataApiCall,
         //  params: body,

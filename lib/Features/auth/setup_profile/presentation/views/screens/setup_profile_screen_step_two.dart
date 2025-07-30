@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:vibe_zo/Features/auth/setup_profile/presentation/manager/get_countries/get_countries_cubit.dart';
+import 'package:vibe_zo/Features/splash/presentation/manger/validate_token/validate_token_cubit.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 import 'package:vibe_zo/core/utils/network/api/network_api.dart';
@@ -12,6 +13,7 @@ import '../../../../../../core/utils/commons.dart';
 import '../../../../../../core/widgets/custom_alert_dialog.dart';
 import '../../../../../../core/widgets/custom_auth_app_bar.dart';
 import '../../../../../../core/widgets/custom_button.dart';
+import '../../../../../splash/domain/entity/login_entity.dart';
 import '../../manager/get_langs/get_langs_cubit.dart';
 import '../../manager/setup_profile/setup_profile_cubit.dart';
 import '../../manager/setup_profile_ui/setup_profile_cubit.dart';
@@ -89,15 +91,19 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
           listener: (context, state) {},
         ),
         BlocListener<SetupProfileCubit, SetupProfileState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is SetupProfileSuccessful) {
-              Navigator.pop(context);
-              //Go Home Screen
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                kBottomNavRoute,
-                (route) => false,
+              //خزن الداتا يعني اعمل فاليديت توكن
+
+              Hive.box(kLoginTokenBox).clear();
+              Hive.box(
+                kLoginTokenBox,
+              ).put(kLoginTokenBox, state.user.data!.token!.token);
+              await BlocProvider.of<ValidateTokenCubit>(context).validateToken(
+                token: Hive.box(kLoginTokenBox).get(kLoginTokenBox),
               );
+              // Navigator.pop(context);
+              //Go Home Screen
             }
             if (state is SetupProfileFailed) {
               Navigator.pop(context);
@@ -114,6 +120,22 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
                 builder: (context) {
                   return const Center(child: CustomLoadiNgWidget());
                 },
+              );
+            }
+          },
+        ),
+        BlocListener<ValidateTokenCubit, ValidateTokenState>(
+          listener: (context, state) async {
+            if (state is ValidateTokenSuccessful) {
+              final box = await Hive.openBox<LoginEntity>(kUserDataBox);
+              await box.clear();
+
+              await box.put(kUserDataBox, state.user);
+
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                kBottomNavRoute,
+                (route) => false,
               );
             }
           },
@@ -274,8 +296,6 @@ class _SetupProfileScreenStepTwoState extends State<SetupProfileScreenStepTwo> {
             CustomButton(
               screenWidth: context.screenWidth,
               buttonTapHandler: () async {
-                print(selectedLangs);
-                print(selectedCountries);
                 (selectedCountries.isNotEmpty && selectedLangs.isNotEmpty)
                     ? await BlocProvider.of<SetupProfileCubit>(
                         context,

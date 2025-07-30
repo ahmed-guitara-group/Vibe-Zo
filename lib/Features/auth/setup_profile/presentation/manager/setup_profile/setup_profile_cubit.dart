@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:vibe_zo/Features/auth/auth_welcome_screen/data/models/send_code_model/send_code_model.dart';
 
+import '../../../data/models/setup_profile_model/setup_profile_model.dart';
 import '../../../domain/use_cases/setup_profile_use_case.dart';
 
 part 'setup_profile_state.dart';

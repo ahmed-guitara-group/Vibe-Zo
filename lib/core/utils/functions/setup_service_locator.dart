@@ -164,7 +164,7 @@ Future<void> init() async {
     () => SetupProfileRemoteDataSourceImpl(),
   );
   //Validate token
-    getIt.registerFactory<ValidateTokenCubit>(
+  getIt.registerFactory<ValidateTokenCubit>(
     () => ValidateTokenCubit(getIt.call()),
   );
   getIt.registerLazySingleton<ValidateTokenUseCase>(

@@ -10,7 +10,7 @@ class ValidateTokenLoading extends ValidateTokenState {
 }
 
 class ValidateTokenSuccessful extends ValidateTokenState {
-  final ValidateTokenModel user;
+  final LoginEntity user;
 
   ValidateTokenSuccessful(this.user);
 }

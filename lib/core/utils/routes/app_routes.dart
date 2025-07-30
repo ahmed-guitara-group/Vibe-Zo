@@ -51,6 +51,7 @@ class AppRoutes {
             providers: [
               BlocProvider(create: (context) => getIt<LoginCubit>()),
               BlocProvider(create: (context) => getIt<AnimationCubit>()),
+              BlocProvider(create: (context) => getIt<ValidateTokenCubit>()),
             ],
             child: const LoginScreen(),
           ),
@@ -82,6 +83,7 @@ class AppRoutes {
               BlocProvider(create: (context) => getIt<AnimationCubit>()),
               BlocProvider(create: (context) => getIt<GetCountriesCubit>()),
               BlocProvider(create: (context) => getIt<SetupProfileCubit>()),
+              BlocProvider(create: (context) => getIt<ValidateTokenCubit>()),
             ],
             child: const SetupProfileScreen(),
           ),

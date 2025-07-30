@@ -74,7 +74,7 @@ const kStepColor = Color(0x4C318533);
 const kGtSectraFine = 'GT Sectra Fine';
 const kHacenTunisia = 'Hacen Tunisia';
 
-// const kUserDataBox = 'login_box';
+const kUserDataBox = 'login_box';
 const kUserTokenBox = 'token_box';
 const kUserPhoneBox = 'phone_box';
 const kLoginTokenBox = 'login_token_box';
