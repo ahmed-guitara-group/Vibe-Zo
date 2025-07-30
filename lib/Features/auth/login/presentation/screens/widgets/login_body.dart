@@ -36,6 +36,12 @@ class _LoginBodyState extends State<LoginBody> with ValidationMixin {
         BlocListener<LoginCubit, LoginState>(
           listener: (context, state) async {
             if (state is LoginSuccessful) {
+              //Save token to hive box
+              await Hive.box(kLoginTokenBox).clear();
+
+              await Hive.box(
+                kLoginTokenBox,
+              ).put(kLoginTokenBox, state.user.data!.token!.token);
               // Hide loading dialog
               Navigator.pop(context);
               // if code H10 Go to home screen

@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:vibe_zo/Features/splash/presentation/manger/validate_token/validate_token_cubit.dart';
 
 import '../../../../../core/utils/assets.dart';
@@ -23,13 +23,17 @@ class _SplashScreenBodyState extends State<SplashScreenBody>
   void initState() {
     super.initState();
     initSlidingAnimation();
-    if (Hive.box(kUserTokenBox).get(kUserTokenBox) != null) {
-      BlocProvider.of<ValidateTokenCubit>(
-        context,
-      ).validateToken(token: Hive.box(kUserTokenBox).get(kUserTokenBox));
-    } else {
-      Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
-    }
+    //Validate token with login token and add data only
+    BlocProvider.of<ValidateTokenCubit>(
+      context,
+    ).validateToken(token: Hive.box(kLoginTokenBox).get(kLoginTokenBox) ?? "");
+    // if (Hive.box(kUserTokenBox).get(kUserTokenBox) != null) {
+    //   BlocProvider.of<ValidateTokenCubit>(
+    //     context,
+    //   ).validateToken(token: Hive.box(kUserTokenBox).get(kUserTokenBox));
+    // } else {
+    //   Navigator.pushReplacementNamed(context, kAuthWelcomeScreenRoute);
+    // }
     // Future.delayed(const Duration(seconds: 1), () {
     //   checkFirstSeen(context);
     // });

@@ -77,6 +77,8 @@ const kHacenTunisia = 'Hacen Tunisia';
 // const kUserDataBox = 'login_box';
 const kUserTokenBox = 'token_box';
 const kUserPhoneBox = 'phone_box';
+const kLoginTokenBox = 'login_token_box';
+
 const kSelectedMethodBox = 'selected_method';
 
 class AppConstant {

@@ -20,6 +20,7 @@ void main() async {
   await Hive.openBox(kUserTokenBox);
   await Hive.openBox(kUserPhoneBox);
   await Hive.openBox(kSelectedMethodBox);
+  await Hive.openBox(kLoginTokenBox);
 
   runApp(const VibeZo());
 }
