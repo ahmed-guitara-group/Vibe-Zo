@@ -109,7 +109,11 @@ class CustomChatItem extends StatelessWidget {
       ),
 
       subtitle: Text(
-        'Lorem ipsum dolor sit amet consectetur.',
+        allChatsModel.data!.chats![index].lastMessage != null
+            ? allChatsModel.data!.chats![index].lastMessage!.text != null
+                  ? allChatsModel.data!.chats![index].lastMessage!.text!
+                  : ""
+            : "",
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(

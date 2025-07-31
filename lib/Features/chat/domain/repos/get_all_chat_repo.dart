@@ -10,3 +10,7 @@ abstract class CreateOrGetChatRepo {
     String toUserId,
   );
 }
+
+abstract class GetChatMessagesRepo {
+  Future<GetChatMessagesResponse> getChatMessages(String token, String chatId);
+}

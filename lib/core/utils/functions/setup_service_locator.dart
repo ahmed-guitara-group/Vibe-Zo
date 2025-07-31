@@ -37,8 +37,10 @@ import '../../../Features/chat/data/repos_impl/get_all_chats_repo_impl.dart';
 import '../../../Features/chat/domain/repos/get_all_chat_repo.dart';
 import '../../../Features/chat/domain/use_cases/create_or_get_chat_use_case.dart';
 import '../../../Features/chat/domain/use_cases/get_all_chats_use_case.dart';
+import '../../../Features/chat/domain/use_cases/get_chat_messages_use_case.dart';
 import '../../../Features/chat/presentation/manager/create_or_get_chat/create_or_get_chat_cubit.dart';
 import '../../../Features/chat/presentation/manager/get_all_chats/get_all_chats_cubit.dart';
+import '../../../Features/chat/presentation/manager/get_chat_messages/get_chat_messages_cubit.dart';
 import '../../../Features/home/presentation/manager/cubit/bottom_nav_cubit.dart';
 import '../../../Features/splash/data/datasources/language_local_data_source.dart';
 import '../../../Features/splash/data/datasources/language_local_data_source_impl.dart';
@@ -207,6 +209,20 @@ Future<void> init() async {
   );
   getIt.registerLazySingleton<CreateOrGetChatRemoteDataSource>(
     () => CreateOrGetChatRemoteDataSourceImpl(),
+  );
+
+  // Get Chat Messages
+  getIt.registerFactory<GetChatMessagesCubit>(
+    () => GetChatMessagesCubit(getIt.call()),
+  );
+  getIt.registerLazySingleton<GetChatMessagesUseCase>(
+    () => GetChatMessagesUseCase(getIt.call()),
+  );
+  getIt.registerLazySingleton<GetChatMessagesRepo>(
+    () => GetChatMessagesRepoImpl(getIt.call()),
+  );
+  getIt.registerLazySingleton<GetChatMessagesRemoteDataSource>(
+    () => GetChatMessagesRemoteDataSourceImpl(),
   );
   //Network
   getIt.registerLazySingleton<NetworkRequest>(() => NetworkRequestImp());

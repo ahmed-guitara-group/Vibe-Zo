@@ -6,25 +6,7 @@ import 'package:vibe_zo/core/utils/constants.dart';
 import 'package:vibe_zo/core/utils/gaps.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 
-enum MessageType { text, audio }
-
-class Message {
-  final String id;
-  final String senderId;
-  final String content;
-  final DateTime timestamp;
-  final MessageType type;
-  final String? react;
-
-  Message({
-    required this.id,
-    required this.senderId,
-    required this.content,
-    required this.timestamp,
-    required this.type,
-    this.react,
-  });
-}
+import '../../data/models/get_chat_messages_model/message.dart';
 
 class ChatBubble extends StatelessWidget {
   final Message message;
@@ -64,38 +46,35 @@ class ChatBubble extends StatelessWidget {
             },
           );
         },
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: isMe
-              ? MainAxisAlignment.end
-              : MainAxisAlignment.start,
-          children: [
-            if (!isMe)
-              CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 16,
-                backgroundImage: showAvatar
-                    ? NetworkImage(
-                        'https://i.pravatar.cc/150?u=${message.senderId}',
-                      )
-                    : null,
-              ),
-            const SizedBox(width: 8),
-            Stack(
-              alignment: isMe ? Alignment.bottomLeft : Alignment.bottomRight,
-              children: [
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: context.screenWidth * 0.60,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          child: Row(
+            mainAxisAlignment: isMe
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!isMe && showAvatar)
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 16,
+                  backgroundImage: NetworkImage(
+                    'https://i.pravatar.cc/150?u=${message.id}',
                   ),
-                  child: IntrinsicWidth(
-                    child: Container(
+                ),
+              if (!isMe && showAvatar) Gaps.hGap8,
+              Flexible(
+                child: Stack(
+                  alignment: isMe
+                      ? Alignment.bottomLeft
+                      : Alignment.bottomRight,
+                  children: [
+                    Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 8,
                       ),
-                      margin: message.react != null
+                      margin: message.giftTransaction != null
                           ? const EdgeInsets.only(bottom: 10)
                           : const EdgeInsets.only(bottom: 4),
                       decoration: BoxDecoration(
@@ -107,20 +86,20 @@ class ChatBubble extends StatelessWidget {
                             ? CrossAxisAlignment.end
                             : CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            int.tryParse(message.id) != null &&
-                                    int.parse(message.id) % 2 == 0
-                                ? message.content
-                                : message.content * 5,
-                            style: TextStyle(
-                              color: textColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              height: 1.17,
+                          if (message.messageType == 'text' &&
+                              message.text != null)
+                            Text(
+                              message.text!,
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                height: 1.17,
+                              ),
                             ),
-                          ),
                           const SizedBox(height: 4),
                           Row(
+                            mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: isMe
                                 ? MainAxisAlignment.start
                                 : MainAxisAlignment.end,
@@ -136,7 +115,7 @@ class ChatBubble extends StatelessWidget {
                                 ),
                               Gaps.hGap4,
                               Text(
-                                DateFormat('HH:mm').format(message.timestamp),
+                                DateFormat('HH:mm').format(message.createdAt!),
                                 style: TextStyle(
                                   color: isMe
                                       ? Colors.white.withOpacity(0.8)
@@ -150,26 +129,26 @@ class ChatBubble extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
+                    if (message.giftTransaction != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isMe ? Colors.white24 : Colors.black12,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          message.giftTransaction!,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
+                  ],
                 ),
-                if (message.react != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isMe ? Colors.white24 : Colors.black12,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      message.react!,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

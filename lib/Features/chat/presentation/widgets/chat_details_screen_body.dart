@@ -1,43 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:vibe_zo/Features/chat/presentation/widgets/chat_field.dart';
 
+import '../../data/models/get_chat_messages_model/message.dart';
 import 'chat_bubble.dart';
 
 class ChatDetailsScreenBody extends StatefulWidget {
-  const ChatDetailsScreenBody({super.key});
+  const ChatDetailsScreenBody({
+    super.key,
+    required this.messages,
+    required this.currentUserId,
+  });
+
+  final List<Message> messages;
+  final String currentUserId;
 
   @override
   State<ChatDetailsScreenBody> createState() => _ChatDetailsScreenBodyState();
 }
 
 class _ChatDetailsScreenBodyState extends State<ChatDetailsScreenBody> {
-  final String currentUserId = '123';
-
-  final List<Message> messages = List.generate(
-    50,
-    (index) => Message(
-      react: '❤️',
-      id: index.toString(),
-      senderId: index % 3 == 0 ? '123' : '456',
-      content: 'رسالة رقم $index',
-      timestamp: DateTime.now().subtract(Duration(minutes: index * 3)),
-      type: MessageType.text,
-    ),
-  );
-
   Message? repliedTo;
 
-  bool _shouldShowAvatar(int index) {
+  bool _shouldShowAvatar(int index, List<Message> messages) {
     if (index == 0) return true;
-
     final current = messages[index];
     final previous = messages[index - 1];
-
-    return current.senderId != previous.senderId;
+    return current.sender?.id != previous.sender?.id;
   }
 
   @override
   Widget build(BuildContext context) {
+    final reversedMessages = widget.messages.reversed.toList();
+
     return Padding(
       padding: const EdgeInsets.only(top: 0, left: 16, right: 16),
       child: Column(
@@ -46,11 +40,11 @@ class _ChatDetailsScreenBodyState extends State<ChatDetailsScreenBody> {
             child: ListView.builder(
               shrinkWrap: true,
               reverse: true,
-              itemCount: messages.length,
+              itemCount: reversedMessages.length,
               itemBuilder: (context, index) {
-                final message = messages[index];
-                final isMe = message.senderId == currentUserId;
-                final showAvatar = _shouldShowAvatar(index);
+                final message = reversedMessages[index];
+                final isMe = message.isFromMe ?? false;
+                final showAvatar = _shouldShowAvatar(index, reversedMessages);
                 return ChatBubble(
                   message: message,
                   isMe: isMe,

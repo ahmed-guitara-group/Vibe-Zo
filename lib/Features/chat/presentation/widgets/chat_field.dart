@@ -10,7 +10,7 @@ import 'package:vibe_zo/core/utils/assets.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 
 import '../../../../core/utils/gaps.dart';
-import 'chat_bubble.dart';
+import '../../data/models/get_chat_messages_model/message.dart';
 
 class ChatField extends StatefulWidget {
   final Message? repliedTo;
@@ -197,7 +197,7 @@ class _ChatFieldState extends State<ChatField> {
         children: [
           Expanded(
             child: Text(
-              widget.repliedTo!.content,
+              widget.repliedTo!.text ?? "",
               style: TextStyle(fontSize: 14, height: 1.29),
               overflow: TextOverflow.ellipsis,
             ),

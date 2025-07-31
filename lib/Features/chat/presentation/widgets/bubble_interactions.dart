@@ -3,6 +3,7 @@ import 'package:vibe_zo/Features/chat/presentation/widgets/chat_bubble.dart';
 import 'package:vibe_zo/Features/chat/presentation/widgets/reactions_widget.dart';
 import 'package:vibe_zo/core/utils/assets.dart';
 
+import '../../data/models/get_chat_messages_model/message.dart';
 import 'bubble_interaction_item.dart';
 
 class BubbleInteractions extends StatelessWidget {

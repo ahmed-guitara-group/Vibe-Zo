@@ -1,6 +1,7 @@
 import '../../domain/repos/get_all_chat_repo.dart';
 import '../remote_data_source.dart/get_all_chats_remote_data_source.dart';
 
+//GetAllChatsRepoImpl
 class GetAllChatsRepoImpl extends GetAllChatsRepo {
   final GetAllChatsRemoteDataSource getAllChatsRemoteDataSource;
 
@@ -13,6 +14,7 @@ class GetAllChatsRepoImpl extends GetAllChatsRepo {
   }
 }
 
+// CreateOrGetChatRepoImpl
 class CreateOrGetChatRepoImpl extends CreateOrGetChatRepo {
   final CreateOrGetChatRemoteDataSource createOrGetRemoteDataSource;
 
@@ -28,5 +30,24 @@ class CreateOrGetChatRepoImpl extends CreateOrGetChatRepo {
       toUserID,
     );
     return userData;
+  }
+}
+//Get chat messages
+
+class GetChatMessagesRepoImpl extends GetChatMessagesRepo {
+  final GetChatMessagesRemoteDataSource getChatMessagesRemoteDataSource;
+
+  GetChatMessagesRepoImpl(this.getChatMessagesRemoteDataSource);
+
+  @override
+  Future<GetChatMessagesResponse> getChatMessages(
+    String token,
+    String chatId,
+  ) async {
+    var data = await getChatMessagesRemoteDataSource.getChatMessages(
+      token,
+      chatId,
+    );
+    return data;
   }
 }
