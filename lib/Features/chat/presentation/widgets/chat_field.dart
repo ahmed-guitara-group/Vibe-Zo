@@ -3,9 +3,12 @@ import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
+import 'package:vibe_zo/Features/chat/presentation/manager/send_message/send_message_cubit.dart';
 import 'package:vibe_zo/core/utils/assets.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 
@@ -15,21 +18,30 @@ import '../../data/models/get_chat_messages_model/message.dart';
 class ChatField extends StatefulWidget {
   final Message? repliedTo;
   final VoidCallback? onCancelReply;
+  final String chatId;
 
-  const ChatField({super.key, this.repliedTo, this.onCancelReply});
+  const ChatField({
+    super.key,
+    this.repliedTo,
+    this.onCancelReply,
+    required this.chatId,
+  });
 
   @override
   State<ChatField> createState() => _ChatFieldState();
 }
 
 class _ChatFieldState extends State<ChatField> {
+  final userToken = Hive.box(kLoginTokenBox).get(kLoginTokenBox);
   final AudioRecorder _recorder = AudioRecorder();
   final AudioPlayer _player = AudioPlayer();
+  final TextEditingController _textController = TextEditingController();
   late final RecorderController _waveformController;
 
   bool _isRecording = false;
   bool _isPlaying = false;
   bool _cancelRecording = false;
+  bool _showSendButton = false;
   Offset _startOffset = Offset.zero;
   String? _recordedFilePath;
   double _micScale = 1.0;
@@ -43,6 +55,14 @@ class _ChatFieldState extends State<ChatField> {
     _waveformController = RecorderController()
       ..updateFrequency = const Duration(milliseconds: 100)
       ..refresh();
+
+    _textController.addListener(_handleTextChange);
+  }
+
+  void _handleTextChange() {
+    setState(() {
+      _showSendButton = _textController.text.trim().isNotEmpty;
+    });
   }
 
   Future<String> _getTempFilePath() async {
@@ -198,7 +218,7 @@ class _ChatFieldState extends State<ChatField> {
           Expanded(
             child: Text(
               widget.repliedTo!.text ?? "",
-              style: TextStyle(fontSize: 14, height: 1.29),
+              style: const TextStyle(fontSize: 14, height: 1.29),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -217,6 +237,7 @@ class _ChatFieldState extends State<ChatField> {
     _recorder.dispose();
     _player.dispose();
     _waveformController.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
@@ -231,6 +252,7 @@ class _ChatFieldState extends State<ChatField> {
               child: _isRecording
                   ? _buildRecordingStatus()
                   : TextField(
+                      controller: _textController,
                       minLines: 1,
                       maxLines: 3,
                       cursorColor: kPrimaryColor,
@@ -253,38 +275,59 @@ class _ChatFieldState extends State<ChatField> {
                     ),
             ),
             Gaps.hGap8,
-            GestureDetector(
-              onLongPressStart: (details) async {
-                _startOffset = details.globalPosition;
-                setState(() => _micScale = 1.0);
-                await _startRecording();
-              },
-              onLongPressMoveUpdate: (details) {
-                final dx = details.globalPosition.dx;
-                setState(() {
-                  _cancelRecording = _startOffset.dx - dx > 100;
-                });
-              },
-              onLongPressEnd: (_) async {
-                setState(() => _micScale = 1.0);
-                await _stopRecording();
-              },
-              child: CircleAvatar(
-                radius: 25 * _micScale,
-                backgroundColor: _isRecording
-                    ? (_cancelRecording ? Colors.red : kPrimaryColor)
-                    : kLightGreyColor,
-                child: Image.asset(
-                  (_isRecording && _cancelRecording)
-                      ? AssetsData.trash
-                      : _isRecording
-                      ? AssetsData.sendMsg
-                      : AssetsData.mic,
-                  width: 30,
-                  height: 30,
+            if (_showSendButton)
+              GestureDetector(
+                onTap: () {
+                  final text = _textController.text.trim();
+                  if (text.isNotEmpty) {
+                    // TODO: Call API or WebSocket to send message here
+                    print('Send message: $text');
+                    BlocProvider.of<SendMessageCubit>(context).sendMessage(
+                      token: userToken,
+                      chatId: widget.chatId,
+                      type: "text",
+                      message: "Hello Guitara",
+                    );
+                    _textController.clear();
+                  }
+                },
+                child: CircleAvatar(
+                  radius: 25,
+                  backgroundColor: kPrimaryColor,
+                  child: Image.asset(AssetsData.sendMsg, width: 28, height: 28),
+                ),
+              )
+            else
+              GestureDetector(
+                onLongPressStart: (details) async {
+                  _startOffset = details.globalPosition;
+                  setState(() => _micScale = 1.0);
+                  await _startRecording();
+                },
+                onLongPressMoveUpdate: (details) {
+                  final dx = details.globalPosition.dx;
+                  setState(() {
+                    _cancelRecording = _startOffset.dx - dx > 100;
+                  });
+                },
+                onLongPressEnd: (_) async {
+                  setState(() => _micScale = 1.0);
+                  await _stopRecording();
+                },
+                child: CircleAvatar(
+                  radius: 25 * _micScale,
+                  backgroundColor: _isRecording
+                      ? (_cancelRecording ? Colors.red : kPrimaryColor)
+                      : kLightGreyColor,
+                  child: Image.asset(
+                    (_isRecording && _cancelRecording)
+                        ? AssetsData.trash
+                        : AssetsData.mic,
+                    width: 30,
+                    height: 30,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ],

@@ -6,6 +6,7 @@ import '../../../Features/auth/setup_profile/data/models/languages_model/languag
 import '../../../Features/auth/setup_profile/data/models/setup_profile_model/setup_profile_model.dart';
 import '../../../Features/chat/data/models/create_or_get_chat_model/create_or_get_chat_model.dart';
 import '../../../Features/chat/data/models/get_chat_messages_model/get_chat_messages_model.dart';
+import '../../../Features/chat/data/models/send_message_model/send_message_model.dart';
 import '../../../Features/splash/data/models/validate_token_model/validate_token_model.dart';
 import 'base_response/general_response.dart';
 import 'net_response.dart';
@@ -32,6 +33,8 @@ class EntityFactory {
       return CreateOrGetChatModel.fromJson(json) as T;
     } else if (T.toString() == "GetChatMessagesModel") {
       return GetChatMessagesModel.fromJson(json) as T;
+    } else if (T.toString() == "SendMessageModel") {
+      return SendMessageModel.fromJson(json) as T;
     } else {
       return null;
     }

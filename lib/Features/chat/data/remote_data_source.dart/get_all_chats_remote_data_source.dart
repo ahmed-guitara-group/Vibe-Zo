@@ -8,6 +8,7 @@ import '../../../../core/utils/network/network_utils.dart';
 import '../models/create_or_get_chat_model/create_or_get_chat_model.dart';
 import '../models/get_all_chats_model/get_all_chats_model.dart';
 import '../models/get_chat_messages_model/get_chat_messages_model.dart';
+import '../models/send_message_model/send_message_model.dart';
 
 // get all chats
 typedef GetAllChatsResponse = Either<String, GetAllChatsModel>;
@@ -116,5 +117,52 @@ class GetChatMessagesRemoteDataSourceImpl
       },
     );
     return getChatMessagesResponse;
+  }
+}
+
+//  Send   messages
+typedef SendMessageResponse = Either<String, SendMessageModel>;
+
+abstract class SendMessageRemoteDataSource {
+  Future<SendMessageResponse> sendMessage({
+    required String token,
+    required String chatId,
+    required String type,
+    required String message,
+  });
+}
+
+class SendMessageRemoteDataSourceImpl extends SendMessageRemoteDataSource {
+  @override
+  Future<SendMessageResponse> sendMessage({
+    required String token,
+    required String chatId,
+    required String type,
+    required String message,
+  }) async {
+    SendMessageResponse sendMessageResponse = left("");
+    var body = {"chatId": chatId, "type": type, "massage": message};
+
+    await getIt<NetworkRequest>().requestFutureData<SendMessageModel>(
+      Method.post,
+
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+        headers: {'Authorization': 'Bearer $token'},
+      ),
+      params: body,
+      url: Api.doServerSendMessageApiCall,
+      onSuccess: (data) {
+        if (data.status == true) {
+          sendMessageResponse = right(data);
+        } else {
+          sendMessageResponse = left(data.message!.toString());
+        }
+      },
+      onError: (code, msg) {
+        sendMessageResponse = left(code.toString());
+      },
+    );
+    return sendMessageResponse;
   }
 }

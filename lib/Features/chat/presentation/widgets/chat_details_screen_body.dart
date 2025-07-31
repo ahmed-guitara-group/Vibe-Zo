@@ -9,10 +9,13 @@ class ChatDetailsScreenBody extends StatefulWidget {
     super.key,
     required this.messages,
     required this.currentUserId,
+    required this.chatId,
   });
 
   final List<Message> messages;
   final String currentUserId;
+
+  final String chatId;
 
   @override
   State<ChatDetailsScreenBody> createState() => _ChatDetailsScreenBodyState();
@@ -61,6 +64,7 @@ class _ChatDetailsScreenBodyState extends State<ChatDetailsScreenBody> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: ChatField(
+              chatId: widget.chatId,
               repliedTo: repliedTo,
               onCancelReply: () {
                 setState(() {

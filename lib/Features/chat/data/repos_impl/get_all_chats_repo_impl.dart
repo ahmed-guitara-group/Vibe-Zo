@@ -51,3 +51,27 @@ class GetChatMessagesRepoImpl extends GetChatMessagesRepo {
     return data;
   }
 }
+
+//Send Message
+
+class SendMessageRepoImpl extends SendMessageRepo {
+  final SendMessageRemoteDataSource sendMessageRemoteDataSource;
+
+  SendMessageRepoImpl(this.sendMessageRemoteDataSource);
+
+  @override
+  Future<SendMessageResponse> sendMessage({
+    required String token,
+    required String chatId,
+    required String type,
+    required String message,
+  }) async {
+    var data = await sendMessageRemoteDataSource.sendMessage(
+      chatId: chatId,
+      token: token,
+      type: type,
+      message: message,
+    );
+    return data;
+  }
+}

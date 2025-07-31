@@ -14,3 +14,13 @@ abstract class CreateOrGetChatRepo {
 abstract class GetChatMessagesRepo {
   Future<GetChatMessagesResponse> getChatMessages(String token, String chatId);
 }
+
+//Send Message
+abstract class SendMessageRepo {
+  Future<SendMessageResponse> sendMessage({
+    required String token,
+    required String chatId,
+    required String type,
+    required String message,
+  });
+}

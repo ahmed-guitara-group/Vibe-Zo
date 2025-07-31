@@ -22,6 +22,6 @@ class Api {
   static const String doServerCreateOrGetChatsApiCall =
       "${baseUrl}chats/createorgetchat/";
   static const String doServerGetChatMessagesApiCall = "${baseUrl}chats/";
-  static const String doServerSendMessageApiCall  =
+  static const String doServerSendMessageApiCall =
       "${baseUrl}chats/sendMessage";
 }

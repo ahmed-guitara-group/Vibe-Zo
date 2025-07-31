@@ -68,6 +68,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
               builder: (context, state) {
                 return state is GetChatMessagesSuccessful
                     ? ChatDetailsScreenBody(
+                        chatId: state.chatMessages.chat!.id.toString(),
                         currentUserId: currentUserId,
                         messages: state.chatMessages.chat!.messages!,
                       )
