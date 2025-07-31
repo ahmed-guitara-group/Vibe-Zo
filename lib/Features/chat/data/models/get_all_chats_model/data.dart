@@ -1,13 +1,13 @@
 import 'chat.dart';
 import 'user.dart';
 
-class AllChatsData {
+class Data {
   List<User>? users;
   List<Chat>? chats;
 
-  AllChatsData({this.users, this.chats});
+  Data({this.users, this.chats});
 
-  factory AllChatsData.fromJson(Map<String, dynamic> json) => AllChatsData(
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
     users: (json['users'] as List<dynamic>?)
         ?.map((e) => User.fromJson(e as Map<String, dynamic>))
         .toList(),

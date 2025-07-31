@@ -4,7 +4,7 @@ import 'package:vibe_zo/Features/chat/data/models/get_all_chats_model/get_all_ch
 import '../../../Features/auth/auth_welcome_screen/data/models/send_code_model/send_code_model.dart';
 import '../../../Features/auth/setup_profile/data/models/languages_model/languages_model.dart';
 import '../../../Features/auth/setup_profile/data/models/setup_profile_model/setup_profile_model.dart';
-import '../../../Features/chat/data/models/create_oro_get_chat_model/create_oro_get_chat_model.dart';
+import '../../../Features/chat/data/models/create_or_get_chat_model/create_or_get_chat_model.dart';
 import '../../../Features/splash/data/models/validate_token_model/validate_token_model.dart';
 import 'base_response/general_response.dart';
 import 'net_response.dart';

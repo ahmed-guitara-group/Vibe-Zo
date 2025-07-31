@@ -3,6 +3,7 @@ import 'package:vibe_zo/core/utils/constants.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 
 import '../../../../core/utils/assets.dart';
+import '../../../../core/utils/network/api/network_api.dart';
 import '../../data/models/get_all_chats_model/get_all_chats_model.dart';
 import 'custom_chat_title.dart';
 
@@ -53,7 +54,40 @@ class CustomChatItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(9999),
                   child: isPinnedChat
                       ? Image.asset(AssetsData.vZLogoWhite)
-                      : Image.network("https://i.pravatar.cc/${index * 100}"),
+                      : allChatsModel
+                                .data!
+                                .chats![index]
+                                .otherUser!
+                                .profilePhoto !=
+                            null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(9999),
+                          child: ClipOval(
+                            child: Image.network(
+                              Api.baseImageUrl +
+                                  allChatsModel
+                                      .data!
+                                      .chats![index]
+                                      .otherUser!
+                                      .profilePhoto!
+                                      .photo!
+                                      .name!,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )
+                      : Image.network(
+                          "https://i.pravatar.cc/300",
+
+                          // Api.baseImageUrl +
+                          //     allChatsModel
+                          //         .data!
+                          //         .chats![index]
+                          //         .otherUser!
+                          //         .profilePhoto!
+                          //         .photo!
+                          //         .name!,
+                        ),
                 ),
               ),
             ),
@@ -68,6 +102,7 @@ class CustomChatItem extends StatelessWidget {
       ),
 
       title: CustomChatTitle(
+        userName: allChatsModel.data!.chats![index].otherUser!.name!,
         isPinnedChat: isPinnedChat,
         isExpanded: true,
         isChatDetailsBar: false,

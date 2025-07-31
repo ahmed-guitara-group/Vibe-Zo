@@ -9,7 +9,13 @@ import 'custom_chat_title.dart';
 import 'custom_level_container.dart';
 
 class CustomChatDetailsAppBar extends StatelessWidget {
-  const CustomChatDetailsAppBar({super.key});
+  const CustomChatDetailsAppBar({
+    super.key,
+    required this.title,
+    required this.imageUrl,
+  });
+  final String title;
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -25,32 +31,46 @@ class CustomChatDetailsAppBar extends StatelessWidget {
         children: [
           CircleAvatar(
             backgroundColor: kWhiteColor,
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: ClipRRect(
-                borderRadius: BorderRadiusGeometry.circular(9999),
-                child: Image.network("https://i.pravatar.cc/300"),
-              ),
+            child: ClipOval(
+              child: imageUrl != ""
+                  ? Image.network(
+                      imageUrl,
+                      width: 48,
+                      height: 48,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      AssetsData.addUser,
+                      width: 48,
+                      height: 48,
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
           Gaps.hGap4,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomChatTitle(
-                isPinnedChat: false,
-                isExpanded: false,
-                isChatDetailsBar: true,
-              ),
-              Gaps.vGap4,
-              CustomLevelContainer(
-                backgroundColor: Color(0xFFAE4266),
-                borderColor: Color(0xFFAE4266),
-                textColor: kWhiteColor,
-                text: "Live Now",
-                iconPath: AssetsData.liveIcon,
-              ),
-            ],
+
+          /// ✅ Expanded يمنع الـ overflow
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomChatTitle(
+                  isPinnedChat: false,
+                  isExpanded: false,
+                  isChatDetailsBar: true,
+                  userName: title,
+                ),
+                Gaps.vGap4,
+                CustomLevelContainer(
+                  backgroundColor: Color(0xFFAE4266),
+                  borderColor: Color(0xFFAE4266),
+                  textColor: kWhiteColor,
+                  text: "Live Now",
+                  iconPath: AssetsData.liveIcon,
+                ),
+              ],
+            ),
           ),
         ],
       ),

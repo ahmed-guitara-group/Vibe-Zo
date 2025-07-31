@@ -19,7 +19,10 @@ class CreateOrGetChatRepoImpl extends CreateOrGetChatRepo {
   CreateOrGetChatRepoImpl(this.createOrGetRemoteDataSource);
 
   @override
-  Future<CreateOrGetChatResponse> createOrGetChat(String token, String toUserID) async {
+  Future<CreateOrGetChatResponse> createOrGetChat(
+    String token,
+    String toUserID,
+  ) async {
     var userData = await createOrGetRemoteDataSource.createOrGet(
       token,
       toUserID,

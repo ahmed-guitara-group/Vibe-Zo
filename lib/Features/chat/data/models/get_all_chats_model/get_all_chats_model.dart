@@ -4,7 +4,7 @@ class GetAllChatsModel {
   bool? status;
   String? code;
   String? message;
-  AllChatsData? data;
+  Data? data;
 
   GetAllChatsModel({this.status, this.code, this.message, this.data});
 
@@ -15,7 +15,7 @@ class GetAllChatsModel {
       message: json['message'] as String?,
       data: json['data'] == null
           ? null
-          : AllChatsData.fromJson(json['data'] as Map<String, dynamic>),
+          : Data.fromJson(json['data'] as Map<String, dynamic>),
     );
   }
 

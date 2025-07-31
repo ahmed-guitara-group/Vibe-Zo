@@ -196,7 +196,9 @@ Future<void> init() async {
   );
 
   // CreateOrGetChat
-  getIt.registerFactory<CreateOrGetChatCubit>(() => CreateOrGetChatCubit(getIt.call()));
+  getIt.registerFactory<CreateOrGetChatCubit>(
+    () => CreateOrGetChatCubit(getIt.call()),
+  );
   getIt.registerLazySingleton<CreateOrGetChatUseCase>(
     () => CreateOrGetChatUseCase(getIt.call()),
   );

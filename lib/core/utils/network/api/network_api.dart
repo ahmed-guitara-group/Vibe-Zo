@@ -19,6 +19,6 @@ class Api {
   static const String doServerCheckTokenApiCall = "${baseUrl}auth/checkToken";
   //CHAT
   static const String doServerGetAllChatsApiCall = "${baseUrl}chats";
-    static const String doServerCreateOrGetChatsApiCall = "${baseUrl}chats/createorgetchat/";
-
+  static const String doServerCreateOrGetChatsApiCall =
+      "${baseUrl}chats/createorgetchat/";
 }

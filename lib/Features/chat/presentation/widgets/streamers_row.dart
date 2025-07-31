@@ -32,7 +32,7 @@ class StreamersRow extends StatelessWidget {
             radius: context.screenWidth * .07,
             backgroundImage:
                 allChatsModel.data!.users![index].profilePhoto == null
-                ? AssetImage(AssetsData.addUser)
+                ? AssetImage(AssetsData.vZLogo)
                 : NetworkImage(
                     Api.baseImageUrl +
                         allChatsModel

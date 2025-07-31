@@ -6,6 +6,6 @@ class CustomLoadiNgWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(AssetsData.loading);
+    return Image.asset(AssetsData.loading, alignment: Alignment.center);
   }
 }

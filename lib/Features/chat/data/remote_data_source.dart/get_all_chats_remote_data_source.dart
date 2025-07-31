@@ -5,8 +5,8 @@ import '../../../../core/utils/functions/setup_service_locator.dart';
 import '../../../../core/utils/network/api/network_api.dart';
 import '../../../../core/utils/network/network_request.dart';
 import '../../../../core/utils/network/network_utils.dart';
-import '../models/create_oro_get_chat_model/create_oro_get_chat_model.dart';
-import '../models/get_all_chats_model/get_all_chats_model.dart';
+import '../models/create_or_get_chat_model/create_or_get_chat_model.dart';
+ import '../models/get_all_chats_model/get_all_chats_model.dart';
 
 typedef GetAllChatsResponse = Either<String, GetAllChatsModel>;
 
@@ -47,9 +47,9 @@ abstract class CreateOrGetChatRemoteDataSource {
   Future<CreateOrGetChatResponse> createOrGet(String token, String toUserId);
 }
 
-class CreateOrGetChatRemoteDataSourceImpl extends CreateOrGetChatRemoteDataSource {
+class CreateOrGetChatRemoteDataSourceImpl
+    extends CreateOrGetChatRemoteDataSource {
   @override
-
   Future<CreateOrGetChatResponse> createOrGet(
     String token,
     String toUserId,

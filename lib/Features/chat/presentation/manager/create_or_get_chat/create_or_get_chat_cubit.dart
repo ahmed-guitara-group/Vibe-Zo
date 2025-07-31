@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:vibe_zo/Features/chat/domain/use_cases/create_or_get_chat_use_case.dart';
 
-import '../../../data/models/create_oro_get_chat_model/create_oro_get_chat_model.dart';
+import '../../../data/models/create_or_get_chat_model/create_or_get_chat_model.dart';
 
 part 'create_or_get_chat_state.dart';
 

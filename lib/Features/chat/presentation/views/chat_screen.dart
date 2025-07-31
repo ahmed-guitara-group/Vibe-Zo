@@ -41,6 +41,7 @@ class ChatScreen extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(top: 0, left: 16, right: 16),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
                   height: context.screenHeight * .1,

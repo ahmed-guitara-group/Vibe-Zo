@@ -18,7 +18,7 @@ class ChatsList extends StatelessWidget {
         itemBuilder: (context, index) {
           return CustomChatItem(
             allChatsModel: allChatsModel,
-            isPinnedChat: index < 4 ? true : false,
+            isPinnedChat: allChatsModel.data!.chats![index].isPinned!,
             index: index,
           );
         },

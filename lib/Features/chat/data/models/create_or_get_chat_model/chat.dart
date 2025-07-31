@@ -1,9 +1,10 @@
+import 'last_message.dart';
 import 'other_user.dart';
 
 class Chat {
   int? id;
   OtherUser? otherUser;
-  dynamic lastMessage;
+  LastMessage? lastMessage;
   int? messagesCount;
   DateTime? createdAt;
   DateTime? lastMessageAt;
@@ -22,7 +23,9 @@ class Chat {
     otherUser: json['otherUser'] == null
         ? null
         : OtherUser.fromJson(json['otherUser'] as Map<String, dynamic>),
-    lastMessage: json['lastMessage'] as dynamic,
+    lastMessage: json['lastMessage'] == null
+        ? null
+        : LastMessage.fromJson(json['lastMessage'] as Map<String, dynamic>),
     messagesCount: json['messagesCount'] as int?,
     createdAt: json['createdAt'] == null
         ? null
@@ -35,7 +38,7 @@ class Chat {
   Map<String, dynamic> toJson() => {
     'id': id,
     'otherUser': otherUser?.toJson(),
-    'lastMessage': lastMessage,
+    'lastMessage': lastMessage?.toJson(),
     'messagesCount': messagesCount,
     'createdAt': createdAt?.toIso8601String(),
     'lastMessageAt': lastMessageAt?.toIso8601String(),
