@@ -17,6 +17,8 @@ class ChatsList extends StatelessWidget {
         itemCount: allChatsModel.data!.chats!.length,
         itemBuilder: (context, index) {
           return CustomChatItem(
+            otherUserID: allChatsModel.data!.chats![index].otherUser!.id!
+                .toString(),
             allChatsModel: allChatsModel,
             isPinnedChat: allChatsModel.data!.chats![index].isPinned!,
             index: index,

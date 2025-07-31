@@ -13,10 +13,12 @@ class CustomChatItem extends StatelessWidget {
     required this.isPinnedChat,
     required this.index,
     required this.allChatsModel,
+    required this.otherUserID,
   });
   final bool isPinnedChat;
   final int index;
   final GetAllChatsModel allChatsModel;
+  final String otherUserID;
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -24,7 +26,7 @@ class CustomChatItem extends StatelessWidget {
         Navigator.pushNamed(
           context,
           kChatDetailsScreenRoute,
-          arguments: allChatsModel.data!.users![index].id.toString(),
+          arguments: otherUserID,
         );
       },
       contentPadding: EdgeInsets.all(0),

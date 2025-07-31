@@ -40,12 +40,16 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   }
 
   @override
+
   Widget build(BuildContext context) {
     return BlocBuilder<CreateOrGetChatCubit, CreateOrGetChatState>(
       builder: (context, state) {
         if (state is CreateOrGetChatSuccessful) {
           final chatId = state.response.chat!.id.toString();
-
+          //Connect to socket
+          BlocProvider.of<CreateOrGetChatCubit>(
+            context,
+          ).connectChatSocket(userId: currentUserId, channelId: chatId);
           if (!_chatFetched) {
             context.read<GetChatMessagesCubit>().getChatMessages(token, chatId);
             _chatFetched = true;

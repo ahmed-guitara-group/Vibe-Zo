@@ -18,12 +18,4 @@ class GetAllChatsCubit extends Cubit<GetAllChatsState> {
     emit(result.fold(GetAllChatsFailed.new, GetAllChatsSuccessful.new));
   }
 
-  //ALL CHATS
-  void connectSocket({required userId, required channelId}) {
-    SocketManager().initSocketForChannel(
-      //cURRENT USER ID
-      userId: userId,
-      channelName: "chats/$channelId",
-    );
-  }
 }
