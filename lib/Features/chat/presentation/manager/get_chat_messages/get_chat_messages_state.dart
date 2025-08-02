@@ -22,3 +22,8 @@ class GetChatMessagesFailed extends GetChatMessagesState {
   final String message;
   const GetChatMessagesFailed(this.message);
 }
+
+class NewMessageReceived extends GetChatMessagesState {
+  final Message message;
+  const NewMessageReceived(this.message);
+}

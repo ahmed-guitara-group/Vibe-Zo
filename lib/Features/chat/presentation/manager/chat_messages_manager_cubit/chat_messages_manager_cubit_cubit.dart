@@ -1,9 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../../../data/models/send_message_model/message.dart';
+import '../../../data/models/get_chat_messages_model/message.dart';
 
 part 'chat_messages_manager_cubit_state.dart';
+
 class ChatMessagesManagerCubit extends Cubit<ChatMessagesManagerState> {
   ChatMessagesManagerCubit() : super(ChatMessagesManagerInitial());
 
@@ -17,17 +18,19 @@ class ChatMessagesManagerCubit extends Cubit<ChatMessagesManagerState> {
   }
 
   void addLocalMessage(Message message) {
-    _messages.add(message);
+    _messages.insert(0, message); // 👈 عشان تظهر فوق في ListView.reverse
     emit(ChatMessagesUpdated(List.from(_messages)));
   }
 
   void updateMessageFromSocket(Message newMessage) {
-    // إذا كان فيه رسالة موقّتة بنفس الـ ID (مثلاً id = "temp_123")
+    // ❗ فلتر الرسالة لو هي من المستخدم الحالي (لأنها أضيفت بالفعل محليًا)
+    if (newMessage.isFromMe == true) return;
+
     final index = _messages.indexWhere((msg) => msg.id == newMessage.id);
     if (index != -1) {
       _messages[index] = newMessage;
     } else {
-      _messages.add(newMessage); // لو مش موجودة، ضيفها عادي
+      _messages.insert(0, newMessage);
     }
     emit(ChatMessagesUpdated(List.from(_messages)));
   }

@@ -93,7 +93,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen>
                       state.response.code == 'H10'
                           ? Navigator.pushNamedAndRemoveUntil(
                               context,
-                              kBottomNavRoute,
+                              kLoginScreenRoute,
                               (route) => false,
                             )
                           : Navigator.pushNamed(

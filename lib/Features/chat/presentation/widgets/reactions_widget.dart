@@ -6,7 +6,7 @@ class ReactionsWidget extends StatelessWidget {
   const ReactionsWidget({super.key});
   @override
   Widget build(BuildContext context) {
-    List<String> reactions = ["+", "👍", "❤️", "😂", "😢", "😡", "😎"];
+    List<String> reactions = ["👍", "❤️", "😂", "😢", "😡", "😎"];
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),

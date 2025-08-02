@@ -10,31 +10,52 @@ import '../../../../core/utils/constants.dart';
 import '../widgets/chats_list.dart';
 import '../widgets/streamers_row.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
   @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  late final String userId;
+  late final String channelId;
+  late final GetAllChatsCubit chatsCubit; // 👈 خزّنه هنا
+
+  @override
+  void initState() {
+    super.initState();
+
+    final userBox = Hive.box<LoginEntity>(kUserDataBox);
+    final tokenBox = Hive.box(kLoginTokenBox);
+    final token = tokenBox.get(kLoginTokenBox);
+
+    final loginEntity = userBox.getAt(0)!;
+    userId = loginEntity.id.toString();
+    channelId = loginEntity.id.toString();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      chatsCubit = context.read<GetAllChatsCubit>(); // 👈 خزن المرجع هنا
+
+      chatsCubit.connectAllChatSocket(userId: userId, channelId: channelId);
+
+      chatsCubit.getAllChats(token);
+    });
+  }
+
+  @override
+  void dispose() {
+    // ❌ لا تستخدم context هنا
+    chatsCubit.disconnectAllChatSocket(
+      channelId: channelId,
+    ); // 👈 استخدم المتغير المخزن
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var currentUserDataBox = Hive.box<LoginEntity>(kUserDataBox);
-    var loginToken = Hive.box(kLoginTokenBox);
-
-    BlocProvider.of<GetAllChatsCubit>(
-      context,
-    ).getAllChats(loginToken.get(kLoginTokenBox));
-
-    //FOR ONE CHAT
-    // SocketManager().initSocketForChannel(
-    //   //cURRENT USER ID
-    //   userId: currentUserDataBox.getAt(0)!.id.toString(),
-    //   channelName: "chat/CHAT_ID",
-    // );
-
-    // SocketManager().chatSocket.emit('sendMessage', {
-    //   'senderId': '123',
-    //   'receiverId': '456',
-    //   'message': 'Hello from Flutter!',
-    //   'timestamp': DateTime.now().toIso8601String(),
-    // });
     return BlocBuilder<GetAllChatsCubit, GetAllChatsState>(
       builder: (context, state) {
         if (state is GetAllChatsSuccessful) {
@@ -47,13 +68,12 @@ class ChatScreen extends StatelessWidget {
                   height: context.screenHeight * .1,
                   child: StreamersRow(allChatsModel: state.allChats),
                 ),
-
                 Expanded(child: ChatsList(allChatsModel: state.allChats)),
               ],
             ),
           );
         } else {
-          return CustomLoadiNgWidget();
+          return const CustomLoadiNgWidget();
         }
       },
     );

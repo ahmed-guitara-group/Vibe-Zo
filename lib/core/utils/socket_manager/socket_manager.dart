@@ -7,14 +7,11 @@ class SocketManager {
 
   SocketManager._internal();
 
-  final Map<String, IO.Socket> _sockets = {}; //   كل تشانل بسوكيتها
+  final Map<String, IO.Socket> _sockets = {};
 
   IO.Socket? getSocket(String channelName) => _sockets[channelName];
 
-  void initSocketForChannel({
-    required String userId,
-    required String channelName,
-  }) {
+  void initSocketForChannel({String? userId, required String channelName}) {
     if (_sockets.containsKey(channelName)) {
       print('🟡 Socket already initialized for $channelName');
       return;
@@ -59,6 +56,15 @@ class SocketManager {
     });
 
     _sockets[channelName] = socket;
+  }
+
+  void on(String channelName, String eventName, Function(dynamic) callback) {
+    final socket = _sockets[channelName];
+    if (socket == null) {
+      print("⚠️ Socket for $channelName not initialized");
+      return;
+    }
+    socket.on(eventName, callback);
   }
 
   void disconnectSocket(String channelName) {

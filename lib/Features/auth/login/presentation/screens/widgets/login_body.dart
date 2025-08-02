@@ -28,11 +28,11 @@ class LoginBody extends StatefulWidget {
 class _LoginBodyState extends State<LoginBody> with ValidationMixin {
   String phoneNumberValue = Hive.box(kUserPhoneBox).get(kUserPhoneBox) ?? '';
   String tokenValue = Hive.box(kUserTokenBox).get(kUserTokenBox) ?? '';
+  final TextEditingController passWordController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final passWordController = TextEditingController();
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     return MultiBlocListener(
       listeners: [
         BlocListener<ValidateTokenCubit, ValidateTokenState>(

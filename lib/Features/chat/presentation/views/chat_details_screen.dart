@@ -6,6 +6,8 @@ import 'package:vibe_zo/core/utils/network/api/network_api.dart';
 import 'package:vibe_zo/core/widgets/custom_loading_widget.dart';
 
 import '../../../../core/utils/constants.dart';
+import '../../../../core/utils/socket_manager/socket_manager.dart';
+import '../manager/chat_messages_manager_cubit/chat_messages_manager_cubit_cubit.dart';
 import '../manager/create_or_get_chat/create_or_get_chat_cubit.dart';
 import '../manager/get_chat_messages/get_chat_messages_cubit.dart';
 import '../widgets/chat_details_screen_body.dart';
@@ -22,7 +24,7 @@ class ChatDetailsScreen extends StatefulWidget {
 class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   late final String token;
   late final String currentUserId;
-
+  String? _chatId;
   bool _chatFetched = false;
 
   @override
@@ -40,44 +42,74 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   }
 
   @override
+  void dispose() {
+    // افصل السوكيت عند الخروج من الشاشة
+    if (_chatId != null) {
+      SocketManager().disconnectSocket("chat/$_chatId");
+      SocketManager().disposeSocket("chat/$_chatId");
+    }
+    super.dispose();
+  }
 
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateOrGetChatCubit, CreateOrGetChatState>(
       builder: (context, state) {
         if (state is CreateOrGetChatSuccessful) {
           final chatId = state.response.chat!.id.toString();
-          //Connect to socket
-          BlocProvider.of<CreateOrGetChatCubit>(
-            context,
-          ).connectChatSocket(userId: currentUserId, channelId: chatId);
+
+          // اتأكد إنك تحفظ الـ chatId
           if (!_chatFetched) {
+            _chatId = chatId;
+
+            // جلب الرسائل
             context.read<GetChatMessagesCubit>().getChatMessages(token, chatId);
+
+            // الاتصال بالسوكيت
+            context.read<GetChatMessagesCubit>().connectChatSocket(
+              chatId: chatId,
+              userId: currentUserId,
+            );
+
             _chatFetched = true;
           }
 
-          return Scaffold(
-            backgroundColor: Colors.white,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(
-                MediaQuery.of(context).size.height * 0.07,
+          return BlocListener<GetChatMessagesCubit, GetChatMessagesState>(
+            listener: (context, state) {
+              if (state is GetChatMessagesSuccessful) {
+                context.read<ChatMessagesManagerCubit>().loadInitialMessages(
+                  state.chatMessages.chat!.messages!,
+                );
+              } else if (state is NewMessageReceived) {
+                
+                context.read<ChatMessagesManagerCubit>().addLocalMessage(
+                  state.message,
+                );
+              }
+            },
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(
+                  MediaQuery.of(context).size.height * 0.07,
+                ),
+                child: CustomChatDetailsAppBar(
+                  imageUrl:
+                      Api.baseImageUrl +
+                      state
+                          .response
+                          .chat!
+                          .otherUser!
+                          .profilePhoto!
+                          .photo!
+                          .name!,
+                  title: state.response.chat!.otherUser!.name!,
+                ),
               ),
-              child: CustomChatDetailsAppBar(
-                imageUrl:
-                    Api.baseImageUrl +
-                    state.response.chat!.otherUser!.profilePhoto!.photo!.name!,
-                title: state.response.chat!.otherUser!.name!,
+              body: ChatDetailsScreenBody(
+                chatId: _chatId!,
+                currentUserId: currentUserId,
               ),
-            ),
-            body: BlocBuilder<GetChatMessagesCubit, GetChatMessagesState>(
-              builder: (context, state) {
-                return state is GetChatMessagesSuccessful
-                    ? ChatDetailsScreenBody(
-                        chatId: state.chatMessages.chat!.id.toString(),
-                        currentUserId: currentUserId,
-                        messages: state.chatMessages.chat!.messages!,
-                      )
-                    : const Center(child: CircularProgressIndicator());
-              },
             ),
           );
         } else {

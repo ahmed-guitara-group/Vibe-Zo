@@ -8,12 +8,14 @@ import 'package:hive/hive.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
-import 'package:vibe_zo/Features/chat/presentation/manager/send_message/send_message_cubit.dart';
 import 'package:vibe_zo/core/utils/assets.dart';
 import 'package:vibe_zo/core/utils/constants.dart';
 
 import '../../../../core/utils/gaps.dart';
 import '../../data/models/get_chat_messages_model/message.dart';
+import '../../data/models/get_chat_messages_model/sender.dart';
+import '../manager/chat_messages_manager_cubit/chat_messages_manager_cubit_cubit.dart';
+import '../manager/send_message/send_message_cubit.dart';
 
 class ChatField extends StatefulWidget {
   final Message? repliedTo;
@@ -281,12 +283,26 @@ class _ChatFieldState extends State<ChatField> {
                   final text = _textController.text.trim();
                   if (text.isNotEmpty) {
                     // TODO: Call API or WebSocket to send message here
-                    print('Send message: $text');
+                    final tempMessage = Message(
+                      id: DateTime.now().millisecondsSinceEpoch,
+                      text: text,
+                      isFromMe: true,
+                      sender: Sender(id: 45),
+                      createdAt: DateTime.now(),
+                    );
+
+                    // أضفها فورًا في الواجهة
+                    context.read<ChatMessagesManagerCubit>().addLocalMessage(
+                      tempMessage,
+                    );
+
+                    // بعدين ابعتها للسيرفر عبر API أو WebSocket
+
                     BlocProvider.of<SendMessageCubit>(context).sendMessage(
                       token: userToken,
                       chatId: widget.chatId,
                       type: "text",
-                      message: "Hello Guitara",
+                      message: text,
                     );
                     _textController.clear();
                   }

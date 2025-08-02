@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vibe_zo/Features/chat/presentation/widgets/bubble_interactions.dart';
@@ -37,15 +39,30 @@ class ChatBubble extends StatelessWidget {
         return false;
       },
       child: GestureDetector(
-        onLongPress: () {
-          showDialog(
-            barrierColor: Colors.white,
+        onLongPressStart: (details) {
+          showGeneralDialog(
             context: context,
-            builder: (context) {
-              return BubbleInteractions(message: message);
+            barrierLabel: 'Bubble Interactions',
+            barrierDismissible: true,
+            barrierColor: Colors.black.withOpacity(0.2),
+            transitionDuration: const Duration(milliseconds: 200),
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return Stack(
+                children: [
+                  BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                    child: Container(color: Colors.transparent),
+                  ),
+                  BubbleInteractions(
+                    message: message,
+                    tapPosition: details.globalPosition,
+                  ),
+                ],
+              );
             },
           );
         },
+
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           child: Row(
@@ -69,27 +86,27 @@ class ChatBubble extends StatelessWidget {
                       ? Alignment.bottomLeft
                       : Alignment.bottomRight,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      margin: message.giftTransaction != null
-                          ? const EdgeInsets.only(bottom: 10)
-                          : const EdgeInsets.only(bottom: 4),
-                      decoration: BoxDecoration(
-                        color: bubbleColor,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: isMe
-                            ? CrossAxisAlignment.end
-                            : CrossAxisAlignment.start,
-                        children: [
-                          if (message.messageType == 'text' &&
-                              message.text != null)
+                    Hero(
+                      tag: message.id.toString(),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        margin: message.giftTransaction != null
+                            ? const EdgeInsets.only(bottom: 10)
+                            : const EdgeInsets.only(bottom: 4),
+                        decoration: BoxDecoration(
+                          color: bubbleColor,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: isMe
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              message.text!,
+                              message.text ?? "",
                               style: TextStyle(
                                 color: textColor,
                                 fontSize: 12,
@@ -97,36 +114,39 @@ class ChatBubble extends StatelessWidget {
                                 height: 1.17,
                               ),
                             ),
-                          const SizedBox(height: 4),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: isMe
-                                ? MainAxisAlignment.start
-                                : MainAxisAlignment.end,
-                            children: [
-                              if (isMe)
-                                CircleAvatar(
-                                  maxRadius: context.screenWidth * 0.02,
-                                  backgroundColor: const Color(0X33DA5280),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(2.0),
-                                    child: Image.asset(AssetsData.seen),
+                            const SizedBox(height: 4),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: isMe
+                                  ? MainAxisAlignment.start
+                                  : MainAxisAlignment.end,
+                              children: [
+                                if (isMe)
+                                  CircleAvatar(
+                                    maxRadius: context.screenWidth * 0.02,
+                                    backgroundColor: const Color(0X33DA5280),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: Image.asset(AssetsData.seen),
+                                    ),
+                                  ),
+                                Gaps.hGap4,
+                                Text(
+                                  DateFormat(
+                                    'HH:mm',
+                                  ).format(message.createdAt!),
+                                  style: TextStyle(
+                                    color: isMe
+                                        ? Colors.white.withOpacity(0.8)
+                                        : kGreyTextColor,
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                              Gaps.hGap4,
-                              Text(
-                                DateFormat('HH:mm').format(message.createdAt!),
-                                style: TextStyle(
-                                  color: isMe
-                                      ? Colors.white.withOpacity(0.8)
-                                      : kGreyTextColor,
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     if (message.giftTransaction != null)

@@ -141,7 +141,7 @@ class SendMessageRemoteDataSourceImpl extends SendMessageRemoteDataSource {
     required String message,
   }) async {
     SendMessageResponse sendMessageResponse = left("");
-    var body = {"chatId": chatId, "type": type, "massage": message};
+    var body = {"chatId": chatId, "type": type, "message": message};
 
     await getIt<NetworkRequest>().requestFutureData<SendMessageModel>(
       Method.post,

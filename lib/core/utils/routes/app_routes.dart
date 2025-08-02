@@ -19,6 +19,7 @@ import '../../../Features/auth/setup_profile/presentation/manager/get_countries/
 import '../../../Features/auth/setup_profile/presentation/manager/setup_profile/setup_profile_cubit.dart';
 import '../../../Features/auth/setup_profile/presentation/manager/setup_profile_ui/setup_profile_cubit.dart';
 import '../../../Features/auth/setup_profile/presentation/views/screens/setup_profile_screen.dart';
+import '../../../Features/chat/presentation/manager/chat_messages_manager_cubit/chat_messages_manager_cubit_cubit.dart';
 import '../../../Features/chat/presentation/manager/create_or_get_chat/create_or_get_chat_cubit.dart';
 import '../../../Features/chat/presentation/manager/get_chat_messages/get_chat_messages_cubit.dart';
 import '../../../Features/chat/presentation/manager/send_message/send_message_cubit.dart';
@@ -132,6 +133,9 @@ class AppRoutes {
               BlocProvider(create: (context) => getIt<CreateOrGetChatCubit>()),
               BlocProvider(create: (context) => getIt<GetChatMessagesCubit>()),
               BlocProvider(create: (context) => getIt<SendMessageCubit>()),
+              BlocProvider(
+                create: (context) => getIt<ChatMessagesManagerCubit>(),
+              ),
             ],
             child: ChatDetailsScreen(toUserId: args as String),
           ),
