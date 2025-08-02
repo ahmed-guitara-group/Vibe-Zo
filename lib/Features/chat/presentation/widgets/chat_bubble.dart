@@ -67,147 +67,148 @@ class ChatBubble extends StatelessWidget {
           );
         },
 
-        child: Container(
-          constraints: BoxConstraints(maxWidth: context.screenWidth * .7),
-          //       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-          child: Row(
-            mainAxisAlignment: isMe
-                ? MainAxisAlignment.end
-                : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              if (!isMe)
-                showAvatar
-                    ? CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: context.screenWidth * .04,
-                        backgroundImage: NetworkImage(otherUserImgUrl),
-                      )
-                    : SizedBox(
-                        width: context.screenWidth * .08,
-                        height: context.screenWidth * .08,
+        child: Row(
+          mainAxisAlignment: isMe
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            if (!isMe)
+              showAvatar
+                  ? CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: context.screenWidth * .04,
+                      backgroundImage: NetworkImage(otherUserImgUrl),
+                    )
+                  : SizedBox(
+                      width: context.screenWidth * .08,
+                      height: context.screenWidth * .08,
+                    ),
+
+            if (!isMe) Gaps.hGap8,
+
+            Flexible(
+              child: Stack(
+                alignment: isMe ? Alignment.bottomLeft : Alignment.bottomRight,
+                children: [
+                  Hero(
+                    tag: message.id.toString(),
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6,
                       ),
-
-              if (!isMe) Gaps.hGap8,
-
-              Flexible(
-                child: Stack(
-                  alignment: isMe
-                      ? Alignment.bottomLeft
-                      : Alignment.bottomRight,
-                  children: [
-                    Hero(
-                      tag: message.id.toString(),
-                      child: Container(
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.6,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        margin: message.giftTransaction != null
-                            ? const EdgeInsets.only(bottom: 10)
-                            : const EdgeInsets.only(bottom: 4),
-                        decoration: BoxDecoration(
-                          color: bubbleColor,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(isMe ? 12 : 12),
-                            topRight: Radius.circular(isMe ? 12 : 12),
-                            bottomLeft: Radius.circular(
-                              isMe
-                                  ? 12
-                                  : showAvatar
-                                  ? 0
-                                  : 12,
-                            ),
-                            bottomRight: Radius.circular(
-                              isMe && showAvatar ? 0 : 12,
-                            ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      margin: message.giftTransaction != null
+                          ? const EdgeInsets.only(bottom: 10)
+                          : const EdgeInsets.only(bottom: 4),
+                      decoration: BoxDecoration(
+                        color: bubbleColor,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(isMe ? 12 : 12),
+                          topRight: Radius.circular(isMe ? 12 : 12),
+                          bottomLeft: Radius.circular(
+                            isMe
+                                ? 12
+                                : showAvatar
+                                ? 0
+                                : 12,
+                          ),
+                          bottomRight: Radius.circular(
+                            isMe && showAvatar ? 0 : 12,
                           ),
                         ),
-                        child: Column(
-                          crossAxisAlignment: isMe
-                              ? CrossAxisAlignment.start
-                              : CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              message.text ?? "",
-                              style: TextStyle(
-                                color: textColor,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                height: 1.17,
-                              ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: isMe
+                            ? CrossAxisAlignment.start
+                            : CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            message.text ?? "",
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: context.screenWidth * 0.033,
+                              fontWeight: FontWeight.bold,
+                              height: 1.17,
                             ),
-                            const SizedBox(height: 4),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: isMe
-                                  ? MainAxisAlignment.start
-                                  : MainAxisAlignment.end,
-                              children: [
-                                if (isMe)
-                                  BlocBuilder<
-                                    SendMessageCubit,
-                                    SendMessageState
-                                  >(
-                                    builder: (context, state) {
-                                      return CircleAvatar(
-                                        maxRadius: context.screenWidth * 0.02,
-                                        backgroundColor: const Color(
-                                          0X33DA5280,
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: isMe
+                                ? MainAxisAlignment.start
+                                : MainAxisAlignment.end,
+                            children: [
+                              if (isMe)
+                                BlocBuilder<SendMessageCubit, SendMessageState>(
+                                  builder: (context, state) {
+                                    return CircleAvatar(
+                                      maxRadius: context.screenWidth * 0.02,
+                                      backgroundColor: const Color(0X33DA5280),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Builder(
+                                          builder: (context) {
+                                            if (state is SendMessageLoading &&
+                                                message.isLocal == true) {
+                                              return Image.asset(
+                                                AssetsData.addUser,
+                                              );
+                                            }
+
+                                            if (state is SendMessageFailed &&
+                                                message.isLocal == true) {
+                                              return Image.asset(
+                                                AssetsData.errorImage,
+                                              );
+                                            }
+
+                                            return Image.asset(AssetsData.seen);
+                                          },
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(2.0),
-                                          child:
-                                              (state is SendMessageLoading &&
-                                                  message.isLocal == true)
-                                              ? Image.asset(AssetsData.addUser)
-                                              : Image.asset(AssetsData.seen),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                Gaps.hGap4,
-                                Text(
-                                  DateFormat(
-                                    'HH:mm',
-                                  ).format(message.createdAt!),
-                                  style: TextStyle(
-                                    color: isMe
-                                        ? Colors.white.withOpacity(0.8)
-                                        : kGreyTextColor,
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              Gaps.hGap4,
+                              Text(
+                                DateFormat('HH:mm').format(message.createdAt!),
+                                style: TextStyle(
+                                  color: isMe
+                                      ? Colors.white.withOpacity(0.8)
+                                      : kGreyTextColor,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                    if (message.giftTransaction != null)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isMe ? Colors.white24 : Colors.black12,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          message.giftTransaction!,
-                          style: const TextStyle(fontSize: 12),
-                        ),
+                  ),
+                  if (message.giftTransaction != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 2,
                       ),
-                  ],
-                ),
+                      decoration: BoxDecoration(
+                        color: isMe ? Colors.white24 : Colors.black12,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        message.giftTransaction!,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
