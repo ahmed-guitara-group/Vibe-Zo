@@ -289,9 +289,9 @@ class _ChatFieldState extends State<ChatField> {
                       isFromMe: true,
                       sender: Sender(id: 45),
                       createdAt: DateTime.now(),
+                      isLocal: true,
                     );
 
-                    // أضفها فورًا في الواجهة
                     context.read<ChatMessagesManagerCubit>().addLocalMessage(
                       tempMessage,
                     );
@@ -305,6 +305,11 @@ class _ChatFieldState extends State<ChatField> {
                       message: text,
                     );
                     _textController.clear();
+
+                    context
+                        .read<ChatMessagesManagerCubit>()
+                        .messages
+                        .removeWhere((message) => message.id == tempMessage.id);
                   }
                 },
                 child: CircleAvatar(

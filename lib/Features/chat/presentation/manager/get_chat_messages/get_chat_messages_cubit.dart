@@ -35,13 +35,13 @@ class GetChatMessagesCubit extends Cubit<GetChatMessagesState> {
 
       print('🟢 Cubit received new_message: $data');
       try {
-        // ❗ تجاهل الرسائل المرسلة من نفس المستخدم
         if (data['senderId'].toString() == userId) {
           print('🟡 Skipping message from self');
-          return;
+
+          emit(NewMessageReceived(message, true));
         }
 
-        emit(NewMessageReceived(message));
+        emit(NewMessageReceived(message, false));
       } catch (e) {
         print('❌ Error parsing message: $e');
       }

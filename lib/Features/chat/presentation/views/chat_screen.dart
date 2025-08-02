@@ -20,7 +20,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   late final String userId;
   late final String channelId;
-  late final GetAllChatsCubit chatsCubit; // 👈 خزّنه هنا
+  late final GetAllChatsCubit chatsCubit;
 
   @override
   void initState() {
@@ -47,10 +47,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    // ❌ لا تستخدم context هنا
-    chatsCubit.disconnectAllChatSocket(
-      channelId: channelId,
-    ); // 👈 استخدم المتغير المخزن
+    chatsCubit.disconnectAllChatSocket(channelId: channelId);
     super.dispose();
   }
 
@@ -61,15 +58,22 @@ class _ChatScreenState extends State<ChatScreen> {
         if (state is GetAllChatsSuccessful) {
           return Padding(
             padding: const EdgeInsets.only(top: 0, left: 16, right: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: context.screenHeight * .1,
-                  child: StreamersRow(allChatsModel: state.allChats),
-                ),
-                Expanded(child: ChatsList(allChatsModel: state.allChats)),
-              ],
+            child: RefreshIndicator(
+              onRefresh: () async {
+                final tokenBox = Hive.box(kLoginTokenBox);
+                final token = tokenBox.get(kLoginTokenBox);
+                context.read<GetAllChatsCubit>().getAllChats(token);
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: context.screenHeight * .1,
+                    child: StreamersRow(allChatsModel: state.allChats),
+                  ),
+                  Expanded(child: ChatsList(allChatsModel: state.allChats)),
+                ],
+              ),
             ),
           );
         } else {

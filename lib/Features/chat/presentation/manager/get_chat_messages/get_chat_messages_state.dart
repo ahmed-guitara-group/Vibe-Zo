@@ -25,5 +25,6 @@ class GetChatMessagesFailed extends GetChatMessagesState {
 
 class NewMessageReceived extends GetChatMessagesState {
   final Message message;
-  const NewMessageReceived(this.message);
+  final bool isFromSelf;
+  const NewMessageReceived(this.message, this.isFromSelf);
 }

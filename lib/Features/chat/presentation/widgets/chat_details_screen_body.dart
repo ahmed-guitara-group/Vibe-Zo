@@ -13,11 +13,13 @@ class ChatDetailsScreenBody extends StatefulWidget {
     //  required this.messages,
     required this.currentUserId,
     required this.chatId,
+    required this.othUserImgUrl,
   });
 
   //  final List<Message> messages;
   final String currentUserId;
   final String chatId;
+  final String othUserImgUrl;
 
   @override
   State<ChatDetailsScreenBody> createState() => _ChatDetailsScreenBodyState();
@@ -66,6 +68,7 @@ class _ChatDetailsScreenBodyState extends State<ChatDetailsScreenBody> {
                           );
 
                           return ChatBubble(
+                            otherUserImgUrl: widget.othUserImgUrl,
                             message: message,
                             isMe: isMe,
                             showAvatar: showAvatar,

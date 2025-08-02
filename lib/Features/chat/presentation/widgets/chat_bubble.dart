@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:vibe_zo/Features/chat/presentation/widgets/bubble_interactions.dart';
 import 'package:vibe_zo/core/utils/assets.dart';
@@ -9,15 +10,18 @@ import 'package:vibe_zo/core/utils/gaps.dart';
 import 'package:vibe_zo/core/utils/helper.dart';
 
 import '../../data/models/get_chat_messages_model/message.dart';
+import '../manager/send_message/send_message_cubit.dart';
 
 class ChatBubble extends StatelessWidget {
   final Message message;
   final bool isMe;
   final bool showAvatar;
-  final void Function(Message)? onReply;
 
+  final void Function(Message)? onReply;
+  final String otherUserImgUrl;
   const ChatBubble({
     super.key,
+    required this.otherUserImgUrl,
     required this.message,
     required this.isMe,
     required this.showAvatar,
@@ -63,23 +67,29 @@ class ChatBubble extends StatelessWidget {
           );
         },
 
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        child: Container(
+          constraints: BoxConstraints(maxWidth: context.screenWidth * .7),
+          //       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           child: Row(
             mainAxisAlignment: isMe
                 ? MainAxisAlignment.end
                 : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              if (!isMe && showAvatar)
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 16,
-                  backgroundImage: NetworkImage(
-                    'https://i.pravatar.cc/150?u=${message.id}',
-                  ),
-                ),
-              if (!isMe && showAvatar) Gaps.hGap8,
+              if (!isMe)
+                showAvatar
+                    ? CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: context.screenWidth * .04,
+                        backgroundImage: NetworkImage(otherUserImgUrl),
+                      )
+                    : SizedBox(
+                        width: context.screenWidth * .08,
+                        height: context.screenWidth * .08,
+                      ),
+
+              if (!isMe) Gaps.hGap8,
+
               Flexible(
                 child: Stack(
                   alignment: isMe
@@ -89,6 +99,9 @@ class ChatBubble extends StatelessWidget {
                     Hero(
                       tag: message.id.toString(),
                       child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.6,
+                        ),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 8,
@@ -98,11 +111,24 @@ class ChatBubble extends StatelessWidget {
                             : const EdgeInsets.only(bottom: 4),
                         decoration: BoxDecoration(
                           color: bubbleColor,
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(isMe ? 12 : 12),
+                            topRight: Radius.circular(isMe ? 12 : 12),
+                            bottomLeft: Radius.circular(
+                              isMe
+                                  ? 12
+                                  : showAvatar
+                                  ? 0
+                                  : 12,
+                            ),
+                            bottomRight: Radius.circular(
+                              isMe && showAvatar ? 0 : 12,
+                            ),
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: isMe
-                              ? CrossAxisAlignment.end
+                              ? CrossAxisAlignment.start
                               : CrossAxisAlignment.start,
                           children: [
                             Text(
@@ -122,13 +148,26 @@ class ChatBubble extends StatelessWidget {
                                   : MainAxisAlignment.end,
                               children: [
                                 if (isMe)
-                                  CircleAvatar(
-                                    maxRadius: context.screenWidth * 0.02,
-                                    backgroundColor: const Color(0X33DA5280),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: Image.asset(AssetsData.seen),
-                                    ),
+                                  BlocBuilder<
+                                    SendMessageCubit,
+                                    SendMessageState
+                                  >(
+                                    builder: (context, state) {
+                                      return CircleAvatar(
+                                        maxRadius: context.screenWidth * 0.02,
+                                        backgroundColor: const Color(
+                                          0X33DA5280,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child:
+                                              (state is SendMessageLoading &&
+                                                  message.isLocal == true)
+                                              ? Image.asset(AssetsData.addUser)
+                                              : Image.asset(AssetsData.seen),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 Gaps.hGap4,
                                 Text(

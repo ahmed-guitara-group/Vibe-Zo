@@ -10,6 +10,7 @@ class Message {
   dynamic receiver;
   DateTime? createdAt;
   bool? isFromMe;
+  final bool isLocal;
 
   Message({
     this.id,
@@ -21,6 +22,7 @@ class Message {
     this.receiver,
     this.createdAt,
     this.isFromMe,
+    this.isLocal = false,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) => Message(

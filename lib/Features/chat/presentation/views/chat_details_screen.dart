@@ -81,7 +81,8 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                   state.chatMessages.chat!.messages!,
                 );
               } else if (state is NewMessageReceived) {
-                
+                state.message.isFromMe = state.message.sender!.id!
+                .toString() == currentUserId;
                 context.read<ChatMessagesManagerCubit>().addLocalMessage(
                   state.message,
                 );
@@ -107,6 +108,9 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                 ),
               ),
               body: ChatDetailsScreenBody(
+                othUserImgUrl:
+                    Api.baseImageUrl +
+                    state.response.chat!.otherUser!.profilePhoto!.photo!.name!,
                 chatId: _chatId!,
                 currentUserId: currentUserId,
               ),

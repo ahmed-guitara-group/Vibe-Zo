@@ -28,7 +28,6 @@ class BubbleInteractions extends StatelessWidget {
     const boxWidth = 270.0;
     const boxHeight = 330.0;
 
-    // احسب الموضع بحيث ميطلعش برة الشاشة
     final double top = (tapPosition.dy + boxHeight > screenHeight)
         ? screenHeight - boxHeight - 20
         : tapPosition.dy;
@@ -54,13 +53,13 @@ class BubbleInteractions extends StatelessWidget {
                   width: boxWidth,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isMe ? kPrimaryColor.withOpacity(.07) : Colors.white,
+                    //      color: isMe ? kPrimaryColor.withOpacity(.07) : Colors.white,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        blurRadius: 10,
-                      ),
+                      // BoxShadow(
+                      //   color: Colors.black.withOpacity(0.15),
+                      //   blurRadius: 10,
+                      // ),
                     ],
                   ),
                   child: Column(

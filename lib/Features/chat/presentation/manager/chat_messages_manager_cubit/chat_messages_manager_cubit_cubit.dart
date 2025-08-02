@@ -18,22 +18,36 @@ class ChatMessagesManagerCubit extends Cubit<ChatMessagesManagerState> {
   }
 
   void addLocalMessage(Message message) {
-    _messages.insert(0, message); // 👈 عشان تظهر فوق في ListView.reverse
+    _messages.insert(0, message);
     emit(ChatMessagesUpdated(List.from(_messages)));
   }
 
-  void updateMessageFromSocket(Message newMessage) {
-    // ❗ فلتر الرسالة لو هي من المستخدم الحالي (لأنها أضيفت بالفعل محليًا)
-    if (newMessage.isFromMe == true) return;
+  // void updateMessageFromSocket(Message newMessage, bool isFromMe) {
+  //   if (isFromMe == true) {
+  //     // ابحث عن الرسالة المؤقتة اللي بتتطابق مع دي بالضبط
+  //     final index = _messages.indexWhere(
+  //       (msg) =>
+  //           (msg.isLocal) &&
+  //           msg.text == newMessage.text &&
+  //           msg.messageType == newMessage.messageType &&
+  //           msg.isFromMe == true,
+  //       //   msg.repliedTo?.id == newMessage.repliedTo?.id, // لو بتدعم الرد
+  //     );
 
-    final index = _messages.indexWhere((msg) => msg.id == newMessage.id);
-    if (index != -1) {
-      _messages[index] = newMessage;
-    } else {
-      _messages.insert(0, newMessage);
-    }
-    emit(ChatMessagesUpdated(List.from(_messages)));
-  }
+  //     if (index != -1) {
+  //       _messages[index] = newMessage;
+  //     } else {
+  //       newMessage.isFromMe = true;
+  //       _messages.insert(0, newMessage);
+  //     }
+  //   } else {
+  //     newMessage.isFromMe = false;
+
+  //     _messages.insert(0, newMessage);
+  //   }
+
+  //   emit(ChatMessagesUpdated(List.from(_messages)));
+  // }
 
   void clearMessages() {
     _messages.clear();
